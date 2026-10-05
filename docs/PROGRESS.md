@@ -18,19 +18,23 @@ Workspace profile `fevm-serverless-stable-am1uc2`. Bundle target `demo`. All dat
 | 9 | Genie agent "Plant Maintenance Agent" | Created, space id `01f1c10d662111078cd7326dff1774c6` | Benchmark not run yet |
 | 10 | App code (FastAPI + JS), serving + app bundle resources | Written, validated, NOT deployed | - |
 
-## Local code changes not yet deployed or committed
+## Code committed but not yet deployed
 
 - Pipeline: features + scoring merged into `02_station_risk_scores.py`, `expect_or_drop(n_readings >= 110)`, files renumbered.
 - Governance notebook: `pdm_`-prefixed tag keys.
 - Bundle: `resources/serving.yml`, `resources/app.yml`, `resources/evidence.job.yml`, variables `model_version`, `genie_space_id`, `warehouse_id`.
-- Last commit pushed: milestone 0 only. Everything else is uncommitted.
+- All code is committed and pushed (`aa4df9d`). The items above are not deployed to the workspace yet.
 
-## Still running in the workspace (costs money)
+## Workspace state while paused
 
-- Simulator job run `320983066504714` (3 h, started ~15:27 PT): `databricks jobs cancel-run 320983066504714 --profile fevm-serverless-stable-am1uc2`
-- Continuous pipeline: `databricks pipelines stop b5544be9-b72f-4e83-b029-1a7151fc53c1 --profile fevm-serverless-stable-am1uc2`
-- Lakebase endpoint scales to zero on its own.
+- Simulator run `320983066504714` cancelled; continuous pipeline stopped (IDLE).
+- Lakebase compute `projects/pdm-demo/branches/production/endpoints/primary` is **disabled** (IDLE); data is kept.
+  Its suspend timeout was 24 h (production branch default), so it would not have scaled to zero on its own.
+  Re-enable first when resuming: `databricks postgres update-endpoint projects/pdm-demo/branches/production/endpoints/primary spec.disabled --json '{"spec": {"disabled": false}}' --profile fevm-serverless-stable-am1uc2`
+- Nothing else is running: the serving endpoint and app are not deployed yet.
 - Synced tables were deleted on purpose (to be recreated after the pipeline refresh).
+- To resume live data: `databricks bundle run pdm_simulator --params duration_min=180 --profile fevm-serverless-stable-am1uc2`
+  and `databricks pipelines start-update b5544be9-b72f-4e83-b029-1a7151fc53c1 --profile fevm-serverless-stable-am1uc2`.
 
 ## Next steps (in order)
 
