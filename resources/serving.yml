@@ -1,0 +1,11 @@
+resources:
+  model_serving_endpoints:
+    pdm_risk_endpoint:
+      name: pdm-station-risk
+      config:
+        served_entities:
+          - name: station-failure-model
+            entity_name: ${var.catalog}.pdm_ml.station_failure_model
+            entity_version: ${var.model_version}
+            workload_size: Small
+            scale_to_zero_enabled: true

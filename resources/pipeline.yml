@@ -1,0 +1,27 @@
+resources:
+  pipelines:
+    pdm_live:
+      name: pdm_live_pipeline
+      catalog: ${var.catalog}
+      schema: pdm_core
+      serverless: true
+      continuous: true
+      photon: true
+      channel: CURRENT
+      root_path: ../src/pipeline
+      libraries:
+        - file:
+            path: ../src/pipeline/01_sensor_readings_clean.py
+        - file:
+            path: ../src/pipeline/02_station_risk_scores.py
+        - file:
+            path: ../src/pipeline/03_station_health_current.py
+        - file:
+            path: ../src/pipeline/04_maintenance_events.py
+      configuration:
+        pdm.catalog: ${var.catalog}
+        pdm.source_path: ${workspace.file_path}/src
+      environment:
+        dependencies:
+          - scikit-learn==1.7.2
+          - mlflow>=3.1

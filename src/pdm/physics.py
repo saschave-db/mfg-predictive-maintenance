@@ -83,7 +83,7 @@ class Fleet:
         self.onset[i] = t
         self.duration[i] = duration or self.rng.uniform(*DURATION_RANGE_S)
         self.prevent_at_d[i] = 0.75 if self.rng.random() < self.auto_preventive_prob else np.inf
-        return dict(station_id=self.ids[i], event_type="degradation_onset", failure_mode=self.mode[i])
+        return dict(station_id=str(self.ids[i]), event_type="degradation_onset", failure_mode=self.mode[i])
 
     def repair(self, i: int, t: float, event_type: str = "preventive_repair"):
         mode = self.mode[i]
@@ -92,7 +92,7 @@ class Fleet:
         self.duration[i] = np.nan
         self.down_until[i] = -np.inf
         self.next_onset[i] = t + self.rng.exponential(MEAN_GAP_S)
-        return dict(station_id=self.ids[i], event_type=event_type, failure_mode=mode or None)
+        return dict(station_id=str(self.ids[i]), event_type=event_type, failure_mode=mode or None)
 
     def index_of(self, station_id: str) -> int | None:
         hits = np.where(self.ids == station_id)[0]
@@ -135,7 +135,7 @@ class Fleet:
         d = self.degradation(t)
         for i in np.where((self.mode != "") & (d >= 1.0) & (t >= self.down_until))[0]:
             if self.down_until[i] < t - DOWN_S:  # failure moment
-                events.append(dict(station_id=self.ids[i], event_type="failure", failure_mode=self.mode[i]))
+                events.append(dict(station_id=str(self.ids[i]), event_type="failure", failure_mode=self.mode[i]))
                 self.down_until[i] = t + DOWN_S
         for i in np.where((self.mode != "") & np.isfinite(self.down_until) & (t >= self.down_until))[0]:
             events.append(self.repair(int(i), t, "corrective_repair"))

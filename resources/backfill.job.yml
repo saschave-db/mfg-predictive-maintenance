@@ -1,0 +1,11 @@
+resources:
+  jobs:
+    pdm_backfill:
+      name: pdm_01_backfill_history
+      tasks:
+        - task_key: backfill
+          notebook_task:
+            notebook_path: ../src/notebooks/01_backfill_history.py
+            base_parameters:
+              catalog: ${var.catalog}
+              history_hours: "24"

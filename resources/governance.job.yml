@@ -1,0 +1,10 @@
+resources:
+  jobs:
+    pdm_governance:
+      name: pdm_03_governance_semantic
+      tasks:
+        - task_key: governance
+          notebook_task:
+            notebook_path: ../src/notebooks/03_governance_semantic.py
+            base_parameters:
+              catalog: ${var.catalog}

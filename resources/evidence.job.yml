@@ -1,0 +1,18 @@
+resources:
+  jobs:
+    pdm_live_evidence:
+      name: pdm_04_live_evidence
+      parameters:
+        - name: station_id
+          default: ""
+        - name: injected_at_utc
+          default: ""
+      tasks:
+        - task_key: evidence
+          notebook_task:
+            notebook_path: ../src/notebooks/04_live_evidence.py
+            base_parameters:
+              catalog: ${var.catalog}
+              pipeline_id: ${resources.pipelines.pdm_live.id}
+              station_id: "{{job.parameters.station_id}}"
+              injected_at_utc: "{{job.parameters.injected_at_utc}}"

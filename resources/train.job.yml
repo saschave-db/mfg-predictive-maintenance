@@ -1,0 +1,10 @@
+resources:
+  jobs:
+    pdm_train:
+      name: pdm_02_train_model
+      tasks:
+        - task_key: train
+          notebook_task:
+            notebook_path: ../src/notebooks/02_train_model.py
+            base_parameters:
+              catalog: ${var.catalog}

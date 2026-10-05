@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Plant Health Live</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">Plant Health Live <span class="sub">predictive maintenance · synthetic data</span></div>
+  <div class="kpis">
+    <span class="kpi normal" id="k-normal">–</span>
+    <span class="kpi elevated" id="k-elevated">–</span>
+    <span class="kpi high" id="k-high">–</span>
+    <span class="kpi down" id="k-down">–</span>
+    <span class="fresh" id="fresh" title="Age of newest sensor reading reflected in risk state · Lakebase query time">–</span>
+  </div>
+</header>
+<main>
+  <section id="plants"></section>
+  <aside id="panel">
+    <div id="detail" class="card"><p class="muted">Select a station.</p></div>
+    <div class="card">
+      <h3>Ask the maintenance Genie agent</h3>
+      <form id="genie-form"><input id="genie-q" placeholder="e.g. Which stations on Plant North need maintenance soon?" autocomplete="off"><button>Ask</button></form>
+      <div id="genie-out"></div>
+    </div>
+    <div class="card"><h3>Work orders</h3><div id="wos"></div></div>
+  </aside>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>

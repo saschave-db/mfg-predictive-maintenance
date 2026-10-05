@@ -12,12 +12,29 @@ variables:
     description: Zerobus server endpoint for this workspace
     default: 7474651880045550.zerobus.us-east-2.cloud.databricks.com
 
+  lakebase_endpoint:
+    description: Lakebase endpoint resource path
+    default: projects/pdm-demo/branches/production/endpoints/primary
+  lakebase_host:
+    description: Lakebase endpoint hostname
+    default: ep-autumn-paper-d8fiis3p.database.us-east-2.cloud.databricks.com
+  model_version:
+    description: UC model version served by the endpoint (the @champion version)
+    default: "1"
+  genie_space_id:
+    description: Genie agent (space) id, created by tools/genie_deploy.py
+    default: 01f1c10d662111078cd7326dff1774c6
+  warehouse_id:
+    description: SQL warehouse for Genie
+    default: fb9bc265e9f4578a
+
 include:
   - resources/*.yml
 
 targets:
-  dev:
-    mode: development
+  # Not development mode: dev mode deploys pipelines as triggered, and the live demo needs a continuous pipeline.
+  demo:
     default: true
     workspace:
       host: https://fevm-serverless-stable-am1uc2.cloud.databricks.com
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/demo

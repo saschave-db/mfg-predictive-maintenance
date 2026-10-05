@@ -13,7 +13,7 @@ def normalize(readings: DataFrame, station_master: DataFrame) -> DataFrame:
     """Join nominal values and add <sensor>_n = value / nominal."""
     nom_cols = [f"nom_{s}" for s in SENSORS]
     sm = station_master.select("station_id", "plant_id", "line_id", "station_type", "criticality", *nom_cols)
-    df = readings.join(F.broadcast(sm), ["station_id"], "inner")
+    df = readings.drop("plant_id", "line_id").join(F.broadcast(sm), ["station_id"], "inner")
     for s in SENSORS:
         df = df.withColumn(f"{s}_n", F.col(s) / F.col(f"nom_{s}"))
     return df.drop(*nom_cols)

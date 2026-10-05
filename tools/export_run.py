@@ -50,6 +50,15 @@ def render_result(item) -> str:
     return json.dumps(data)[:4000] if data else ""
 
 
+NOISE = ("pyspark.sql.connect.logging", "application/vnd.jupyter.widget-view+json", "color_warning(",
+         "Add type hints to the `predict` method")
+
+
+def clean(text: str) -> str:
+    """Drop runtime log noise (Spark Connect session warnings, progress widgets)."""
+    return "\n".join(l for l in text.splitlines() if not any(n in l for n in NOISE)).strip()
+
+
 def notebook_from_export(html: str):
     b64 = re.search(r"__DATABRICKS_NOTEBOOK_MODEL = '([^']+)'", html).group(1)
     return json.loads(urllib.parse.unquote(base64.b64decode(b64).decode()))
@@ -66,7 +75,7 @@ def cells(model):
             outputs = [render_result(res)]
         if c.get("error"):
             outputs.append("ERROR: " + str(c.get("errorSummary") or c["error"])[:4000])
-        yield src, [o for o in outputs if o]
+        yield src, [clean(o) for o in outputs if clean(o)]
 
 
 def to_ipynb(model, header):
@@ -119,6 +128,14 @@ def main():
             "start_time": ts(t.get("start_time")), "end_time": ts(t.get("end_time")),
             "duration_s": round((t.get("end_time", 0) - t.get("start_time", 0)) / 1000, 1),
         })
+        if "spark_python_task" in t:
+            o = cli(["jobs", "get-run-output", str(t["run_id"])], a.profile)
+            log = (o.get("logs") or "") + ("\n" + o["error"] + "\n" + o.get("error_trace", "") if o.get("error") else "")
+            name = Path(t["spark_python_task"]["python_file"]).stem
+            (out / f"{name}.log").write_text(
+                f"# stdout of task {t['task_key']} (task run {t['run_id']}) of job run {a.run_id}\n"
+                f"# {run.get('run_page_url')}\n# truncated by Databricks: {o.get('logs_truncated', False)}\n\n" + log)
+            print("wrote", out / f"{name}.log")
         if "notebook_task" not in t:
             continue
         exp = cli(["jobs", "export-run", str(t["run_id"]), "--views-to-export", "CODE"], a.profile)

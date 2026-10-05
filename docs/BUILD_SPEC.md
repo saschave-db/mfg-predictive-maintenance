@@ -16,9 +16,10 @@ All data in this repo is synthetic. No customer data is used.
 | Schema | Purpose | Key objects |
 |---|---|---|
 | `pdm_raw` | Landing + reference | `sensor_readings` (Zerobus target), `station_master`, `technicians`, `maintenance_events_history` |
-| `pdm_core` | SDP output (silver/gold) | `sensor_readings_clean`, `station_features`, `station_risk_scores`, `station_health_current`, `maintenance_events` |
+| `pdm_core` | SDP output (silver/gold) | `sensor_readings_clean`, `station_risk_scores`, `station_health_current`, `maintenance_events` |
 | `pdm_ml` | Models + training sets | `training_features`, model `station_failure_model@champion` |
-| `pdm_ops` | Ops + semantic layer | `work_orders` (from Lakebase), metric views `station_reliability_metrics`, `work_order_metrics` |
+| `pdm_ops` | Ops + semantic layer | `lb_work_orders_history` / `lb_sim_commands_history` (Lakehouse Sync from Lakebase), view `work_orders_current`, metric views `maintenance_metrics`, `station_risk_metrics`, `work_order_metrics` |
+| `pdm_live` | Lakebase synced tables (UC side) | `station_health_current`, `station_risk_scores` (continuous sync to Postgres schema `pdm_live`) |
 
 ## Asset model
 
@@ -50,7 +51,7 @@ Sliding window 2 min, slide 10 s, per station. For each sensor: mean, std, max (
 
 ## Latency path
 
-Simulator -> Zerobus -> `pdm_raw.sensor_readings` -> SDP continuous (silver, features, scores, AUTO CDC current state) -> Lakebase synced tables (continuous) -> FastAPI app (2 s polling). Target: 10 to 30 s event-to-screen. Measured and committed in `evidence/`.
+Simulator -> Zerobus -> `pdm_raw.sensor_readings` -> SDP continuous (silver; windowed features + in-stream scoring in one flow; AUTO CDC current state) -> Lakebase synced tables (continuous) -> FastAPI app (2 s polling). Target: 10 to 30 s event-to-screen. Measured and committed in `evidence/`.
 
 ## Lakebase
 
@@ -87,3 +88,16 @@ Every milestone commits text artifacts to `evidence/`:
 - Real model output (metrics, sample predictions, serving responses).
 - Genie benchmark questions, generated SQL and answers.
 - App API responses (curl output).
+
+## Build decisions and deviations from the plan
+
+| Topic | Decision | Why |
+|---|---|---|
+| Simulator compute | Serverless job with the Zerobus SDK in the environment spec | Workspace allows serverless compute only; the SDK installs fine as an environment dependency |
+| Simulator Postgres driver | `pg8000` (pure Python) | A run using `psycopg[binary]` next to the Zerobus SDK aborted (SIGABRT) |
+| Features + scoring | One streaming flow (`station_risk_scores`) | A separate features table added one micro-batch hop of latency |
+| Partial windows | `expect_or_drop(n_readings >= 110)` | Same completeness rule as training; partial windows produced false alerts |
+| Bundle target | `demo` (no development mode) | Development mode deploys pipelines as triggered, the demo needs continuous |
+| Catalog | Existing `serverless_stable_am1uc2_catalog` | CREATE CATALOG is not permitted on this metastore |
+| Synced tables | Target schema in the standard catalog (`pdm_live`) | No Lakebase catalog registration needed |
+| Tags | `pdm_`-prefixed keys | Workspace enforces governed tag policies on `domain`, `source`, `pii` |

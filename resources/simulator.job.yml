@@ -1,0 +1,31 @@
+resources:
+  jobs:
+    pdm_simulator:
+      name: pdm_simulator_zerobus
+      max_concurrent_runs: 1
+      parameters:
+        - name: duration_min
+          default: "60"
+        - name: extra_args
+          default: ""
+      tasks:
+        - task_key: produce
+          environment_key: gateway
+          spark_python_task:
+            python_file: ../src/simulator/zerobus_producer.py
+            parameters:
+              - --src-path=${workspace.file_path}/src
+              - --catalog=${var.catalog}
+              - --endpoint=${var.zerobus_endpoint}
+              - --duration-min={{job.parameters.duration_min}}
+              - --lakebase-endpoint=${var.lakebase_endpoint}
+              - --lakebase-host=${var.lakebase_host}
+              - --extra={{job.parameters.extra_args}}
+      environments:
+        - environment_key: gateway
+          spec:
+            environment_version: "4"
+            dependencies:
+              - databricks-zerobus-ingest-sdk>=1.0.0
+              - databricks-sdk>=0.81.0
+              - pg8000>=1.31

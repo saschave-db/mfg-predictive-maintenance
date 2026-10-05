@@ -1,0 +1,25 @@
+resources:
+  apps:
+    pdm_app:
+      name: pdm-plant-health-live
+      description: "Plant Health Live: live predictive maintenance (synthetic data)"
+      source_code_path: ../src/app
+      resources:
+        - name: postgres
+          postgres:
+            branch: projects/pdm-demo/branches/production
+            database: projects/pdm-demo/branches/production/databases/databricks-postgres
+            permission: CAN_CONNECT_AND_CREATE
+        - name: serving
+          serving_endpoint:
+            name: ${resources.model_serving_endpoints.pdm_risk_endpoint.name}
+            permission: CAN_QUERY
+        - name: genie
+          genie_space:
+            name: Plant Maintenance Agent
+            space_id: ${var.genie_space_id}
+            permission: CAN_RUN
+        - name: warehouse
+          sql_warehouse:
+            id: ${var.warehouse_id}
+            permission: CAN_USE
