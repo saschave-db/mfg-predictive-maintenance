@@ -1,0 +1,23 @@
+bundle:
+  name: mfg-predictive-maintenance
+
+variables:
+  catalog:
+    description: Unity Catalog catalog that hosts the pdm_* schemas
+    default: serverless_stable_am1uc2_catalog
+  zerobus_sp_app_id:
+    description: Application id of the Zerobus producer service principal
+    default: 240a5501-f956-4282-a2a7-ccc7614683a7
+  zerobus_endpoint:
+    description: Zerobus server endpoint for this workspace
+    default: 7474651880045550.zerobus.us-east-2.cloud.databricks.com
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://fevm-serverless-stable-am1uc2.cloud.databricks.com

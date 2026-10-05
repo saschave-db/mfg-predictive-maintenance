@@ -1,0 +1,11 @@
+resources:
+  jobs:
+    pdm_setup:
+      name: pdm_00_setup_uc
+      tasks:
+        - task_key: setup_uc
+          notebook_task:
+            notebook_path: ../src/notebooks/00_setup_uc.py
+            base_parameters:
+              catalog: ${var.catalog}
+              zerobus_sp_app_id: ${var.zerobus_sp_app_id}
