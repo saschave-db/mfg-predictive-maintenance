@@ -18,6 +18,7 @@ Workspace profile `fevm-serverless-stable-am1uc2`. Bundle target `demo`. All dat
 | 9 | Genie agent, benchmark 10/10 | Done | `evidence/07_genie/` |
 | 10 | App `pdm-plant-health-live` + grants | Running | `evidence/08_app/` |
 | 11 | End-to-end fault injection | Done | `evidence/08_app/e2e_fault_injection.md` |
+| 12 | Evidence notebooks E00 to E08 (one per step, job `pdm_evidence_notebooks`, run 980301348000608) | Done, all SUCCESS | `evidence/10_evidence_notebooks/` |
 
 Decision 2026-10-06: accept about 60 s sensor-to-screen latency and document it (see README, Known limitations).
 

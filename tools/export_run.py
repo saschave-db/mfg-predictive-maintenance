@@ -122,7 +122,8 @@ def main():
         "start_time": ts(run.get("start_time")), "end_time": ts(run.get("end_time")),
         "tasks": [],
     }
-    for t in run.get("tasks", []):
+    # Repair runs add later attempts of the same task: process in start order so the latest attempt wins.
+    for t in sorted(run.get("tasks", []), key=lambda t: t.get("start_time", 0)):
         summary["tasks"].append({
             "task_key": t["task_key"], "run_id": t["run_id"], "state": t.get("state"),
             "start_time": ts(t.get("start_time")), "end_time": ts(t.get("end_time")),

@@ -1,12 +1,24 @@
 {
   "name": "synced_tables/serverless_stable_am1uc2_catalog.pdm_live.station_risk_scores",
-  "spec": {
-    "source": null,
-    "pk": null,
-    "policy": null
-  },
   "status": {
-    "state": "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE",
+    "detailed_state": "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE",
+    "last_sync": {
+      "delta_table_sync_info": {
+        "delta_commit_time": "2026-10-06T17:47:56Z",
+        "delta_commit_version": 477
+      },
+      "sync_end_time": "2026-10-06T17:48:00.171269Z",
+      "sync_start_time": "2026-10-06T17:47:59.434504Z"
+    },
+    "pipeline_id": "5135c1d5-fce7-4893-898c-d902dc34a0ea",
     "message": "Synced table creation succeeded using Delta Live Tables: https://fevm-serverless-stable-am1uc2.cloud.databricks.com#joblist/pipelines/5135c1d5-fce7-4893-898c-d902dc34a0ea/updates/8d9b79e6-dcc4-4a5e-a3ce-dde8fa89e270."
+  },
+  "created_with": {
+    "source_table_full_name": "serverless_stable_am1uc2_catalog.pdm_core.station_risk_scores",
+    "primary_key_columns": [
+      "station_id",
+      "window_end"
+    ],
+    "scheduling_policy": "CONTINUOUS"
   }
 }

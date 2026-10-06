@@ -52,13 +52,33 @@ App --> Lakebase pdm_ops.work_orders / sim_commands --> Lakehouse Sync --> UC pd
 | Fault from app to simulator | applied 0.4 s after the click | `06_live_pipeline/04_live_evidence.md` |
 | Injected fault to HIGH risk | 3 min 2 s in Delta, 3 min 47 s in the app | same, and `08_app/` |
 | Model Serving what-if (warm) | 41 to 140 ms round trip | `08_app/whatif_warm.md` |
-| Genie benchmark | 10/10 graded questions match reference SQL | `07_genie/benchmark.md` |
+| Genie benchmark | 10/10 graded questions match reference SQL (reproduced live in E06) | `07_genie/benchmark.md`, `10_evidence_notebooks/E06_genie.md` |
+| Writer of the bronze table | 1,157 commits, all `engineInfo = Zerobus`, one every 5.0 s | `10_evidence_notebooks/E01_zerobus_ingestion.md` |
+| Delta to Lakebase sync | Delta commit synced to Postgres in about 4 s | `09_deployed_resources/lakebase_synced_table.json` |
+| Score consistency | Pipeline, registry model and Model Serving agree (max diff 0.00005, rounding) | `10_evidence_notebooks/E03_ml_model.md` |
+| Notebook-driven E2E loop | Fault to HIGH in Delta and Postgres 334 s; repair to NORMAL 75 s; station never went down | `10_evidence_notebooks/E08_end_to_end.md` |
 
 Time is compressed: one demo minute is about one real operating hour.
 
 ## Evidence index
 
 All evidence is text. Executed notebooks are exported from the Databricks job runs with their cell outputs (`.ipynb` and a readable `.md`).
+
+**Start here: `evidence/10_evidence_notebooks/`.** One executed notebook per step (E00 to E08). Each one explains what was built, what it proves, and then shows the proof as live cell output: SDK calls, SQL on Unity Catalog, and SQL on Lakebase run from the notebook.
+
+| Notebook | Proves |
+|---|---|
+| `E00_overview` | Architecture, step map, live state of every deployed resource |
+| `E01_zerobus_ingestion` | Producer job, SP least privilege, Delta commits written by the Zerobus SP, throughput and freshness per gateway, duplicates |
+| `E02_sdp_pipeline` | Deployed spec, update history, flow states, expectations, row counts, per-hop latency, UC lineage |
+| `E03_ml_model` | UC versions and alias, MLflow metrics, in-stream scores reproduced with the registry model and Model Serving |
+| `E04_lakebase` | Endpoint, Postgres tables, app-role grants, synced-table status, Delta vs Postgres freshness, query plan, Lakehouse Sync CDC |
+| `E05_governance` | Grants, masks, row filter, tags, metric view YAML, KPI queries |
+| `E06_genie` | Deployed agent config, live benchmark with Genie SQL vs reference SQL, sample answers |
+| `E07_app` | App status, resources, deployments, API call attempt, the app's writes in Lakebase and UC |
+| `E08_end_to_end` | Live loop driven from the notebook: fault, alert in Delta and Postgres, work order, repair, recovery |
+
+The build notebooks and tool outputs:
 
 | Folder | Contents |
 |---|---|

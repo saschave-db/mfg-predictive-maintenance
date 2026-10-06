@@ -1,0 +1,57 @@
+resources:
+  jobs:
+    pdm_evidence_notebooks:
+      name: pdm_evidence_notebooks
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: E00_overview
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E00_overview.py
+        - task_key: E01_zerobus_ingestion
+          depends_on:
+            - task_key: E00_overview
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E01_zerobus_ingestion.py
+        - task_key: E02_sdp_pipeline
+          depends_on:
+            - task_key: E01_zerobus_ingestion
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E02_sdp_pipeline.py
+        - task_key: E03_ml_model
+          depends_on:
+            - task_key: E02_sdp_pipeline
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E03_ml_model.py
+        - task_key: E04_lakebase
+          depends_on:
+            - task_key: E03_ml_model
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E04_lakebase.py
+        - task_key: E05_governance
+          depends_on:
+            - task_key: E04_lakebase
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E05_governance.py
+        - task_key: E06_genie
+          depends_on:
+            - task_key: E05_governance
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E06_genie.py
+        - task_key: E07_app
+          depends_on:
+            - task_key: E06_genie
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E07_app.py
+        - task_key: E08_end_to_end
+          depends_on:
+            - task_key: E07_app
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E08_end_to_end.py
