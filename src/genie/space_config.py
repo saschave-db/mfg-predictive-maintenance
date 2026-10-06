@@ -25,6 +25,8 @@ Where to find answers:
 - Risk trends or risk over a time range: use the metric view pdm_ops.station_risk_metrics and filter on `Score Time`.
 - Failures, repairs, downtime, MTTR, parts cost, preventive share: use the metric view pdm_ops.maintenance_metrics.
 - Work orders (backlog, priorities, completion): use pdm_ops.work_order_metrics; for lists of individual work orders use pdm_ops.work_orders_current.
+Plant names differ by source: the metric views' Plant dimension holds names ('Plant North', 'Plant South',
+'Plant East'); station_health_current and work_orders_current use codes in plant_id ('PLT-N', 'PLT-S', 'PLT-E').
 Always query metric views with MEASURE(`Measure Name`) and GROUP BY the dimensions; never SELECT * from a metric view.
 When asked "why" a station is at risk, report top_signal and top_signal_deviation_pct from station_health_current.
 """
@@ -89,7 +91,7 @@ def benchmarks(c: str) -> list[tuple[str, str]]:
         ("How many stations are currently down?",
          f"SELECT count(*) AS stations_down FROM {hc} WHERE risk_band = 'DOWN'"),
         ("What are the 5 stations with the highest failure probability right now?",
-         f"SELECT station_id, failure_probability FROM {hc} ORDER BY failure_probability DESC LIMIT 5"),
+         f"SELECT station_id FROM {hc} ORDER BY failure_probability DESC LIMIT 5"),
         ("Which station type had the most failures?",
          f"SELECT `Station Type`, MEASURE(`Failures`) AS failures FROM {mm} GROUP BY ALL ORDER BY failures DESC LIMIT 1"),
         ("What is the mean time to repair in minutes for each plant?",

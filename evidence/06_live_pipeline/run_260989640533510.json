@@ -1,0 +1,37 @@
+{
+  "job_id": 565657892038932,
+  "run_id": 260989640533510,
+  "run_name": "pdm_04_live_evidence",
+  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/565657892038932/run/260989640533510",
+  "state": {
+    "life_cycle_state": "TERMINATED",
+    "result_state": "SUCCESS",
+    "state_message": "",
+    "user_cancelled_or_timedout": false
+  },
+  "status": {
+    "state": "TERMINATED",
+    "termination_details": {
+      "code": "SUCCESS",
+      "message": "",
+      "type": "SUCCESS"
+    }
+  },
+  "start_time": "2026-10-06T17:22:07.943000+00:00",
+  "end_time": "2026-10-06T17:22:57.990000+00:00",
+  "tasks": [
+    {
+      "task_key": "evidence",
+      "run_id": 804427246380522,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-06T17:22:07.970000+00:00",
+      "end_time": "2026-10-06T17:22:57.589000+00:00",
+      "duration_s": 49.6
+    }
+  ]
+}

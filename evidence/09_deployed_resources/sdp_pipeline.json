@@ -1,0 +1,56 @@
+{
+  "pipeline_id": "b5544be9-b72f-4e83-b029-1a7151fc53c1",
+  "name": "pdm_live_pipeline",
+  "state": "RUNNING",
+  "spec": {
+    "continuous": true,
+    "serverless": true,
+    "catalog": "serverless_stable_am1uc2_catalog",
+    "schema": "pdm_core",
+    "libraries": [
+      {
+        "file": {
+          "path": "/Workspace/Users/sascha.vetter@databricks.com/.bundle/mfg-predictive-maintenance/demo/files/src/pipeline/01_sensor_readings_clean.py"
+        }
+      },
+      {
+        "file": {
+          "path": "/Workspace/Users/sascha.vetter@databricks.com/.bundle/mfg-predictive-maintenance/demo/files/src/pipeline/02_station_risk_scores.py"
+        }
+      },
+      {
+        "file": {
+          "path": "/Workspace/Users/sascha.vetter@databricks.com/.bundle/mfg-predictive-maintenance/demo/files/src/pipeline/03_station_health_current.py"
+        }
+      },
+      {
+        "file": {
+          "path": "/Workspace/Users/sascha.vetter@databricks.com/.bundle/mfg-predictive-maintenance/demo/files/src/pipeline/04_maintenance_events.py"
+        }
+      }
+    ],
+    "environment": {
+      "dependencies": [
+        "scikit-learn==1.7.2",
+        "mlflow>=3.1"
+      ]
+    }
+  },
+  "latest_updates": [
+    {
+      "creation_time": "2026-10-06T16:55:58.779Z",
+      "state": "RUNNING",
+      "update_id": "cdea0609-67b3-486d-8b32-e2374e5f6f67"
+    },
+    {
+      "creation_time": "2026-10-06T16:50:46.348Z",
+      "state": "CANCELED",
+      "update_id": "d4c83445-9e51-4655-8121-b7c1bb7fff93"
+    },
+    {
+      "creation_time": "2026-10-06T16:44:17.503Z",
+      "state": "FAILED",
+      "update_id": "65fee8e5-67e7-41f9-9b51-39813aa71eeb"
+    }
+  ]
+}

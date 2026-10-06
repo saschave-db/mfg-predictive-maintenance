@@ -1,0 +1,115 @@
+# stdout of task produce (task run 975737429901965) of job run 433290942380103
+# https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/16077621483238/run/433290942380103
+# truncated by Databricks: False
+
+2026-10-06 16:54:41,747 INFO starting: 96 stations, table=serverless_stable_am1uc2_catalog.pdm_raw.sensor_readings, endpoint=7474651880045550.zerobus.us-east-2.cloud.databricks.com, duration=180.0 min, injections=[]
+[2m2026-10-06T16:54:42.275524Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::default_token_factory[0m[2m:[0m minted UC OAuth token [3mtable[0m[2m=[0mserverless_stable_am1uc2_catalog.pdm_raw.sensor_readings [3mreason[0m[2m=[0m"cold_miss" [3mexpires_in_secs[0m[2m=[0m3600 [3melapsed_ms[0m[2m=[0m239
+[2m2026-10-06T16:54:42.793802Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::connection[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0m17394069-90ec-4388-b911-2964440a562c
+[2m2026-10-06T16:54:42.793834Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0m17394069-90ec-4388-b911-2964440a562c
+2026-10-06 16:54:42,794 INFO opened Zerobus stream for gw-plt-n
+[2m2026-10-06T16:54:42.842945Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::connection[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0m9d302cfc-fcca-499f-aa58-1fe9a4e668e0
+[2m2026-10-06T16:54:42.843373Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0m9d302cfc-fcca-499f-aa58-1fe9a4e668e0
+2026-10-06 16:54:42,843 INFO opened Zerobus stream for gw-plt-s
+[2m2026-10-06T16:54:42.924297Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::connection[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0mb9e4e0e5-3b8d-448f-aac7-c722caed7aab
+2026-10-06 16:54:42,924 INFO opened Zerobus stream for gw-plt-e
+[2m2026-10-06T16:54:42.924330Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0mb9e4e0e5-3b8d-448f-aac7-c722caed7aab
+2026-10-06 16:55:12,002 INFO STATS sent=3072 rate=100.8 rec/s degrading=2 events={'degradation_onset': 2} ack_roundtrip_p50_ms=178
+2026-10-06 16:55:43,005 INFO STATS sent=6048 rate=98.4 rec/s degrading=2 events={'degradation_onset': 2} ack_roundtrip_p50_ms=187
+2026-10-06 16:56:14,002 INFO STATS sent=9024 rate=97.6 rec/s degrading=2 events={'degradation_onset': 2} ack_roundtrip_p50_ms=97
+2026-10-06 16:56:45,005 INFO STATS sent=12000 rate=97.2 rec/s degrading=3 events={'degradation_onset': 3} ack_roundtrip_p50_ms=121
+2026-10-06 16:57:15,008 INFO STATS sent=14880 rate=97.0 rec/s degrading=3 events={'degradation_onset': 3} ack_roundtrip_p50_ms=92
+2026-10-06 16:57:46,002 INFO STATS sent=17856 rate=96.8 rec/s degrading=3 events={'degradation_onset': 3} ack_roundtrip_p50_ms=106
+2026-10-06 16:58:17,005 INFO STATS sent=20832 rate=96.7 rec/s degrading=3 events={'degradation_onset': 3} ack_roundtrip_p50_ms=142
+2026-10-06 16:58:48,002 INFO STATS sent=23808 rate=96.6 rec/s degrading=3 events={'degradation_onset': 3} ack_roundtrip_p50_ms=170
+2026-10-06 16:59:14,000 INFO EVENT {"station_id": "PLT-S-A04", "event_type": "failure", "failure_mode": "bearing_wear"}
+2026-10-06 16:59:18,003 INFO STATS sent=26688 rate=96.5 rec/s degrading=4 events={'degradation_onset': 4, 'failure': 1} ack_roundtrip_p50_ms=120
+2026-10-06 16:59:49,029 INFO STATS sent=29664 rate=96.5 rec/s degrading=4 events={'degradation_onset': 4, 'failure': 1} ack_roundtrip_p50_ms=121
+2026-10-06 17:00:14,000 INFO EVENT {"station_id": "PLT-S-A04", "event_type": "corrective_repair", "failure_mode": "bearing_wear"}
+2026-10-06 17:00:20,002 INFO STATS sent=32640 rate=96.4 rec/s degrading=3 events={'degradation_onset': 4, 'failure': 1, 'corrective_repair': 1} ack_roundtrip_p50_ms=197
+2026-10-06 17:00:51,082 INFO STATS sent=35616 rate=96.4 rec/s degrading=4 events={'degradation_onset': 5, 'failure': 1, 'corrective_repair': 1} ack_roundtrip_p50_ms=79
+2026-10-06 17:01:21,133 INFO STATS sent=38496 rate=96.3 rec/s degrading=4 events={'degradation_onset': 5, 'failure': 1, 'corrective_repair': 1} ack_roundtrip_p50_ms=129
+2026-10-06 17:01:26,000 INFO EVENT {"station_id": "PLT-E-B02", "event_type": "failure", "failure_mode": "bearing_wear"}
+2026-10-06 17:01:52,002 INFO STATS sent=41472 rate=96.3 rec/s degrading=5 events={'degradation_onset': 6, 'failure': 2, 'corrective_repair': 1} ack_roundtrip_p50_ms=119
+2026-10-06 17:02:06,000 INFO EVENT {"station_id": "PLT-N-B05", "event_type": "failure", "failure_mode": "bearing_wear"}
+2026-10-06 17:02:23,005 INFO STATS sent=44448 rate=96.3 rec/s degrading=5 events={'degradation_onset': 6, 'failure': 3, 'corrective_repair': 1} ack_roundtrip_p50_ms=158
+2026-10-06 17:02:26,000 INFO EVENT {"station_id": "PLT-E-B02", "event_type": "corrective_repair", "failure_mode": "bearing_wear"}
+2026-10-06 17:02:53,009 INFO STATS sent=47328 rate=96.3 rec/s degrading=4 events={'degradation_onset': 6, 'failure': 3, 'corrective_repair': 2} ack_roundtrip_p50_ms=121
+2026-10-06 17:03:06,000 INFO EVENT {"station_id": "PLT-N-B05", "event_type": "corrective_repair", "failure_mode": "bearing_wear"}
+2026-10-06 17:03:24,002 INFO STATS sent=50304 rate=96.3 rec/s degrading=3 events={'degradation_onset': 6, 'failure': 3, 'corrective_repair': 3} ack_roundtrip_p50_ms=145
+2026-10-06 17:03:54,000 INFO EVENT {"station_id": "PLT-N-C07", "event_type": "failure", "failure_mode": "overheating"}
+2026-10-06 17:03:55,005 INFO STATS sent=53280 rate=96.3 rec/s degrading=3 events={'degradation_onset': 6, 'failure': 4, 'corrective_repair': 3} ack_roundtrip_p50_ms=178
+2026-10-06 17:04:26,003 INFO STATS sent=56256 rate=96.3 rec/s degrading=4 events={'degradation_onset': 7, 'failure': 4, 'corrective_repair': 3} ack_roundtrip_p50_ms=143
+2026-10-06 17:04:54,000 INFO EVENT {"station_id": "PLT-N-C07", "event_type": "corrective_repair", "failure_mode": "overheating"}
+2026-10-06 17:04:57,005 INFO STATS sent=59232 rate=96.2 rec/s degrading=4 events={'degradation_onset': 8, 'failure': 4, 'corrective_repair': 4} ack_roundtrip_p50_ms=151
+2026-10-06 17:05:28,002 INFO STATS sent=62208 rate=96.2 rec/s degrading=4 events={'degradation_onset': 8, 'failure': 4, 'corrective_repair': 4} ack_roundtrip_p50_ms=78
+2026-10-06 17:05:33,003 INFO EVENT {"station_id": "PLT-S-A06", "event_type": "failure", "failure_mode": "overheating"}
+2026-10-06 17:05:59,005 INFO STATS sent=65184 rate=96.2 rec/s degrading=4 events={'degradation_onset': 8, 'failure': 5, 'corrective_repair': 4} ack_roundtrip_p50_ms=120
+2026-10-06 17:06:30,002 INFO STATS sent=68160 rate=96.2 rec/s degrading=5 events={'degradation_onset': 9, 'failure': 5, 'corrective_repair': 4} ack_roundtrip_p50_ms=131
+2026-10-06 17:06:33,003 INFO EVENT {"station_id": "PLT-S-A06", "event_type": "corrective_repair", "failure_mode": "overheating"}
+2026-10-06 17:07:01,182 INFO STATS sent=71136 rate=96.2 rec/s degrading=4 events={'degradation_onset': 9, 'failure': 5, 'corrective_repair': 5} ack_roundtrip_p50_ms=144
+2026-10-06 17:07:31,228 INFO STATS sent=74016 rate=96.2 rec/s degrading=4 events={'degradation_onset': 9, 'failure': 5, 'corrective_repair': 5} ack_roundtrip_p50_ms=131
+2026-10-06 17:08:02,002 INFO STATS sent=76992 rate=96.2 rec/s degrading=4 events={'degradation_onset': 9, 'failure': 5, 'corrective_repair': 5} ack_roundtrip_p50_ms=139
+2026-10-06 17:08:25,003 INFO EVENT {"station_id": "PLT-S-D04", "event_type": "failure", "failure_mode": "overheating"}
+2026-10-06 17:08:32,003 INFO STATS sent=79872 rate=96.2 rec/s degrading=4 events={'degradation_onset': 9, 'failure': 6, 'corrective_repair': 5} ack_roundtrip_p50_ms=80
+2026-10-06 17:09:03,005 INFO STATS sent=82848 rate=96.2 rec/s degrading=4 events={'degradation_onset': 9, 'failure': 6, 'corrective_repair': 5} ack_roundtrip_p50_ms=131
+2026-10-06 17:09:17,003 INFO EVENT {"station_id": "PLT-N-C05", "event_type": "failure", "failure_mode": "bearing_wear"}
+2026-10-06 17:09:25,003 INFO EVENT {"station_id": "PLT-S-D04", "event_type": "corrective_repair", "failure_mode": "overheating"}
+2026-10-06 17:09:33,007 INFO STATS sent=85728 rate=96.2 rec/s degrading=3 events={'degradation_onset': 9, 'failure': 7, 'corrective_repair': 6} ack_roundtrip_p50_ms=142
+[2m2026-10-06T17:09:43.711182Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::receiver[0m[2m:[0m Server will close the stream in 10000ms. Entering graceful close period (waiting up to 10000ms for in-flight acks).
+[2m2026-10-06T17:09:43.711203Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::receiver[0m[2m:[0m All in-flight records acknowledged during graceful close. Triggering recovery.
+[2m2026-10-06T17:09:43.711259Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Receiver task completed successfully
+[2m2026-10-06T17:09:43.711272Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Stream lost; starting recovery [3mpending_batches[0m[2m=[0m0 [3mpending_records[0m[2m=[0m0
+[2m2026-10-06T17:09:43.987405Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::connection[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0ma7d37114-0da5-4dcc-ae6e-b31bf819ea22
+[2m2026-10-06T17:09:43.987433Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Successfully recovered stream [3mstream_id[0m[2m=[0ma7d37114-0da5-4dcc-ae6e-b31bf819ea22
+[2m2026-10-06T17:09:45.660225Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::receiver[0m[2m:[0m Server will close the stream in 10000ms. Entering graceful close period (waiting up to 10000ms for in-flight acks).
+[2m2026-10-06T17:09:45.660250Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::receiver[0m[2m:[0m All in-flight records acknowledged during graceful close. Triggering recovery.
+[2m2026-10-06T17:09:45.660303Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Receiver task completed successfully
+[2m2026-10-06T17:09:45.660317Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Stream lost; starting recovery [3mpending_batches[0m[2m=[0m0 [3mpending_records[0m[2m=[0m0
+[2m2026-10-06T17:09:45.670532Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::connection[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0m7116fac2-ba0d-441e-8535-8c3607abe11b
+[2m2026-10-06T17:09:45.670551Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Successfully recovered stream [3mstream_id[0m[2m=[0m7116fac2-ba0d-441e-8535-8c3607abe11b
+[2m2026-10-06T17:09:45.675562Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::receiver[0m[2m:[0m Server will close the stream in 10000ms. Entering graceful close period (waiting up to 10000ms for in-flight acks).
+[2m2026-10-06T17:09:45.675576Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::receiver[0m[2m:[0m All in-flight records acknowledged during graceful close. Triggering recovery.
+[2m2026-10-06T17:09:45.675609Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Receiver task completed successfully
+[2m2026-10-06T17:09:45.675619Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Stream lost; starting recovery [3mpending_batches[0m[2m=[0m0 [3mpending_records[0m[2m=[0m0
+[2m2026-10-06T17:09:45.690002Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::connection[0m[2m:[0m Successfully created stream [3mstream_id[0m[2m=[0m6c66d62c-f474-4bda-b732-8ce19762e524
+[2m2026-10-06T17:09:45.690022Z[0m [32m INFO[0m [2mdatabricks_zerobus_ingest_sdk::stream::grpc::supervisor[0m[2m:[0m Successfully recovered stream [3mstream_id[0m[2m=[0m6c66d62c-f474-4bda-b732-8ce19762e524
+2026-10-06 17:10:04,002 INFO STATS sent=88704 rate=96.2 rec/s degrading=3 events={'degradation_onset': 9, 'failure': 7, 'corrective_repair': 6} ack_roundtrip_p50_ms=75
+2026-10-06 17:10:17,003 INFO EVENT {"station_id": "PLT-N-C05", "event_type": "corrective_repair", "failure_mode": "bearing_wear"}
+2026-10-06 17:10:35,005 INFO STATS sent=91680 rate=96.2 rec/s degrading=2 events={'degradation_onset': 9, 'failure': 7, 'corrective_repair': 7} ack_roundtrip_p50_ms=140
+2026-10-06 17:10:53,004 INFO EVENT {"station_id": "PLT-S-C08", "event_type": "failure", "failure_mode": "seal_leak"}
+2026-10-06 17:11:06,002 INFO STATS sent=94656 rate=96.1 rec/s degrading=3 events={'degradation_onset': 10, 'failure': 8, 'corrective_repair': 7} ack_roundtrip_p50_ms=120
+2026-10-06 17:11:37,005 INFO STATS sent=97632 rate=96.1 rec/s degrading=3 events={'degradation_onset': 10, 'failure': 8, 'corrective_repair': 7} ack_roundtrip_p50_ms=139
+2026-10-06 17:11:53,010 INFO EVENT {"station_id": "PLT-S-C08", "event_type": "corrective_repair", "failure_mode": "seal_leak"}
+2026-10-06 17:12:08,002 INFO STATS sent=100608 rate=96.1 rec/s degrading=2 events={'degradation_onset': 10, 'failure': 8, 'corrective_repair': 8} ack_roundtrip_p50_ms=122
+2026-10-06 17:12:39,005 INFO COMMAND 1 inject_fault PLT-E-A03 -> {'station_id': 'PLT-E-A03', 'event_type': 'degradation_onset', 'failure_mode': 'overheating'}
+2026-10-06 17:12:39,008 INFO STATS sent=103584 rate=96.1 rec/s degrading=4 events={'degradation_onset': 11, 'failure': 8, 'corrective_repair': 8} ack_roundtrip_p50_ms=181
+2026-10-06 17:13:09,017 INFO STATS sent=106464 rate=96.1 rec/s degrading=4 events={'degradation_onset': 11, 'failure': 8, 'corrective_repair': 8} ack_roundtrip_p50_ms=48
+2026-10-06 17:13:40,002 INFO STATS sent=109440 rate=96.1 rec/s degrading=5 events={'degradation_onset': 12, 'failure': 8, 'corrective_repair': 8} ack_roundtrip_p50_ms=80
+2026-10-06 17:14:11,096 INFO STATS sent=112416 rate=96.1 rec/s degrading=5 events={'degradation_onset': 12, 'failure': 8, 'corrective_repair': 8} ack_roundtrip_p50_ms=132
+2026-10-06 17:14:41,155 INFO STATS sent=115296 rate=96.1 rec/s degrading=5 events={'degradation_onset': 12, 'failure': 8, 'corrective_repair': 8} ack_roundtrip_p50_ms=151
+2026-10-06 17:15:12,002 INFO STATS sent=118272 rate=96.1 rec/s degrading=5 events={'degradation_onset': 12, 'failure': 8, 'corrective_repair': 8} ack_roundtrip_p50_ms=134
+2026-10-06 17:15:21,003 INFO EVENT {"station_id": "PLT-S-A02", "event_type": "failure", "failure_mode": "overheating"}
+2026-10-06 17:15:43,005 INFO STATS sent=121248 rate=96.1 rec/s degrading=5 events={'degradation_onset': 12, 'failure': 9, 'corrective_repair': 8} ack_roundtrip_p50_ms=188
+2026-10-06 17:15:51,003 INFO EVENT {"station_id": "PLT-E-C05", "event_type": "failure", "failure_mode": "bearing_wear"}
+2026-10-06 17:16:14,002 INFO STATS sent=124224 rate=96.1 rec/s degrading=6 events={'degradation_onset': 13, 'failure': 10, 'corrective_repair': 8} ack_roundtrip_p50_ms=70
+2026-10-06 17:16:21,004 INFO EVENT {"station_id": "PLT-S-A02", "event_type": "corrective_repair", "failure_mode": "overheating"}
+2026-10-06 17:16:45,005 INFO STATS sent=127200 rate=96.1 rec/s degrading=5 events={'degradation_onset': 13, 'failure': 10, 'corrective_repair': 9} ack_roundtrip_p50_ms=131
+2026-10-06 17:16:51,004 INFO EVENT {"station_id": "PLT-E-C05", "event_type": "corrective_repair", "failure_mode": "bearing_wear"}
+2026-10-06 17:17:15,005 INFO STATS sent=130080 rate=96.1 rec/s degrading=5 events={'degradation_onset': 14, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=102
+2026-10-06 17:17:45,005 INFO COMMAND 2 repair PLT-E-A03 -> {'station_id': 'PLT-E-A03', 'event_type': 'preventive_repair', 'failure_mode': 'overheating'}
+2026-10-06 17:17:45,008 INFO STATS sent=132960 rate=96.1 rec/s degrading=4 events={'degradation_onset': 14, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=128
+2026-10-06 17:18:16,002 INFO STATS sent=135936 rate=96.1 rec/s degrading=4 events={'degradation_onset': 14, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=119
+2026-10-06 17:18:47,005 INFO STATS sent=138912 rate=96.1 rec/s degrading=5 events={'degradation_onset': 15, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=71
+2026-10-06 17:19:18,002 INFO STATS sent=141888 rate=96.1 rec/s degrading=5 events={'degradation_onset': 15, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=120
+2026-10-06 17:19:49,005 INFO STATS sent=144864 rate=96.1 rec/s degrading=5 events={'degradation_onset': 15, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=168
+2026-10-06 17:20:20,002 INFO STATS sent=147840 rate=96.1 rec/s degrading=6 events={'degradation_onset': 16, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=90
+2026-10-06 17:20:51,136 INFO STATS sent=150816 rate=96.1 rec/s degrading=6 events={'degradation_onset': 16, 'failure': 10, 'corrective_repair': 10} ack_roundtrip_p50_ms=148
+2026-10-06 17:20:57,003 INFO EVENT {"station_id": "PLT-N-D08", "event_type": "failure", "failure_mode": "seal_leak"}
+2026-10-06 17:21:03,003 INFO EVENT {"station_id": "PLT-E-B01", "event_type": "failure", "failure_mode": "seal_leak"}
+2026-10-06 17:21:21,188 INFO STATS sent=153696 rate=96.1 rec/s degrading=6 events={'degradation_onset': 16, 'failure': 12, 'corrective_repair': 10} ack_roundtrip_p50_ms=129
+2026-10-06 17:21:51,196 INFO STATS sent=156576 rate=96.1 rec/s degrading=6 events={'degradation_onset': 16, 'failure': 12, 'corrective_repair': 10} ack_roundtrip_p50_ms=135
+2026-10-06 17:21:57,003 INFO EVENT {"station_id": "PLT-N-D08", "event_type": "corrective_repair", "failure_mode": "seal_leak"}
+2026-10-06 17:22:03,004 INFO EVENT {"station_id": "PLT-E-B01", "event_type": "corrective_repair", "failure_mode": "seal_leak"}
+2026-10-06 17:22:22,002 INFO STATS sent=159552 rate=96.1 rec/s degrading=4 events={'degradation_onset': 16, 'failure': 12, 'corrective_repair': 12} ack_roundtrip_p50_ms=118
+2026-10-06 17:22:36,000 INFO EVENT {"station_id": "PLT-S-B07", "event_type": "failure", "failure_mode": "overheating"}
+2026-10-06 17:22:53,004 INFO STATS sent=162528 rate=96.1 rec/s degrading=6 events={'degradation_onset': 18, 'failure': 13, 'corrective_repair': 12} ack_roundtrip_p50_ms=86

@@ -1,0 +1,30 @@
+{
+  "job_id": 16077621483238,
+  "run_id": 433290942380103,
+  "run_name": "pdm_simulator_zerobus",
+  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/16077621483238/run/433290942380103",
+  "state": {
+    "life_cycle_state": "RUNNING",
+    "state_message": "",
+    "user_cancelled_or_timedout": false
+  },
+  "status": {
+    "state": "RUNNING"
+  },
+  "start_time": "2026-10-06T16:54:20.522000+00:00",
+  "end_time": null,
+  "tasks": [
+    {
+      "task_key": "produce",
+      "run_id": 975737429901965,
+      "state": {
+        "life_cycle_state": "RUNNING",
+        "state_message": "In run",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-06T16:54:20.561000+00:00",
+      "end_time": null,
+      "duration_s": -1791305660.6
+    }
+  ]
+}

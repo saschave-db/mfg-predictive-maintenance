@@ -1,49 +1,38 @@
-# Build progress (paused 2026-10-05)
+# Build progress
 
 Workspace profile `fevm-serverless-stable-am1uc2`. Bundle target `demo`. All data synthetic.
 
-## Done
+## Status (2026-10-06): build complete
 
 | # | Step | State | Evidence |
 |---|---|---|---|
-| 0 | UC schemas `pdm_raw/core/ml/ops/live`, Zerobus bronze table, station master, technicians | Done (demo target run 244861711068746) | Not yet exported for the demo-target run |
-| 1 | Zerobus SP `pdm-zerobus-producer` + secret scope `pdm-demo`, table grants | Done | In setup notebook |
-| 2 | Zerobus simulator (serverless job, 96 stations at 1 Hz, 3 gateway streams) | Works; ~96 rec/s, ACK p50 60-200 ms; fault injection works | Earlier smoke log was deleted with the dev target; re-export needed |
-| 3 | History backfill (24 h, 8.29M rows, ~1,100 failures) | Done on demo target (run 552116966031272) | Not yet exported |
-| 4 | Model training + UC registry `@champion` | Done on demo target (finished 15:40). First run: PR-AUC 0.91, 271/271 failures detected, median lead 244 s. **New version (likely v2) is `@champion` now** | Not yet exported |
-| 5 | SDP continuous pipeline (`pdm_live_pipeline`, id b5544be9-b72f-4e83-b029-1a7151fc53c1) | Running continuously with the OLD code (separate features hop, model v1) | - |
-| 6 | Lakebase project `pdm-demo`, OLTP tables `pdm_ops.work_orders`, `pdm_ops.sim_commands` | Done | - |
-| 7 | Lakehouse Sync Postgres `pdm_ops` -> UC `pdm_ops.lb_*_history` | Done | - |
-| 8 | Governance + metric views (3 metric views, work_orders_current view, PII mask, row filter) | Done (run 50596819223088). Tags failed: governed tag policy; fixed in code (`pdm_` keys), not re-run | `evidence/05_governance_semantic/` |
-| 9 | Genie agent "Plant Maintenance Agent" | Created, space id `01f1c10d662111078cd7326dff1774c6` | Benchmark not run yet |
-| 10 | App code (FastAPI + JS), serving + app bundle resources | Written, validated, NOT deployed | - |
+| 0 | UC schemas, Zerobus target table, reference data, SP grants | Done | `evidence/01_setup/` |
+| 1 | Zerobus simulator (serverless job, 96 stations at 1 Hz, 3 streams) | Done | `evidence/02_zerobus_simulator/` |
+| 2 | 24 h labeled history backfill | Done | `evidence/03_backfill/` |
+| 3 | Model training, UC registry, `@champion` = v2 | Done | `evidence/04_training/` |
+| 4 | SDP continuous pipeline (merged windowing + scoring) | Running | `evidence/06_live_pipeline/`, `evidence/09_deployed_resources/sdp_pipeline.json` |
+| 5 | Lakebase OLTP tables + Lakehouse Sync to UC | Done | `evidence/06_live_pipeline/` (CDC history of commands) |
+| 6 | Continuous synced table `pdm_live.station_risk_scores` | Online | `evidence/09_deployed_resources/lakebase_synced_table.json` |
+| 7 | Governance + metric views + tags | Done | `evidence/05_governance_semantic/` |
+| 8 | Model Serving `pdm-station-risk` (v2, scale to zero) | Ready | `evidence/08_app/whatif_warm.md` |
+| 9 | Genie agent, benchmark 10/10 | Done | `evidence/07_genie/` |
+| 10 | App `pdm-plant-health-live` + grants | Running | `evidence/08_app/` |
+| 11 | End-to-end fault injection | Done | `evidence/08_app/e2e_fault_injection.md` |
 
-## Code committed but not yet deployed
+Decision 2026-10-06: accept about 60 s sensor-to-screen latency and document it (see README, Known limitations).
 
-- Pipeline: features + scoring merged into `02_station_risk_scores.py`, `expect_or_drop(n_readings >= 110)`, files renumbered.
-- Governance notebook: `pdm_`-prefixed tag keys.
-- Bundle: `resources/serving.yml`, `resources/app.yml`, `resources/evidence.job.yml`, variables `model_version`, `genie_space_id`, `warehouse_id`.
-- All code is committed and pushed (`aa4df9d`). The items above are not deployed to the workspace yet.
+## Running resources (cost)
 
-## Workspace state while paused
+- Simulator job run `433290942380103` (3 h from 16:54 UTC): `databricks jobs cancel-run 433290942380103 --profile fevm-serverless-stable-am1uc2`
+- Continuous pipeline: `databricks pipelines stop b5544be9-b72f-4e83-b029-1a7151fc53c1 --profile fevm-serverless-stable-am1uc2`
+- Synced table pipeline (continuous): keeps running while the synced table exists.
+- App: `databricks apps stop pdm-plant-health-live --profile fevm-serverless-stable-am1uc2`
+- Lakebase compute (24 h suspend default on production): disable with
+  `databricks postgres update-endpoint projects/pdm-demo/branches/production/endpoints/primary spec.disabled --json '{"spec": {"disabled": true}}' --profile fevm-serverless-stable-am1uc2`
+- Serving endpoint scales to zero on its own.
 
-- Simulator run `320983066504714` cancelled; continuous pipeline stopped (IDLE).
-- Lakebase compute `projects/pdm-demo/branches/production/endpoints/primary` is **disabled** (IDLE); data is kept.
-  Its suspend timeout was 24 h (production branch default), so it would not have scaled to zero on its own.
-  Re-enable first when resuming: `databricks postgres update-endpoint projects/pdm-demo/branches/production/endpoints/primary spec.disabled --json '{"spec": {"disabled": false}}' --profile fevm-serverless-stable-am1uc2`
-- Nothing else is running: the serving endpoint and app are not deployed yet.
-- Synced tables were deleted on purpose (to be recreated after the pipeline refresh).
-- To resume live data: `databricks bundle run pdm_simulator --params duration_min=180 --profile fevm-serverless-stable-am1uc2`
-  and `databricks pipelines start-update b5544be9-b72f-4e83-b029-1a7151fc53c1 --profile fevm-serverless-stable-am1uc2`.
+## Possible next steps
 
-## Next steps (in order)
-
-1. Set `model_version` to the new `@champion` version; `databricks bundle deploy`.
-2. Full refresh `station_risk_scores` + `station_health_current` (new flow shape): `databricks pipelines start-update <id> --full-refresh-selection station_risk_scores,station_health_current`.
-3. Recreate the 2 continuous synced tables into `serverless_stable_am1uc2_catalog.pdm_live` (commands in session history / BUILD_SPEC).
-4. Re-run governance job (tags).
-5. Deploy app (`bundle run pdm_app`), grant the app SP: Lakebase SELECT on `pdm_live`, INSERT/UPDATE on `pdm_ops`; UC SELECT on Genie sources; Genie CAN_RUN.
-6. Run Genie benchmark: `uv run --with databricks-sdk python tools/genie_benchmark.py --space-id 01f1c10d662111078cd7326dff1774c6 --out evidence/07_genie/benchmark.md`.
-7. End-to-end evidence: inject fault via app API (curl, save JSON), then run `pdm_live_evidence` job and export.
-8. Export evidence for setup/backfill/train/simulator runs with `tools/export_run.py`.
-9. README with architecture, deploy steps, evidence index; commit and push (show Isaac /review tip before push).
+- Lower latency: shorter watermark or tumbling 30 s windows (needs a retrain and a full refresh).
+- On-behalf-of-user auth for Genie in the app, so row filters apply per viewer.
+- Optional: Knowledge Assistant over synthetic maintenance manuals + Supervisor agent.

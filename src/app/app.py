@@ -20,6 +20,10 @@ LIVE = os.environ.get("LIVE_SCHEMA", "pdm_live")
 OPS = os.environ.get("OPS_SCHEMA", "pdm_ops")
 SERVING_ENDPOINT = os.environ.get("SERVING_ENDPOINT", "pdm-station-risk")
 GENIE_SPACE_ID = os.environ.get("GENIE_SPACE_ID", "")
+# Latest risk row per station, straight from the continuously synced score history (PK station_id, window_end).
+# Skips the AUTO CDC current-state hop on the latency path; the PK index makes DISTINCT ON cheap.
+LATEST = (f"(SELECT DISTINCT ON (station_id) * FROM {LIVE}.station_risk_scores "
+          f"WHERE window_end > now() - interval '10 minutes' ORDER BY station_id, window_end DESC) AS latest")
 FEATURE_SENSORS = ["vibration_rms", "bearing_temp_c", "motor_current_a", "spindle_rpm",
                    "hydraulic_pressure_bar", "acoustic_db", "cycle_time_s"]
 FEATURE_COLUMNS = [f"{s}_{a}" for s in FEATURE_SENSORS for a in ("mean", "std", "max", "min")]
@@ -52,7 +56,7 @@ def stations():
         SELECT station_id, plant_id, line_id, station_type, criticality, failure_probability, risk_band,
                top_signal, top_signal_deviation_pct, window_end, last_reading_ts, scored_at,
                avg_vibration_rms, avg_bearing_temp_c, avg_motor_current_a, avg_hydraulic_pressure_bar
-        FROM {LIVE}.station_health_current ORDER BY station_id""")
+        FROM {LATEST} ORDER BY station_id""")
     now = datetime.now(timezone.utc)
     open_wo = {r["station_id"]: r["n"] for r in db.query(
         f"SELECT station_id, count(*) AS n FROM {OPS}.work_orders WHERE status IN ('open','in_progress') GROUP BY 1")}
@@ -102,7 +106,7 @@ class WorkOrderIn(BaseModel):
 @app.post("/api/work_orders")
 def create_work_order(body: WorkOrderIn, request: Request):
     st = db.query(f"""SELECT plant_id, line_id, failure_probability, risk_band, top_signal
-                      FROM {LIVE}.station_health_current WHERE station_id = %s""", (body.station_id,))
+                      FROM {LATEST} WHERE station_id = %s""", (body.station_id,))
     if not st:
         raise HTTPException(404, "unknown station")
     s = st[0]
@@ -144,7 +148,7 @@ def whatif(body: WhatIf):
     if body.sensor not in FEATURE_SENSORS:
         raise HTTPException(400, "unknown sensor")
     cols = ", ".join(FEATURE_COLUMNS)
-    rows = db.query(f"SELECT {cols} FROM {LIVE}.station_health_current WHERE station_id = %s", (body.station_id,))
+    rows = db.query(f"SELECT {cols} FROM {LATEST} WHERE station_id = %s", (body.station_id,))
     if not rows:
         raise HTTPException(404, "unknown station")
     base = {k: float(v) for k, v in rows[0].items()}

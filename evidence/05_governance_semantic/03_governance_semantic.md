@@ -1,10 +1,10 @@
 # Executed notebook: 03_governance_semantic
 
-Exported from Databricks job run `50596819223088` (task `governance`, task run `255046613956180`).
+Exported from Databricks job run `941909688389884` (task `governance`, task run `734234853998093`).
 
-Result: **SUCCESS** · start 2026-10-05T22:34:05.473000+00:00 · end 2026-10-05T22:35:00.130000+00:00
+Result: **SUCCESS** · start 2026-10-06T16:59:16.537000+00:00 · end 2026-10-06T17:00:15.871000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/438031727317059/run/50596819223088
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/438031727317059/run/941909688389884
 
 
 # 03 · Governance and semantic layer
@@ -268,12 +268,13 @@ Output:
 
 | Plant | high_risk_stations | avg_risk | latency_s | latest |
 |---|---|---|---|---|
-| Plant East | 15 | 0.06977223011363637 | 201.0460909090909 | 2026-10-05T22:32:30.000Z |
-| Plant North | 12 | 0.06569396306818186 | 201.0460909090909 | 2026-10-05T22:32:30.000Z |
-| Plant South | 9 | 0.05399509943181811 | 201.0460909090909 | 2026-10-05T22:32:30.000Z |
+| Plant East | 0 | 0.03087604166666666 | 116.197 | 2026-10-06T16:57:00.000Z |
+| Plant North | 0 | 0.031736458333333335 | 116.197 | 2026-10-06T16:57:00.000Z |
+| Plant South | 0 | 0.04150416666666665 | 116.197 | 2026-10-06T16:57:00.000Z |
 
 ## Fine-grained access control and tags
 * `email` / `phone` are masked unless the reader is in `pdm_supervisors`.
+* Tag keys are `pdm_`-prefixed: this workspace enforces governed tag policies on `domain`, `source` and `pii`.
 * Technicians are filtered to the reader's plant group (`pdm_plant_n|s|e`); `pdm_all_plants` and the demo owner see all.
 
 ```python
@@ -289,10 +290,10 @@ run("ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET MASK pdm_ops.mask_pi
 run("ALTER TABLE pdm_raw.technicians SET ROW FILTER pdm_ops.plant_row_filter ON (home_plant_id)")
 
 for schema in ["pdm_raw", "pdm_core", "pdm_ml", "pdm_ops"]:
-    run(f"ALTER SCHEMA {schema} SET TAGS ('domain' = 'manufacturing', 'use_case' = 'predictive_maintenance', 'data_class' = 'synthetic')")
-run("ALTER TABLE pdm_raw.sensor_readings SET TAGS ('source' = 'zerobus', 'latency_tier' = 'realtime')")
-run("ALTER TABLE pdm_raw.technicians ALTER COLUMN email SET TAGS ('pii' = 'email')")
-run("ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET TAGS ('pii' = 'phone')")
+    run(f"ALTER SCHEMA {schema} SET TAGS ('pdm_domain' = 'manufacturing', 'pdm_use_case' = 'predictive_maintenance', 'pdm_data_class' = 'synthetic')")
+run("ALTER TABLE pdm_raw.sensor_readings SET TAGS ('pdm_source' = 'zerobus', 'pdm_latency_tier' = 'realtime')")
+run("ALTER TABLE pdm_raw.technicians ALTER COLUMN email SET TAGS ('pdm_pii' = 'email')")
+run("ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET TAGS ('pdm_pii' = 'phone')")
 ```
 
 Output:
@@ -303,13 +304,13 @@ OK   CREATE OR REPLACE FUNCTION pdm_ops.plant_row_filter(plant_id STRING) RETURN
 OK   ALTER TABLE pdm_raw.technicians ALTER COLUMN email SET MASK pdm_ops.mask_pii
 OK   ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET MASK pdm_ops.mask_pii
 OK   ALTER TABLE pdm_raw.technicians SET ROW FILTER pdm_ops.plant_row_filter ON (home_plant_id)
-FAIL ALTER SCHEMA pdm_raw SET TAGS ('domain' = 'manufacturing', 'use_case' = 'predictive_maintenance', 'data_class' = 'synthetic') -> [RequestId=6933be5b-74c7-4fda-a2e4-2538842abe3b ErrorClass=INVALID_PARAMETER_VALUE.UC_TAG_POLICY_VALUE_NOT_ALLOWED] Tag value manufacturing is not an allowed value for tag policy key domain. Allowed v
-FAIL ALTER SCHEMA pdm_core SET TAGS ('domain' = 'manufacturing', 'use_case' = 'predictive_maintenance', 'data_class' = 'synthetic') -> [RequestId=912e6391-db1a-42f0-8ac0-69d968831108 ErrorClass=INVALID_PARAMETER_VALUE.UC_TAG_POLICY_VALUE_NOT_ALLOWED] Tag value manufacturing is not an allowed value for tag policy key domain. Allowed v
-FAIL ALTER SCHEMA pdm_ml SET TAGS ('domain' = 'manufacturing', 'use_case' = 'predictive_maintenance', 'data_class' = 'synthetic') -> [RequestId=fb44d98a-1d3a-410e-b138-412c7b26dae0 ErrorClass=INVALID_PARAMETER_VALUE.UC_TAG_POLICY_VALUE_NOT_ALLOWED] Tag value manufacturing is not an allowed value for tag policy key domain. Allowed v
-FAIL ALTER SCHEMA pdm_ops SET TAGS ('domain' = 'manufacturing', 'use_case' = 'predictive_maintenance', 'data_class' = 'synthetic') -> [RequestId=bfe6a1a3-4522-4b53-9c09-4ba1adaf12bf ErrorClass=INVALID_PARAMETER_VALUE.UC_TAG_POLICY_VALUE_NOT_ALLOWED] Tag value manufacturing is not an allowed value for tag policy key domain. Allowed v
-FAIL ALTER TABLE pdm_raw.sensor_readings SET TAGS ('source' = 'zerobus', 'latency_tier' = 'realtime') -> [RequestId=ce51d425-12e1-4e0e-8c7d-43e058099eb7 ErrorClass=INVALID_PARAMETER_VALUE.UC_TAG_POLICY_VALUE_NOT_ALLOWED] Tag value zerobus is not an allowed value for tag policy key source. Allowed values:
-FAIL ALTER TABLE pdm_raw.technicians ALTER COLUMN email SET TAGS ('pii' = 'email') -> [RequestId=2e356ce8-0be3-4dbf-a526-bc0dffe98e5b ErrorClass=INVALID_PARAMETER_VALUE.UC_TAG_POLICY_VALUE_NOT_ALLOWED] Tag value email is not an allowed value for tag policy key pii. Allowed values: [ssn
-FAIL ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET TAGS ('pii' = 'phone') -> [RequestId=ed70c39b-ff5f-4804-8202-8eadbada58cb ErrorClass=INVALID_PARAMETER_VALUE.UC_TAG_POLICY_VALUE_NOT_ALLOWED] Tag value phone is not an allowed value for tag policy key pii. Allowed values: [ssn
+OK   ALTER SCHEMA pdm_raw SET TAGS ('pdm_domain' = 'manufacturing', 'pdm_use_case' = 'predictive_maintenance', 'pdm_data_class' = 'synthetic')
+OK   ALTER SCHEMA pdm_core SET TAGS ('pdm_domain' = 'manufacturing', 'pdm_use_case' = 'predictive_maintenance', 'pdm_data_class' = 'synthetic')
+OK   ALTER SCHEMA pdm_ml SET TAGS ('pdm_domain' = 'manufacturing', 'pdm_use_case' = 'predictive_maintenance', 'pdm_data_class' = 'synthetic')
+OK   ALTER SCHEMA pdm_ops SET TAGS ('pdm_domain' = 'manufacturing', 'pdm_use_case' = 'predictive_maintenance', 'pdm_data_class' = 'synthetic')
+OK   ALTER TABLE pdm_raw.sensor_readings SET TAGS ('pdm_source' = 'zerobus', 'pdm_latency_tier' = 'realtime')
+OK   ALTER TABLE pdm_raw.technicians ALTER COLUMN email SET TAGS ('pdm_pii' = 'email')
+OK   ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET TAGS ('pdm_pii' = 'phone')
 ```
 
 ```python
@@ -334,3 +335,6 @@ Output:
 
 | tag_name | tag_value | objects |
 |---|---|---|
+| pdm_domain | manufacturing | 4 |
+| pdm_use_case | predictive_maintenance | 4 |
+| pdm_data_class | synthetic | 4 |

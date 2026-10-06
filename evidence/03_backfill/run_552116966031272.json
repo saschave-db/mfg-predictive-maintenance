@@ -1,0 +1,37 @@
+{
+  "job_id": 327188914455836,
+  "run_id": 552116966031272,
+  "run_name": "[pdm] pdm_01_backfill_history",
+  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/327188914455836/run/552116966031272",
+  "state": {
+    "life_cycle_state": "TERMINATED",
+    "result_state": "SUCCESS",
+    "state_message": "",
+    "user_cancelled_or_timedout": false
+  },
+  "status": {
+    "state": "TERMINATED",
+    "termination_details": {
+      "code": "SUCCESS",
+      "message": "",
+      "type": "SUCCESS"
+    }
+  },
+  "start_time": "2026-10-05T22:28:16.497000+00:00",
+  "end_time": "2026-10-05T22:37:55.764000+00:00",
+  "tasks": [
+    {
+      "task_key": "backfill",
+      "run_id": 315418415693122,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-05T22:28:16.527000+00:00",
+      "end_time": "2026-10-05T22:37:55.283000+00:00",
+      "duration_s": 578.8
+    }
+  ]
+}

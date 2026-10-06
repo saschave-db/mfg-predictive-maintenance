@@ -1,0 +1,6 @@
+{
+  "name": "projects/pdm-demo/branches/production/endpoints/primary",
+  "state": "ACTIVE",
+  "min_cu": 1,
+  "max_cu": 1
+}

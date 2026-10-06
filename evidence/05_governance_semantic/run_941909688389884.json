@@ -1,8 +1,8 @@
 {
   "job_id": 438031727317059,
-  "run_id": 50596819223088,
+  "run_id": 941909688389884,
   "run_name": "pdm_03_governance_semantic",
-  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/438031727317059/run/50596819223088",
+  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/438031727317059/run/941909688389884",
   "state": {
     "life_cycle_state": "TERMINATED",
     "result_state": "SUCCESS",
@@ -17,21 +17,21 @@
       "type": "SUCCESS"
     }
   },
-  "start_time": "2026-10-05T22:34:05.401000+00:00",
-  "end_time": "2026-10-05T22:35:00.582000+00:00",
+  "start_time": "2026-10-06T16:59:16.501000+00:00",
+  "end_time": "2026-10-06T17:00:16.271000+00:00",
   "tasks": [
     {
       "task_key": "governance",
-      "run_id": 255046613956180,
+      "run_id": 734234853998093,
       "state": {
         "life_cycle_state": "TERMINATED",
         "result_state": "SUCCESS",
         "state_message": "",
         "user_cancelled_or_timedout": false
       },
-      "start_time": "2026-10-05T22:34:05.473000+00:00",
-      "end_time": "2026-10-05T22:35:00.130000+00:00",
-      "duration_s": 54.7
+      "start_time": "2026-10-06T16:59:16.537000+00:00",
+      "end_time": "2026-10-06T17:00:15.871000+00:00",
+      "duration_s": 59.3
     }
   ]
 }

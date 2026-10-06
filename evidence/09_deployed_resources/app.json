@@ -1,0 +1,48 @@
+{
+  "name": "pdm-plant-health-live",
+  "url": "https://pdm-plant-health-live-7474651880045550.aws.databricksapps.com",
+  "app_status": {
+    "message": "App has status: App is running",
+    "state": "RUNNING"
+  },
+  "compute_status": {
+    "message": "App compute is running.",
+    "state": "ACTIVE"
+  },
+  "active_deployment": {
+    "state": "SUCCEEDED",
+    "update_time": "2026-10-06T17:06:50Z"
+  },
+  "resources": [
+    {
+      "name": "postgres",
+      "postgres": {
+        "branch": "projects/pdm-demo/branches/production",
+        "database": "projects/pdm-demo/branches/production/databases/databricks-postgres",
+        "permission": "CAN_CONNECT_AND_CREATE"
+      }
+    },
+    {
+      "name": "serving",
+      "serving_endpoint": {
+        "name": "pdm-station-risk",
+        "permission": "CAN_QUERY"
+      }
+    },
+    {
+      "genie_space": {
+        "name": "Plant Maintenance Agent",
+        "permission": "CAN_RUN",
+        "space_id": "01f1c10d662111078cd7326dff1774c6"
+      },
+      "name": "genie"
+    },
+    {
+      "name": "warehouse",
+      "sql_warehouse": {
+        "id": "fb9bc265e9f4578a",
+        "permission": "CAN_USE"
+      }
+    }
+  ]
+}

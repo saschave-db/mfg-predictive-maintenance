@@ -1,0 +1,37 @@
+{
+  "job_id": 395785416821222,
+  "run_id": 244861711068746,
+  "run_name": "[pdm] pdm_00_setup_uc",
+  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/395785416821222/run/244861711068746",
+  "state": {
+    "life_cycle_state": "TERMINATED",
+    "result_state": "SUCCESS",
+    "state_message": "",
+    "user_cancelled_or_timedout": false
+  },
+  "status": {
+    "state": "TERMINATED",
+    "termination_details": {
+      "code": "SUCCESS",
+      "message": "",
+      "type": "SUCCESS"
+    }
+  },
+  "start_time": "2026-10-05T22:27:24.496000+00:00",
+  "end_time": "2026-10-05T22:28:09.216000+00:00",
+  "tasks": [
+    {
+      "task_key": "setup_uc",
+      "run_id": 305061228716536,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-05T22:27:24.520000+00:00",
+      "end_time": "2026-10-05T22:28:08.781000+00:00",
+      "duration_s": 44.3
+    }
+  ]
+}

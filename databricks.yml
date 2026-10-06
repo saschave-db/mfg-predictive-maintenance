@@ -20,7 +20,7 @@ variables:
     default: ep-autumn-paper-d8fiis3p.database.us-east-2.cloud.databricks.com
   model_version:
     description: UC model version served by the endpoint (the @champion version)
-    default: "1"
+    default: "2"
   genie_space_id:
     description: Genie agent (space) id, created by tools/genie_deploy.py
     default: 01f1c10d662111078cd7326dff1774c6

@@ -74,20 +74,23 @@ for q, ref_sql in cfg.benchmarks(a.catalog) + [(q, None) for q in cfg.SAMPLE_QUE
     verdict = "SAMPLE"
     ref_cols, ref_rows = [], []
     if ref_sql:
+        # Live tables move between Genie's answer and now: re-run Genie's SQL and the reference back to back.
+        if sql:
+            cols, rows = run_sql(w, a.warehouse_id, sql)
         ref_cols, ref_rows = run_sql(w, a.warehouse_id, ref_sql)
         verdict = "PASS" if sql and values_match(rows, ref_rows) else "FAIL"
     results.append((q, verdict, round(secs, 1)))
     print(f"{verdict:6s} {secs:5.1f}s  {q}", flush=True)
     md.append(f"### {verdict}: {q}\n\nGenie answered in {secs:.1f} s (conversation `{msg.conversation_id}`).\n\n"
               + (f"Genie text: {text}\n\n" if text else "")
-              + (f"Genie SQL:\n```sql\n{sql}\n```\n\nGenie result:\n\n{table(cols, rows)}\n" if sql else "_no SQL generated_\n\n")
+              + (f"Genie SQL:\n```sql\n{sql}\n```\n\nGenie SQL result (re-executed next to the reference):\n\n{table(cols, rows)}\n" if sql else "_no SQL generated_\n\n")
               + (f"Reference SQL:\n```sql\n{ref_sql}\n```\n\nReference result:\n\n{table(ref_cols, ref_rows)}\n" if ref_sql else ""))
 
 graded = [r for r in results if r[1] != "SAMPLE"]
 passed = sum(r[1] == "PASS" for r in graded)
 head = (f"# Genie benchmark results\n\nSpace `{a.space_id}` · run {datetime.now(timezone.utc).isoformat()} · "
         f"**{passed}/{len(graded)} benchmark questions matched the reference SQL result** "
-        f"(values compared after rounding; Genie may add columns).\n\n| verdict | seconds | question |\n|---|---|---|\n"
+        f"(Genie's SQL and the reference SQL are executed back to back on the same warehouse; values compared after rounding; Genie may add columns).\n\n| verdict | seconds | question |\n|---|---|---|\n"
         + "".join(f"| {v} | {s} | {q} |\n" for q, v, s in results) + "\n")
 open(a.out, "w").write(head + "\n".join(md))
 print(f"{passed}/{len(graded)} passed -> {a.out}")
