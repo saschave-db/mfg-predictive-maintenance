@@ -22,15 +22,25 @@ Workspace profile `fevm-serverless-stable-am1uc2`. Bundle target `demo`. All dat
 
 Decision 2026-10-06: accept about 60 s sensor-to-screen latency and document it (see README, Known limitations).
 
-## Running resources (cost)
+## Paused (2026-10-06, for later validation)
 
-- Simulator job run `433290942380103` (3 h from 16:54 UTC): `databricks jobs cancel-run 433290942380103 --profile fevm-serverless-stable-am1uc2`
-- Continuous pipeline: `databricks pipelines stop b5544be9-b72f-4e83-b029-1a7151fc53c1 --profile fevm-serverless-stable-am1uc2`
-- Synced table pipeline (continuous): keeps running while the synced table exists.
-- App: `databricks apps stop pdm-plant-health-live --profile fevm-serverless-stable-am1uc2`
-- Lakebase compute (24 h suspend default on production): disable with
-  `databricks postgres update-endpoint projects/pdm-demo/branches/production/endpoints/primary spec.disabled --json '{"spec": {"disabled": true}}' --profile fevm-serverless-stable-am1uc2`
-- Serving endpoint scales to zero on its own.
+Everything that costs compute is stopped. Data, models, tables, Genie agent and code are kept.
+
+| Resource | State |
+|---|---|
+| Simulator run `433290942380103` | Cancelled |
+| SDP pipeline `pdm_live_pipeline` | Stopped (IDLE) |
+| Synced-table pipeline for `pdm_live.station_risk_scores` | Stopped (IDLE) |
+| App `pdm-plant-health-live` | Stopped |
+| Lakebase endpoint `primary` | Disabled |
+| Serving endpoint `pdm-station-risk` | Scales to zero on its own |
+
+Resume in this order (profile `fevm-serverless-stable-am1uc2`):
+1. `databricks postgres update-endpoint projects/pdm-demo/branches/production/endpoints/primary spec.disabled --json '{"spec": {"disabled": false}}'`
+2. `databricks pipelines start-update 5135c1d5-fce7-4893-898c-d902dc34a0ea` (synced table) and `databricks pipelines start-update b5544be9-b72f-4e83-b029-1a7151fc53c1` (SDP)
+3. `databricks jobs run-now --json '{"job_id": 16077621483238, "job_parameters": {"duration_min": "180", "extra_args": ""}}'` (simulator)
+4. `databricks apps start pdm-plant-health-live`
+5. Optional: re-run job `pdm_evidence_notebooks` to regenerate the evidence live.
 
 ## Possible next steps
 
