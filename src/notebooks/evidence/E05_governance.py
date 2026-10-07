@@ -9,8 +9,9 @@
 # MAGIC * Metric views `maintenance_metrics`, `station_risk_metrics`, `work_order_metrics` with synonyms for Genie.
 # MAGIC * The model is a UC securable (`pdm_ml.station_failure_model`) with alias `@champion`.
 # MAGIC
-# MAGIC **What this notebook proves.** Each control as recorded in Unity Catalog, plus the effect of masking, and metric
-# MAGIC views answering KPI queries.
+# MAGIC **What this notebook proves.** Each control as recorded in Unity Catalog, and that the row filter and masks are
+# MAGIC **enforced on a non-owner identity**: the app's service principal. Owners are often exempt, so the owner's view alone
+# MAGIC proves little. Section 2b shows the SP's own queries (from query history) and what Unity Catalog returned to it.
 
 # COMMAND ----------
 
@@ -50,6 +51,46 @@ display(spark.sql("SELECT technician_id, full_name, home_plant_id, email, phone 
 print("Function bodies:")
 for f in ["pdm_ops.mask_pii", "pdm_ops.plant_row_filter"]:
     print(spark.sql(f"DESCRIBE FUNCTION EXTENDED {f}").filter("function_desc LIKE 'Body:%' OR function_desc LIKE 'Function:%'").toPandas().to_string(index=False))
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 2b · Enforcement on a non-owner identity: the app's service principal
+# MAGIC The app endpoint `/api/governance/technicians` runs `SELECT current_user(), ... FROM pdm_raw.technicians` on the SQL
+# MAGIC warehouse **as the app SP**. The SP has `SELECT` on the table, is granted only `PLT-N` in `pdm_ops.plant_access`, and is
+# MAGIC not in `pdm_supervisors`. Expected: 6 of 18 technicians (Plant North only), email and phone redacted.
+# MAGIC The raw HTTP response of that call is in `evidence/08_app/governance_as_app_sp.json`.
+
+# COMMAND ----------
+
+display(spark.sql("SELECT * FROM pdm_ops.plant_access"))
+print("Row filter function as deployed:")
+print(spark.sql("DESCRIBE FUNCTION EXTENDED pdm_ops.plant_row_filter").filter("function_desc LIKE 'Body:%'").first()[0])
+print("\nOwner view for contrast (owner is exempt from the filter, masks still apply because the owner is not a supervisor):")
+display(spark.sql("SELECT home_plant_id, count(*) AS technicians FROM pdm_raw.technicians GROUP BY ALL ORDER BY 1"))
+
+# COMMAND ----------
+
+from databricks.sdk.service.sql import QueryFilter
+sp_user = next(w.service_principals.list(filter=f"applicationId eq {APP_SP}"))
+print("app service principal:", sp_user.display_name, "| application id:", APP_SP, "| user id:", sp_user.id)
+resp = w.query_history.list(filter_by=QueryFilter(user_ids=[int(sp_user.id)]), include_metrics=True, max_results=50)
+hist = list(getattr(resp, "res", None) or ([] if hasattr(resp, "res") else resp))
+tech = [q for q in hist if "pdm_raw.technicians" in (q.query_text or "")]
+print(f"{len(tech)} technician queries executed by the app SP (Query History API):")
+for q in tech[:5]:
+    print(f"- query_id={q.query_id} status={q.status.value} executed_as={q.executed_as_user_name} "
+          f"rows_produced={q.metrics.rows_produced_count if q.metrics else None} start={q.query_start_time_ms}")
+    print("  ", q.query_text[:160])
+
+# COMMAND ----------
+
+# Same facts from the audit system table (system tables can lag a few minutes behind).
+display(spark.sql(f"""
+SELECT statement_id, executed_by, executed_as, execution_status, produced_rows, start_time, left(statement_text, 120) AS statement
+FROM system.query.history
+WHERE executed_by_user_id = '{sp_user.id}' AND statement_text LIKE '%pdm_raw.technicians%'
+ORDER BY start_time DESC LIMIT 5"""))
 
 # COMMAND ----------
 

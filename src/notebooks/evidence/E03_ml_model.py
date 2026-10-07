@@ -21,7 +21,7 @@
 # COMMAND ----------
 
 from _helpers import *  # noqa: F401,F403
-import sys, os, time
+import sys, os, time, json
 sys.path.append(os.path.abspath("../.."))
 import mlflow
 from mlflow import MlflowClient
@@ -83,3 +83,20 @@ print(f"Model Serving round trip for {len(X)} rows: {serving_ms:.0f} ms")
 print("max |pipeline - registry| =", float((live.p_registry - live.failure_probability).abs().max()).__round__(5),
       "| max |pipeline - serving| =", float((live.p_serving - live.failure_probability).abs().max()).__round__(5),
       "(pipeline rounds to 4 decimals)")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 4 · Raw Model Serving call (HTTP request and response as sent and received)
+
+# COMMAND ----------
+
+one = {k: float(v) for k, v in X.iloc[0].items()}
+body = {"dataframe_records": [one]}
+t0 = time.perf_counter()
+raw = w.api_client.do("POST", f"/serving-endpoints/{SERVING_ENDPOINT}/invocations", body=body)
+ms = (time.perf_counter() - t0) * 1000
+print(f"POST {w.config.host}/serving-endpoints/{SERVING_ENDPOINT}/invocations  ({ms:.0f} ms)")
+print("request body:", json.dumps(body)[:1200])
+print("response body:", json.dumps(raw))
+print(f"station {live.iloc[0].station_id}: pipeline score {live.iloc[0].failure_probability} vs serving {raw['predictions'][0]:.4f}")

@@ -200,3 +200,27 @@ def health():
     t0 = time.perf_counter()
     db.query("SELECT 1")
     return {"ok": True, "lakebase_roundtrip_ms": round((time.perf_counter() - t0) * 1000, 1)}
+
+
+WAREHOUSE_ID = os.environ.get("WAREHOUSE_ID", "")
+CATALOG = os.environ.get("CATALOG", "serverless_stable_am1uc2_catalog")
+
+
+@app.get("/api/governance/technicians")
+def governance_technicians():
+    """Query technicians through the SQL warehouse as the app's service principal (a non-owner identity).
+
+    Unity Catalog applies the row filter (pdm_ops.plant_access grants this SP Plant North only) and the PII masks
+    (the SP is not in pdm_supervisors). The statement id lets reviewers find the query in system.query.history.
+    """
+    if not WAREHOUSE_ID:
+        raise HTTPException(503, "warehouse not configured")
+    sql = (f"SELECT current_user() AS executed_as, technician_id, full_name, home_plant_id, email, phone "
+           f"FROM {CATALOG}.pdm_raw.technicians ORDER BY technician_id")
+    t0 = time.perf_counter()
+    st = db.w.statement_execution.execute_statement(statement=sql, warehouse_id=WAREHOUSE_ID, wait_timeout="50s")
+    cols = [c.name for c in st.manifest.schema.columns] if st.manifest else []
+    rows = (st.result.data_array or []) if st.result else []
+    return {"statement_id": st.statement_id, "state": st.status.state.value, "sql": sql,
+            "elapsed_ms": round((time.perf_counter() - t0) * 1000, 1), "columns": cols, "row_count": len(rows),
+            "plants_visible": sorted({r[3] for r in rows}), "rows": rows}

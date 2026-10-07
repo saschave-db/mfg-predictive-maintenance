@@ -24,6 +24,25 @@ UC pdm_raw.sensor_readings (managed Delta, bronze)
 App --> Lakebase pdm_ops.work_orders / sim_commands --> Lakehouse Sync --> UC pdm_ops.lb_*_history --> Genie
 ```
 
+## Requirement → source → live evidence
+
+Every requirement maps to the code that implements it and to **executed output** that proves it ran. "E0x" are the executed evidence notebooks in `evidence/10_evidence_notebooks/` (`.md` is readable, `.ipynb` has the same outputs). Nothing here is a screenshot or prose: every evidence cell is captured output.
+
+| # | Requirement | Source file(s) | Live evidence (captured output) |
+|---|---|---|---|
+| R1 | Synthetic data generation with realistic failure signatures | `src/pdm/physics.py`, `src/notebooks/01_backfill_history.py` | `03_backfill/01_backfill_history.md` (8.29M rows, failures per type); E01 §6 (degrading stations in raw data) |
+| R2 | Lakeflow Connect **Zerobus** ingestion | `src/simulator/zerobus_producer.py`, `resources/simulator.job.yml`, `src/notebooks/00_setup_uc.py` | E01 §1 (job, serverless env), §2 (SP grants), §3 (**every data commit `engineInfo = Zerobus`**, cadence), §4 (rows/s per gateway); `02_zerobus_simulator/zerobus_producer.log` (ACK latency) |
+| R3 | **SDP** ETL, continuous, with data quality | `src/pipeline/*.py`, `resources/pipeline.yml` | E02 §1 (deployed spec, `continuous=true`), §2 (flow states), §3 (expectation pass/drop counts), §4 (freshness per table) |
+| R4 | Code that runs = code in repo | `evidence/source_snapshot/` (byte-identical copy + `SHA256SUMS`), `tools/snapshot_source.py` | E09 §2 (SHA-256 of **deployed** files = committed), §3 (full deployed pipeline source) |
+| R5 | **Unity Catalog** governance: least privilege, masks, row filter, tags, lineage | `src/notebooks/03_governance_semantic.py`, `src/setup/app_uc_grants.sql` | E05 §1 grants, §2 masks/filter, **§2b enforcement on the app's service principal (non-owner): 6 of 18 rows, PII redacted, from query history**; `08_app/governance_as_app_sp.json` (raw response); E02 §7 lineage |
+| R6 | **ML** model, registered in UC, scored in-stream | `src/notebooks/02_train_model.py`, `src/pipeline/02_station_risk_scores.py` | `04_training/02_train_model.md` (PR-AUC 0.91, 271/271 failures, lead time); E03 §1–2 (versions, alias, metrics), §3 (pipeline = registry = serving) |
+| R7 | **Model Serving** real call | `resources/serving.yml`, `src/app/app.py` (`/api/whatif`) | E03 §4 (**raw HTTP request + response**); `08_app/whatif_warm.md` (41–140 ms) |
+| R8 | **Genie agent** on metric views + work orders, with benchmarks | `src/genie/space_config.py`, `tools/genie_deploy.py`, metric views in `03_governance_semantic.py` | E06 §1 (deployed config), §2 (**raw Genie API response**, 10/10 vs reference SQL); `07_genie/benchmark.md` and `_run1_before_fixes.md` |
+| R9 | **Lakebase**: OLTP, synced table, sync back to UC | `src/lakebase/*.sql`, `src/app/db.py` | E04 §2–4 (tables, grants, synced table status, Delta vs Postgres freshness), §5 (app query + plan), §6 (Lakehouse Sync CDC), **§7 (timed DB write/read round trips)** |
+| R10 | **Databricks App** with actions | `src/app/*`, `resources/app.yml` | E07 (status, resources, deployments, writes); `08_app/e2e_fault_injection.md` (every API call through the app, with timings) |
+| R11 | **Low-latency live probability** of maintenance need | all of the above | E02 §5 (per-hop latency); E08 (fault → HIGH in Delta and Postgres, repair → NORMAL); `06_live_pipeline/04_live_evidence.md` |
+| R12 | Synthetic data only | `src/pdm/physics.py`, `00_setup_uc.py` (`example-mfg.test` emails, `+1-555` phones) | E00 (UC objects); E05 §2 (masked PII) |
+
 ## Why each piece
 
 | Step | Product | Why it is here |

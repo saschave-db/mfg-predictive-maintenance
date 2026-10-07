@@ -27,6 +27,9 @@ variables:
   warehouse_id:
     description: SQL warehouse for Genie
     default: fb9bc265e9f4578a
+  app_sp_client_id:
+    description: Client id of the app's service principal (non-owner identity for governance proof)
+    default: 2a9b01a6-1050-4c7d-b389-45351bf8e97b
 
 include:
   - resources/*.yml

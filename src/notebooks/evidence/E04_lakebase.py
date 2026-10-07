@@ -120,3 +120,22 @@ pg_table(conn, "SELECT * FROM pdm_ops.sim_commands ORDER BY command_id DESC", li
 display(spark.sql("""SELECT _pg_change_type, _pg_lsn, _timestamp, work_order_id, station_id, status, priority, failure_probability
                      FROM pdm_ops.lb_work_orders_history ORDER BY _pg_lsn"""))
 display(spark.sql("SELECT * FROM pdm_ops.work_orders_current ORDER BY work_order_id"))
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 7 · Timed database round trips (write + read) from this notebook
+# MAGIC A temporary table lives only in this session, so the test touches no demo data.
+
+# COMMAND ----------
+
+conn.run("CREATE TEMP TABLE rt_probe (id int PRIMARY KEY, payload text, at timestamptz DEFAULT now())")
+print("| iteration | INSERT ms | SELECT ms | value read back |\n|---|---|---|---|")
+for i in range(1, 6):
+    t0 = time.perf_counter()
+    conn.run("INSERT INTO rt_probe (id, payload) VALUES (:i, :p)", i=i, p=f"probe-{i}")
+    t1 = time.perf_counter()
+    v = conn.run("SELECT payload FROM rt_probe WHERE id = :i", i=i)[0][0]
+    t2 = time.perf_counter()
+    print(f"| {i} | {(t1 - t0) * 1000:.1f} | {(t2 - t1) * 1000:.1f} | {v} |")
+conn.run("DROP TABLE rt_probe")

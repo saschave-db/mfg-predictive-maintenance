@@ -6,6 +6,10 @@ env:
     valueFrom: serving
   - name: GENIE_SPACE_ID
     valueFrom: genie
+  - name: WAREHOUSE_ID
+    valueFrom: warehouse
+  - name: CATALOG
+    value: serverless_stable_am1uc2_catalog
   - name: LIVE_SCHEMA
     value: pdm_live
   - name: OPS_SCHEMA

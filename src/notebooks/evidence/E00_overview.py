@@ -20,10 +20,11 @@
 # MAGIC | ETL | E02 | Continuous SDP pipeline, expectations, freshness, lineage |
 # MAGIC | ML | E03 | Registered model, metrics, in-stream scores reproducible with the registry and Model Serving |
 # MAGIC | Lakebase | E04 | OLTP tables, synced table, freshness Delta vs Postgres, Lakehouse Sync back to UC |
-# MAGIC | Governance | E05 | Grants, masks, row filter, tags, metric views |
+# MAGIC | Governance | E05 | Grants, masks, row filter, tags, metric views; enforcement proven on the app's service principal (non-owner) |
 # MAGIC | Genie | E06 | Agent configuration and live answers checked against reference SQL |
 # MAGIC | App | E07 | App deployment, resources, and its writes to Lakebase |
 # MAGIC | End to end | E08 | Live fault injected and traced to a HIGH alert, work order, repair, recovery |
+# MAGIC | Source integrity | E09 | Deployed files are byte-identical to the committed source (SHA-256), full pipeline source printed |
 
 # COMMAND ----------
 

@@ -58,11 +58,14 @@ def norm(rows):
     return out
 
 
-results = []
+results, raw_shown = [], False
 for q, ref_sql in cfg.benchmarks(CATALOG):
     t0 = time.time()
     msg = w.genie.start_conversation_and_wait(GENIE_SPACE_ID, q)
     secs = time.time() - t0
+    if not raw_shown:  # one complete raw API response, as returned by the Genie Conversation API
+        print("RAW Genie message response:\n" + json.dumps(msg.as_dict(), indent=1, default=str)[:4000])
+        raw_shown = True
     sql = next((a.query.query for a in (msg.attachments or []) if a.query), None)
     text = next((a.text.content for a in (msg.attachments or []) if a.text and a.text.content), None)
     g_rows = [list(r) for r in spark.sql(sql).collect()] if sql else []

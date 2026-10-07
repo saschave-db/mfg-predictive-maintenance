@@ -8,3 +8,4 @@ resources:
             notebook_path: ../src/notebooks/03_governance_semantic.py
             base_parameters:
               catalog: ${var.catalog}
+              app_sp: ${var.app_sp_client_id}

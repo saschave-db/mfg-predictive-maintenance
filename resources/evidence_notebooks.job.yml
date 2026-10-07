@@ -55,3 +55,9 @@ resources:
           run_if: ALL_DONE
           notebook_task:
             notebook_path: ../src/notebooks/evidence/E08_end_to_end.py
+        - task_key: E09_source_integrity
+          depends_on:
+            - task_key: E08_end_to_end
+          run_if: ALL_DONE
+          notebook_task:
+            notebook_path: ../src/notebooks/evidence/E09_source_integrity.py
