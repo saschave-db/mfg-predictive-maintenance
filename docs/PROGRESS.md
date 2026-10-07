@@ -23,11 +23,11 @@ Workspace profile `fevm-serverless-stable-am1uc2`. Bundle target `demo`. All dat
 
 Decision 2026-10-06: accept about 60 s sensor-to-screen latency and document it (see README, Known limitations).
 
-## Running again (2026-10-07)
+## Paused (2026-10-07, after evidence hardening)
 
-Restarted for the evidence hardening run. Simulator run `599986915233103` (4 h from about 22:50 UTC), both pipelines,
-the app and Lakebase are running. To pause again: cancel the simulator run, `databricks pipelines stop` for both
-pipelines, `databricks apps stop pdm-plant-health-live`, and disable the Lakebase endpoint (`spec.disabled = true`).
+Everything that costs compute is stopped: simulator run `599986915233103` cancelled, both pipelines IDLE, app stopped,
+Lakebase endpoint disabled. The serving endpoint scales to zero on its own. AI Gateway usage tracking stays enabled
+(declared in `resources/serving.yml`).
 
 Resume in this order (profile `fevm-serverless-stable-am1uc2`):
 1. `databricks postgres update-endpoint projects/pdm-demo/branches/production/endpoints/primary spec.disabled --json '{"spec": {"disabled": false}}'`
