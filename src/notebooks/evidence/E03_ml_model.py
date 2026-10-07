@@ -100,3 +100,25 @@ print(f"POST {w.config.host}/serving-endpoints/{SERVING_ENDPOINT}/invocations  (
 print("request body:", json.dumps(body)[:1200])
 print("response body:", json.dumps(raw))
 print(f"station {live.iloc[0].station_id}: pipeline score {live.iloc[0].failure_probability} vs serving {raw['predictions'][0]:.4f}")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 5 · AI Gateway on the serving endpoint
+# MAGIC The endpoint has AI Gateway usage tracking enabled (declared in `resources/serving.yml`). Every call to
+# MAGIC `/serving-endpoints/pdm-station-risk/invocations`, from the app (as its service principal) or from notebooks, is
+# MAGIC recorded in `system.serving.endpoint_usage`. System tables can lag behind live calls by some minutes.
+
+# COMMAND ----------
+
+ep = w.serving_endpoints.get(SERVING_ENDPOINT)
+print("gateway URL:", f"{w.config.host}/serving-endpoints/{SERVING_ENDPOINT}/invocations")
+show({"endpoint": ep.name, "ai_gateway": ep.ai_gateway.as_dict() if ep.ai_gateway else None})
+display(spark.sql(f"""
+SELECT u.requester, u.status_code, count(*) AS requests, min(u.request_time) AS first_request, max(u.request_time) AS last_request
+FROM system.serving.endpoint_usage u JOIN system.serving.served_entities e USING (served_entity_id)
+WHERE e.endpoint_name = '{SERVING_ENDPOINT}' GROUP BY ALL ORDER BY last_request DESC"""))
+display(spark.sql(f"""
+SELECT u.request_time, u.requester, u.status_code, u.client_request_id, e.entity_name, e.entity_version
+FROM system.serving.endpoint_usage u JOIN system.serving.served_entities e USING (served_entity_id)
+WHERE e.endpoint_name = '{SERVING_ENDPOINT}' ORDER BY u.request_time DESC LIMIT 10"""))

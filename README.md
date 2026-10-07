@@ -19,7 +19,7 @@ UC pdm_raw.sensor_readings (managed Delta, bronze)
    |
    |-- Lakebase synced table (continuous) pdm_live.station_risk_scores --> FastAPI app (2 s polling)
    |-- Metric views pdm_ops.*_metrics --> Genie agent "Plant Maintenance Agent"
-   '-- Model Serving pdm-station-risk (same UC model) --> app what-if
+   '-- Model Serving pdm-station-risk via AI Gateway (usage tracking) --> app what-if
 
 App --> Lakebase pdm_ops.work_orders / sim_commands --> Lakehouse Sync --> UC pdm_ops.lb_*_history --> Genie
 ```
@@ -36,7 +36,7 @@ Every requirement maps to the code that implements it and to **executed output**
 | R4 | Code that runs = code in repo | `evidence/source_snapshot/` (byte-identical copy + `SHA256SUMS`), `tools/snapshot_source.py` | E09 §2 (SHA-256 of **deployed** files = committed), §3 (full deployed pipeline source) |
 | R5 | **Unity Catalog** governance: least privilege, masks, row filter, tags, lineage | `src/notebooks/03_governance_semantic.py`, `src/setup/app_uc_grants.sql` | E05 §1 grants, §2 masks/filter, **§2b enforcement on the app's service principal (non-owner): 6 of 18 rows, PII redacted, confirmed in query history**; `08_app/governance_as_app_sp.json` (raw responses of a control run: SP granted PLT-N → 6 rows; PLT-S added to `plant_access` → 12 rows; revoked → 6 rows); E02 §7 lineage |
 | R6 | **ML** model, registered in UC, scored in-stream | `src/notebooks/02_train_model.py`, `src/pipeline/02_station_risk_scores.py` | `04_training/02_train_model.md` (PR-AUC 0.91, 271/271 failures, lead time); E03 §1–2 (versions, alias, metrics), §3 (pipeline = registry = serving) |
-| R7 | **Model Serving** real call | `resources/serving.yml`, `src/app/app.py` (`/api/whatif`) | E03 §4 (**raw HTTP request + response**); `08_app/whatif_warm.md` (41–140 ms) |
+| R7 | **Model Serving** real call, through **AI Gateway** (usage tracking) | `resources/serving.yml` (`ai_gateway`), `src/app/app.py` (`/api/whatif` posts to the gateway invocations URL) | E03 §4 (**raw HTTP request + response**), §5 (gateway config + tracked requests from `system.serving.endpoint_usage`); `08_app/whatif_via_ai_gateway.md` (raw app responses with `gateway_url`) |
 | R8 | **Genie agent** on metric views + work orders, with benchmarks | `src/genie/space_config.py`, `tools/genie_deploy.py`, metric views in `03_governance_semantic.py` | E06 §1 (deployed config), §2 (**raw Genie API response**, 10/10 vs reference SQL); `07_genie/benchmark.md` and `_run1_before_fixes.md` |
 | R9 | **Lakebase**: OLTP, synced table, sync back to UC | `src/lakebase/*.sql`, `src/app/db.py` | E04 §2–4 (tables, grants, synced table status, Delta vs Postgres freshness), §5 (app query + plan), §6 (Lakehouse Sync CDC), **§7 (timed DB write/read round trips)** |
 | R10 | **Databricks App** with actions | `src/app/*`, `resources/app.yml` | E07 (status, resources, deployments, writes); `08_app/e2e_fault_injection.md` (every API call through the app, with timings) |

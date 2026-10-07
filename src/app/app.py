@@ -155,14 +155,17 @@ def whatif(body: WhatIf):
     shifted = dict(base)
     for agg in ("mean", "max", "min"):
         shifted[f"{body.sensor}_{agg}"] = base[f"{body.sensor}_{agg}"] * (1 + body.change_pct / 100)
+    # Call through the endpoint's AI Gateway (usage tracking -> system.serving.endpoint_usage).
+    path = f"/serving-endpoints/{SERVING_ENDPOINT}/invocations"
     t0 = time.perf_counter()
-    resp = db.w.serving_endpoints.query(name=SERVING_ENDPOINT, dataframe_records=[base, shifted])
+    resp = db.w.api_client.do("POST", path, body={"dataframe_records": [base, shifted]})
     return {
         "station_id": body.station_id, "sensor": body.sensor, "change_pct": body.change_pct,
-        "current_probability": round(float(resp.predictions[0]), 4),
-        "scenario_probability": round(float(resp.predictions[1]), 4),
+        "current_probability": round(float(resp["predictions"][0]), 4),
+        "scenario_probability": round(float(resp["predictions"][1]), 4),
         "serving_latency_ms": round((time.perf_counter() - t0) * 1000, 1),
         "endpoint": SERVING_ENDPOINT,
+        "gateway_url": db.w.config.host.rstrip("/") + path,
     }
 
 

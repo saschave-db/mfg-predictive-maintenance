@@ -9,3 +9,8 @@ resources:
             entity_version: ${var.model_version}
             workload_size: Small
             scale_to_zero_enabled: true
+      # AI Gateway: every call to /serving-endpoints/pdm-station-risk/invocations is tracked
+      # in system.serving.endpoint_usage (requester, status, tokens/latency).
+      ai_gateway:
+        usage_tracking_config:
+          enabled: true
