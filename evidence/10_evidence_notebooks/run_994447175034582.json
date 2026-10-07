@@ -1,0 +1,167 @@
+{
+  "job_id": 755461157363253,
+  "run_id": 994447175034582,
+  "run_name": "pdm_evidence_notebooks",
+  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582",
+  "state": {
+    "life_cycle_state": "TERMINATED",
+    "result_state": "SUCCESS",
+    "state_message": "",
+    "user_cancelled_or_timedout": false
+  },
+  "status": {
+    "state": "TERMINATED",
+    "termination_details": {
+      "code": "SUCCESS",
+      "message": "",
+      "type": "SUCCESS"
+    }
+  },
+  "start_time": "2026-10-07T22:56:13.271000+00:00",
+  "end_time": "2026-10-07T23:16:22.756000+00:00",
+  "tasks": [
+    {
+      "task_key": "E00_overview",
+      "run_id": 389548815414273,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T22:56:13.297000+00:00",
+      "end_time": "2026-10-07T22:56:54.102000+00:00",
+      "duration_s": 40.8
+    },
+    {
+      "task_key": "E01_zerobus_ingestion",
+      "run_id": 916008253330264,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T22:56:54.424000+00:00",
+      "end_time": "2026-10-07T22:58:19.974000+00:00",
+      "duration_s": 85.5
+    },
+    {
+      "task_key": "E02_sdp_pipeline",
+      "run_id": 474841913877680,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T22:58:20.393000+00:00",
+      "end_time": "2026-10-07T22:58:59.479000+00:00",
+      "duration_s": 39.1
+    },
+    {
+      "task_key": "E03_ml_model",
+      "run_id": 724594144272016,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T22:58:59.886000+00:00",
+      "end_time": "2026-10-07T22:59:29.694000+00:00",
+      "duration_s": 29.8
+    },
+    {
+      "task_key": "E04_lakebase",
+      "run_id": 136200307398885,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T22:59:30.085000+00:00",
+      "end_time": "2026-10-07T23:00:19.252000+00:00",
+      "duration_s": 49.2
+    },
+    {
+      "task_key": "E05_governance",
+      "run_id": 756074015651531,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T23:00:19.650000+00:00",
+      "end_time": "2026-10-07T23:01:01.280000+00:00",
+      "duration_s": 41.6
+    },
+    {
+      "task_key": "E06_genie",
+      "run_id": 886242903537339,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T23:01:01.682000+00:00",
+      "end_time": "2026-10-07T23:05:25.536000+00:00",
+      "duration_s": 263.9
+    },
+    {
+      "task_key": "E07_app",
+      "run_id": 303872101877,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T23:05:25.955000+00:00",
+      "end_time": "2026-10-07T23:05:46.123000+00:00",
+      "duration_s": 20.2
+    },
+    {
+      "task_key": "E08_end_to_end",
+      "run_id": 472079048977763,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T23:05:46.571000+00:00",
+      "end_time": "2026-10-07T23:14:01.994000+00:00",
+      "duration_s": 495.4
+    },
+    {
+      "task_key": "E09_source_integrity",
+      "run_id": 684494378934229,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T23:14:02.443000+00:00",
+      "end_time": "2026-10-07T23:14:20.500000+00:00",
+      "duration_s": 18.1
+    },
+    {
+      "task_key": "E05_governance",
+      "run_id": 748346428709987,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T23:14:43.094000+00:00",
+      "end_time": "2026-10-07T23:16:22.209000+00:00",
+      "duration_s": 99.1
+    }
+  ]
+}

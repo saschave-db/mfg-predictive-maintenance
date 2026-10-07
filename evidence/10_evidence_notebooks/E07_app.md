@@ -1,10 +1,10 @@
 # Executed notebook: E07_app
 
-Exported from Databricks job run `980301348000608` (task `E07_app`, task run `820074943157191`).
+Exported from Databricks job run `994447175034582` (task `E07_app`, task run `303872101877`).
 
-Result: **SUCCESS** · start 2026-10-06T17:51:20.108000+00:00 · end 2026-10-06T17:51:39.961000+00:00
+Result: **SUCCESS** · start 2026-10-07T23:05:25.955000+00:00 · end 2026-10-07T23:05:46.123000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E07 · Databricks App "Plant Health Live"
@@ -62,10 +62,10 @@ Output:
   "service_principal": "app-3jm8lb pdm-plant-health-live",
   "service_principal_client_id": "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
   "active_deployment": {
-    "id": "01f1c1a84e581cfd878dcbcf7c79a6a9",
+    "id": "01f1c2a1b4a31b02b0a6816d40b50e02",
     "state": "SUCCEEDED",
     "source": "/Workspace/Users/sascha.vetter@databricks.com/.bundle/mfg-predictive-maintenance/demo/files/src/app",
-    "updated": "2026-10-06T17:06:50Z"
+    "updated": "2026-10-07T22:52:05Z"
   },
   "resources": [
     {
@@ -110,6 +110,8 @@ for d in list(w.apps.list_deployments(APP_NAME))[:5]:
 Output:
 
 ```text
+01f1c2a1b4a31b02b0a6816d40b50e02 SUCCEEDED 2026-10-07T22:52:00Z
+01f1c2a1ae051c3ba75c1dbce28f24d3 SUCCEEDED 2026-10-07T22:51:49Z
 01f1c1a84e581cfd878dcbcf7c79a6a9 SUCCEEDED 2026-10-06T17:06:43Z
 01f1c1a815781979a9120b9c6acba1e0 SUCCEEDED 2026-10-06T17:05:08Z
 01f1c1a7e34112098bbec6673216bc6d SUCCEEDED 2026-10-06T17:03:44Z
@@ -158,19 +160,27 @@ Output:
 | work_order_id | station_id | priority | status | failure_probability | risk_band | top_signal | created_by | created_at | completed_at |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | PLT-E-A03 | P1 | completed | 0.7868 | HIGH | motor_current_a | sascha.vetter@databricks.com | 2026-10-06 17:16:25.838121+00:00 | 2026-10-06 17:17:43.289537+00:00 |
+| 2 | PLT-S-B06 | P1 | completed | 0.8876 | HIGH | vibration_rms | sascha.vetter@databricks.com | 2026-10-06 17:57:26.883429+00:00 | 2026-10-06 17:57:46.897278+00:00 |
+| 3 | PLT-N-C07 | P2 | completed | 0.9898 | HIGH | bearing_temp_c | sascha.vetter@databricks.com | 2026-10-07 22:57:59.169938+00:00 | 2026-10-07 22:58:12.718962+00:00 |
 | command_id | command | station_id | failure_mode | requested_by | status | requested_at | applied_at | seconds_to_apply |
 |---|---|---|---|---|---|---|---|---|
 | 1 | inject_fault | PLT-E-A03 | overheating | sascha.vetter@databricks.com | applied | 2026-10-06 17:12:38.582498+00:00 | 2026-10-06 17:12:39.001621+00:00 | 0.42 |
 | 2 | repair | PLT-E-A03 |  | sascha.vetter@databricks.com | applied | 2026-10-06 17:17:43.295412+00:00 | 2026-10-06 17:17:45.001512+00:00 | 1.71 |
+| 3 | inject_fault | PLT-S-B06 | bearing_wear | sascha.vetter@databricks.com | applied | 2026-10-06 17:51:52.893947+00:00 | 2026-10-06 17:51:53.002039+00:00 | 0.11 |
+| 4 | repair | PLT-S-B06 |  | sascha.vetter@databricks.com | applied | 2026-10-06 17:57:46.905634+00:00 | 2026-10-06 17:57:47.001418+00:00 | 0.10 |
+| 5 | inject_fault | PLT-S-A04 | overheating | sascha.vetter@databricks.com | applied | 2026-10-07 22:57:32.212895+00:00 | 2026-10-07 22:57:33.001346+00:00 | 0.79 |
+| 6 | repair | PLT-N-C07 |  | sascha.vetter@databricks.com | applied | 2026-10-07 22:58:12.724309+00:00 | 2026-10-07 22:58:13.001443+00:00 | 0.28 |
 
 Output:
 
 | work_order_id | station_id | plant_id | line_id | priority | status | failure_probability | risk_band | top_signal | description | assigned_technician_id | created_by | created_at | updated_at | completed_at |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | PLT-E-A03 | PLT-E | PLT-E-A | P1 | completed | 0.7868 | HIGH | motor_current_a | E2E test: overheating alert |  | sascha.vetter@databricks.com | 2026-10-06T17:16:25.838Z | 2026-10-06T17:17:43.289Z | 2026-10-06T17:17:43.289Z |
+| 2 | PLT-S-B06 | PLT-S | PLT-S-B | P1 | completed | 0.8876 | HIGH | vibration_rms | E08 notebook: predicted bearing wear |  | sascha.vetter@databricks.com | 2026-10-06T17:57:26.883Z | 2026-10-06T17:57:46.897Z | 2026-10-06T17:57:46.897Z |
+| 3 | PLT-N-C07 | PLT-N | PLT-N-C | P2 | completed | 0.9898 | HIGH | bearing_temp_c | Predicted bearing_temp_c issue |  | sascha.vetter@databricks.com | 2026-10-07T22:57:59.169Z | 2026-10-07T22:58:12.718Z | 2026-10-07T22:58:12.718Z |
 
 Output:
 
 | Status | work_orders | avg_minutes_to_complete |
 |---|---|---|
-| completed | 1 | 1.3000000000 |
+| completed | 3 | 0.6166666667 |

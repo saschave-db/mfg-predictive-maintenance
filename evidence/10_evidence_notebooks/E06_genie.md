@@ -1,10 +1,10 @@
 # Executed notebook: E06_genie
 
-Exported from Databricks job run `980301348000608` (task `E06_genie`, task run `1027823489205687`).
+Exported from Databricks job run `994447175034582` (task `E06_genie`, task run `886242903537339`).
 
-Result: **SUCCESS** · start 2026-10-06T17:46:32.647000+00:00 · end 2026-10-06T17:51:19.737000+00:00
+Result: **SUCCESS** · start 2026-10-07T23:01:01.682000+00:00 · end 2026-10-07T23:05:25.536000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E06 · Genie agent on metric views and work orders
@@ -77,11 +77,14 @@ def norm(rows):
     return out
 
 
-results = []
+results, raw_shown = [], False
 for q, ref_sql in cfg.benchmarks(CATALOG):
     t0 = time.time()
     msg = w.genie.start_conversation_and_wait(GENIE_SPACE_ID, q)
     secs = time.time() - t0
+    if not raw_shown:  # one complete raw API response, as returned by the Genie Conversation API
+        print("RAW Genie message response:\n" + json.dumps(msg.as_dict(), indent=1, default=str)[:4000])
+        raw_shown = True
     sql = next((a.query.query for a in (msg.attachments or []) if a.query), None)
     text = next((a.text.content for a in (msg.attachments or []) if a.text and a.text.content), None)
     g_rows = [list(r) for r in spark.sql(sql).collect()] if sql else []
@@ -99,57 +102,126 @@ for q, ref_sql in cfg.benchmarks(CATALOG):
 Output:
 
 ```text
-### PASS (18.0 s): How many stations are at high risk right now?
+RAW Genie message response:
+{
+ "attachments": [
+  {
+   "attachment_id": "01f1c2a300b41a879d43c9d4c57beb7d",
+   "query": {
+    "description": "You want to see a list of all stations that are currently at high risk of failure.",
+    "query": "SELECT COUNT(*) AS `high_risk_stations`\nFROM `serverless_stable_am1uc2_catalog`.`pdm_core`.`station_health_current`\nWHERE `risk_band` = 'HIGH'",
+    "query_result_metadata": {
+     "row_count": 1
+    },
+    "statement_id": "01f1c2a3-00be-1b07-9165-720eab466ddb",
+    "thoughts": [
+     {
+      "content": "You want to see a list of all stations that are currently at high risk of failure.",
+      "thought_type": "THOUGHT_TYPE_DESCRIPTION"
+     },
+     {
+      "content": "- serverless_stable_am1uc2_catalog.pdm_core.station_health_current",
+      "thought_type": "THOUGHT_TYPE_DATA_SOURCING"
+     },
+     {
+      "content": "- Filter stations to include only those with a risk band labeled 'HIGH'.\n- Retrieve the station ID, plant ID, station type, and failure probability as a percentage for each high-risk station.\n- Also include the top signal causing the risk and the percentage deviation of that signal.\n- Order the results by failure probability in descending order to show the highest risk stations first.",
+      "thought_type": "THOUGHT_TYPE_STEPS"
+     }
+    ]
+   }
+  },
+  {
+   "attachment_id": "01f1c2a3019d19b98562c96913dde14d",
+   "suggested_questions": {
+    "questions": [
+     "What are the top signals causing high risk in stations right now?",
+     "How many stations are at high risk in each plant currently?",
+     "What is the average failure probability of stations at high risk right now?"
+    ]
+   }
+  },
+  {
+   "text": {
+    "content": "There are **4** stations at **HIGH** risk right now. Based on the current snapshot, the count of stations needing the most immediate maintenance attention is **4**."
+   }
+  }
+ ],
+ "content": "How many stations are at high risk right now?",
+ "conversation_id": "01f1c2a2ff3f113bae3e0bae29a420c0",
+ "created_timestamp": 1791414074921,
+ "id": "01f1c2a2ff511c40bf196a3b19f9c227",
+ "last_updated_timestamp": 1791414085088,
+ "message_id": "01f1c2a2ff511c40bf196a3b19f9c227",
+ "query_result": {
+  "row_count": 1,
+  "statement_id": "01f1c2a3-00be-1b07-9165-720eab466ddb"
+ },
+ "space_id": "01f1c10d662111078cd7326dff1774c6",
+ "status": "COMPLETED",
+ "user_id": 5511969577895513
+}
+
+### PASS (13.6 s): How many stations are at high risk right now?
 Genie SQL:
 SELECT COUNT(*) AS `high_risk_stations`
 FROM `serverless_stable_am1uc2_catalog`.`pdm_core`.`station_health_current`
 WHERE `risk_band` = 'HIGH'
-Genie rows: [[1]]
-Reference rows: [[1]]
-Genie text: There are **1** stations at **HIGH** risk right now based on `pdm_core.station_health_current`. This means the current count of stations in the **HIGH** risk band is **1**.
+Genie rows: [[4]]
+Reference rows: [[4]]
+Genie text: There are **4** stations at **HIGH** risk right now. Based on the current snapshot, the count of stations needing the most immediate maintenance attention is **4**.
 
-### PASS (17.7 s): How many stations are currently down?
+### PASS (13.2 s): How many stations are currently down?
 Genie SQL:
-SELECT COUNT(*) AS `stations_down`
+SELECT COUNT(*) AS `stations_currently_down`
 FROM `serverless_stable_am1uc2_catalog`.`pdm_core`.`station_health_current`
 WHERE `risk_band` = 'DOWN'
 Genie rows: [[0]]
 Reference rows: [[0]]
-Genie text: There are **0 stations** currently marked as **DOWN**. Based on the current station status data, **no stations are currently down**.
+Genie text: There are **0** stations currently down, based on the current station status data. With **0** stations in the **DOWN** category, all stations are currently operating rather than stopped.
 
-### PASS (23.4 s): What are the 5 stations with the highest failure probability right now?
+### PASS (18.9 s): What are the 5 stations with the highest failure probability right now?
 Genie SQL:
-WITH ranked AS (
+WITH `ranked_stations` AS (
   SELECT
-    station_id,
-    plant_id,
-    line_id,
-    station_type,
-    ROUND(failure_probability * 100, 1) AS failure_probability_pct,
-    risk_band,
-    top_signal,
-    RANK() OVER (ORDER BY failure_probability DESC) AS rank
-  FROM serverless_stable_am1uc2_catalog.pdm_core.station_health_current
-  WHERE failure_probability IS NOT NULL AND station_id IS NOT NULL
+    `station_id`,
+    `plant_id`,
+    `line_id`,
+    `station_type`,
+    `failure_probability` * 100 AS `failure_probability_pct`,
+    `risk_band`,
+    `top_signal`,
+    `top_signal_deviation_pct`,
+    RANK() OVER (ORDER BY `failure_probability` DESC) AS `risk_rank`
+  FROM `serverless_stable_am1uc2_catalog`.`pdm_core`.`station_health_current`
+  WHERE `failure_probability` IS NOT NULL
+    AND `station_id` IS NOT NULL
 )
 SELECT
-  station_id,
-  plant_id,
-  line_id,
-  station_type,
-  failure_probability_pct,
-  risk_band,
-  top_signal
-FROM ranked
-WHERE rank <= 5
-ORDER BY failure_probability_pct DESC, station_id ASC
-Genie rows: [['PLT-E-B02', 'PLT-E', 'PLT-E-B', 'cnc_mill', 100.0, 'HIGH', 'bearing_temp_c'], ['PLT-S-C04', 'PLT-S', 'PLT-S-C', 'robot_arm', 67.8, 'ELEVATED', 'vibration_rms'], ['PLT-S-C01', 'PLT-S', 'PLT-S-C', 'press', 50.3, 'ELEVATED', 'vibration_rms'], ['PLT-N-D07', 'PLT-N', 'PLT-N-D', 'welder', 28.5, 'NORMAL', 'motor_current_a'], ['PLT-S-C02', 'PLT-S', 'PLT-S-C', 'cnc_mill', 26.1, 'NORMAL', 'vibration_rms']]
-Reference rows: [['PLT-E-B02'], ['PLT-S-C04'], ['PLT-S-C01'], ['PLT-N-D07'], ['PLT-S-C02']]
-Genie text: Would you prefer to see the top 5 stations by highest risk band instead of failure probability?
+  `station_id`,
+  `plant_id`,
+  `line_id`,
+  `station_type`,
+  `failure_probability_pct`,
+  `risk_band`,
+  `top_signal`,
+  `top_signal_deviation_pct`
+FROM `ranked_stations`
+WHERE `risk_rank` <= 5
+ORDER BY `failure_probability_pct` DESC, `station_id` ASC
+Genie rows: [['PLT-S-A06', 'PLT-S', 'PLT-S-A', 'cnc_mill', 99.63, 'HIGH', 'spindle_rpm', 29.6], ['PLT-S-D04', 'PLT-S', 'PLT-S-D', 'robot_arm', 98.9, 'HIGH', 'bearing_temp_c', 13.8], ['PLT-S-C02', 'PLT-S', 'PLT-S-C', 'cnc_mill', 88.53, 'HIGH', 'vibration_rms', 10.8], ['PLT-N-D08', 'PLT-N', 'PLT-N-D', 'press', 79.11, 'HIGH', 'acoustic_db', 10.1], ['PLT-S-D07', 'PLT-S', 'PLT-S-D', 'welder', 67.17999999999999, 'ELEVATED', 'vibration_rms', 14.9]]
+Reference rows: [['PLT-S-A06'], ['PLT-S-D04'], ['PLT-S-C02'], ['PLT-N-D08'], ['PLT-S-D07']]
+Genie text: The **5 stations with the highest failure probability right now** are:
+- **PLT-S-A06** — **99.63%** (**HIGH**)
+- **PLT-S-D04** — **98.9%** (**HIGH**)
+- **PLT-S-C02** — **88.53%** (**HIGH**)
+- **PLT-N-D08** — **79.11%** (**HIGH**)
+- **PLT-S-D07** — **67.18%** (**ELEVATED**)
 
-### PASS (18.1 s): Which station type had the most failures?
+Of these 5 stations, **4 are in Plant South** and **4 are already in the HIGH risk band**, indicating the most urgent current
+
+### PASS (12.1 s): Which station type had the most failures?
 Genie SQL:
-WITH ranked_station_types AS (
+WITH `ranked_station_types` AS (
   SELECT
     `Station Type`,
     MEASURE(`Failures`) AS `failures`,
@@ -161,14 +233,14 @@ WITH ranked_station_types AS (
 SELECT
   `Station Type`,
   `failures`
-FROM ranked_station_types
+FROM `ranked_station_types`
 WHERE `failure_rank` <= 1
 ORDER BY `failure_rank` ASC, `Station Type` ASC;
 Genie rows: [['cnc_mill', 296]]
 Reference rows: [['cnc_mill', 296]]
-Genie text: The station type with the most failures is **cnc_mill**, with **296** failures. Based on the result shown, **cnc_mill** ranks highest for failures among station types.
+Genie text: The station type with the most failures is **cnc_mill**, with **296** failures. In the result shown, **cnc_mill** is the top-ranked station type for failures.
 
-### PASS (12.8 s): What is the mean time to repair in minutes for each plant?
+### PASS (13.3 s): What is the mean time to repair in minutes for each plant?
 Genie SQL:
 SELECT
   `Plant`,
@@ -181,9 +253,9 @@ Genie rows: [['Plant East', 112.76728331661222], ['Plant North', 111.91021343462
 Reference rows: [['Plant East', 112.76728331661222], ['Plant North', 111.91021343462346], ['Plant South', 112.16677532169717]]
 Genie text: The mean time to repair is **112.77 minutes** for **Plant East**, **111.91 minutes** for **Plant North**, and **112.17 minutes** for **Plant South**. Across all 3 plants, repair times are very similar, with less than **1 minute** separating the highest and lowest values.
 
-### PASS (19.1 s): Which failure mode caused the most downtime?
+### PASS (17.6 s): Which failure mode caused the most downtime?
 Genie SQL:
-WITH ranked_failure_modes AS (
+WITH `ranked_failure_modes` AS (
   SELECT
     `Failure Mode`,
     MEASURE(`Downtime Minutes`) AS `downtime_minutes`,
@@ -195,27 +267,25 @@ WITH ranked_failure_modes AS (
 SELECT
   `Failure Mode`,
   `downtime_minutes`
-FROM ranked_failure_modes
+FROM `ranked_failure_modes`
 WHERE `downtime_rank` <= 1
-ORDER BY `downtime_minutes` DESC
+ORDER BY `downtime_minutes` DESC;
 Genie rows: [['overheating', 56431.49725154227]]
 Reference rows: [['overheating', 56431.49725154227]]
-Genie text: The failure mode that caused the most downtime was **overheating**, with **56,431** downtime minutes. In this result, **overheating** is the top downtime driver.
+Genie text: The failure mode with the most downtime is **overheating**, with **56,431** downtime minutes. Based on the single result returned, **overheating** is the top downtime driver in the maintenance data.
 
-### PASS (12.1 s): What is the total parts cost per plant?
+### PASS (17.3 s): What is the total parts cost per plant?
 Genie SQL:
-SELECT
-  `Plant`,
-  MEASURE(`Parts Cost USD`) AS `parts_cost_usd`
+SELECT `Plant`, MEASURE(`Parts Cost USD`) AS `parts_cost_usd`
 FROM `serverless_stable_am1uc2_catalog`.`pdm_ops`.`maintenance_metrics`
 WHERE `Plant` IS NOT NULL
 GROUP BY ALL
 ORDER BY `parts_cost_usd` DESC
 Genie rows: [['Plant South', 2891611.356288852], ['Plant East', 2713614.1188870384], ['Plant North', 2518897.5788193042]]
 Reference rows: [['Plant East', 2713614.1188870384], ['Plant North', 2518897.5788193042], ['Plant South', 2891611.356288852]]
-Genie text: The total parts cost is highest for **Plant South** at **$2,891,611.36**, followed by **Plant East** at **$2,713,614.12** and **Plant North** at **$2,518,897.58**. Across the 3 plants shown, **Plant South** has the highest total parts cost and **Plant North** the lowest.
+Genie text: The total parts cost is highest for **Plant South** at **$2,891,611.36**, followed by **Plant East** at **$2,713,614.12** and **Plant North** at **$2,518,897.58**. Across all 3 plants shown, **Plant South** has the highest total parts cost and **Plant North** the lowest.
 
-### PASS (19.0 s): What share of repairs were preventive for each station type?
+### PASS (18.8 s): What share of repairs were preventive for each station type?
 Genie SQL:
 SELECT
   `Station Type`,
@@ -226,9 +296,17 @@ GROUP BY ALL
 ORDER BY `preventive_share` DESC
 Genie rows: [['welder', Decimal('0.2121212121212121')], ['press', Decimal('0.2112676056338028')], ['conveyor', Decimal('0.1842105263157895')], ['cnc_mill', Decimal('0.1828254847645429')], ['robot_arm', Decimal('0.1746987951807229')]]
 Reference rows: [['cnc_mill', Decimal('0.1828254847645429')], ['conveyor', Decimal('0.1842105263157895')], ['press', Decimal('0.2112676056338028')], ['robot_arm', Decimal('0.1746987951807229')], ['welder', Decimal('0.2121212121212121')]]
-Genie text: Preventive repairs accounted for **21.21%** of work for **welder** stations, **21.13%** for **press**, **18.42%** for **conveyor**, **18.28%** for **cnc_mill**, and **17.47%** for **robot_arm**. Across these 5 station types, the preventive share is fairly close overall, ranging from **17.47%** to **21.21%**, with **welder** the highest and **robot_arm** the lowest.
+Genie text: Preventive repairs made up **17.47% to 21.21%** of repairs across the 5 station types shown, with **welder** highest and **robot_arm** lowest.
 
-### PASS (12.3 s): How many failures did Plant North have?
+- **welder:** **21.21%**
+- **press:** **21.13%**
+- **conveyor:** **18.42%**
+- **cnc_mill:** **18.28%**
+- **robot_arm:** **17.47%**
+
+The spread is narrow, so preventive repair share appears fairly consistent by station type in this result.
+
+### PASS (11.8 s): How many failures did Plant North have?
 Genie SQL:
 SELECT MEASURE(`Failures`) AS `failures`
 FROM `serverless_stable_am1uc2_catalog`.`pdm_ops`.`maintenance_metrics`
@@ -236,18 +314,24 @@ WHERE `Plant` = 'Plant North'
 GROUP BY ALL
 Genie rows: [[340]]
 Reference rows: [[340]]
-Genie text: **Plant North** had **340 failures**. Based on the single result shown, the total failures for **Plant North** in this query is **340**.
+Genie text: **Plant North** had **340 failures**. In this result, **340** is the total failure count returned for **Plant North**.
 
-### PASS (18.0 s): List the stations on line PLT-S-B with their current risk band.
+### PASS (17.5 s): List the stations on line PLT-S-B with their current risk band.
 Genie SQL:
-SELECT station_id, risk_band
-FROM serverless_stable_am1uc2_catalog.pdm_core.station_health_current
-WHERE line_id = 'PLT-S-B' AND station_id IS NOT NULL AND risk_band IS NOT NULL
-ORDER BY station_id ASC
-Genie rows: [['PLT-S-B01', 'HIGH'], ['PLT-S-B02', 'NORMAL'], ['PLT-S-B03', 'NORMAL'], ['PLT-S-B04', 'NORMAL'], ['PLT-S-B05', 'NORMAL']]
-Reference rows: [['PLT-S-B01', 'HIGH'], ['PLT-S-B02', 'NORMAL'], ['PLT-S-B03', 'NORMAL'], ['PLT-S-B04', 'NORMAL'], ['PLT-S-B05', 'NORMAL']]
-Genie text: There are **8 stations** on line **PLT-S-B** in the current data; **1** is **HIGH** risk and **7** are **NORMAL**. Examples include:
-- **PLT-S-B01** — **HIGH**
+SELECT
+  `station_id`,
+  `risk_band`
+FROM `serverless_stable_am1uc2_catalog`.`pdm_core`.`station_health_current`
+WHERE `line_id` = 'PLT-S-B'
+  AND `station_id` IS NOT NULL
+  AND `risk_band` IS NOT NULL
+ORDER BY `station_id` ASC
+Genie rows: [['PLT-S-B01', 'NORMAL'], ['PLT-S-B02', 'NORMAL'], ['PLT-S-B03', 'NORMAL'], ['PLT-S-B04', 'NORMAL'], ['PLT-S-B05', 'NORMAL']]
+Reference rows: [['PLT-S-B01', 'NORMAL'], ['PLT-S-B02', 'NORMAL'], ['PLT-S-B03', 'NORMAL'], ['PLT-S-B04', 'NORMAL'], ['PLT-S-B05', 'NORMAL']]
+Genie text: All **8 stations** on line **PLT-S-B** are currently in the **NORMAL** risk band, with no elevated, high, or down stations shown.
+
+Notable stations include:
+- **PLT-S-B01** — **NORMAL**
 - **PLT-S-B02** — **NORMAL**
 - **PLT-S-B03** — **NORMAL**
 - **PLT-S-B04** — **NORMAL**
@@ -263,16 +347,16 @@ Output:
 
 | verdict | seconds | question |
 |---|---|---|
-| PASS | 18.0 | How many stations are at high risk right now? |
-| PASS | 17.7 | How many stations are currently down? |
-| PASS | 23.4 | What are the 5 stations with the highest failure probability right now? |
-| PASS | 18.1 | Which station type had the most failures? |
-| PASS | 12.8 | What is the mean time to repair in minutes for each plant? |
-| PASS | 19.1 | Which failure mode caused the most downtime? |
-| PASS | 12.1 | What is the total parts cost per plant? |
-| PASS | 19.0 | What share of repairs were preventive for each station type? |
-| PASS | 12.3 | How many failures did Plant North have? |
-| PASS | 18.0 | List the stations on line PLT-S-B with their current risk band. |
+| PASS | 13.6 | How many stations are at high risk right now? |
+| PASS | 13.2 | How many stations are currently down? |
+| PASS | 18.9 | What are the 5 stations with the highest failure probability right now? |
+| PASS | 12.1 | Which station type had the most failures? |
+| PASS | 13.3 | What is the mean time to repair in minutes for each plant? |
+| PASS | 17.6 | Which failure mode caused the most downtime? |
+| PASS | 17.3 | What is the total parts cost per plant? |
+| PASS | 18.8 | What share of repairs were preventive for each station type? |
+| PASS | 11.8 | How many failures did Plant North have? |
+| PASS | 17.5 | List the stations on line PLT-S-B with their current risk band. |
 
 Output:
 
@@ -296,26 +380,24 @@ Output:
 
 ```text
 ### Which stations need maintenance soon?
-Genie text: **6 stations** currently need maintenance soon: **5 are HIGH risk** and **1 is ELEVATED**.
+Genie text: **7 stations** currently need maintenance soon: **4 are HIGH risk** and **3 are ELEVATED**. Some of the highest-risk stations are:
+- **PLT-S-C08** — **99.6%** risk (**HIGH**), driven by **vibration_rms**
+- **PLT-S-D04** — **98.6%** risk (**HIGH**), driven by **bearing_temp_c**
+- **PLT-N-C05** — **88.5%** risk (**HIGH**), driven by **vibration_rms**
+- **PLT-S-C02** — **87.6%** risk (**HIGH**), driven by **motor_current_a**
+- **PLT-N-C01** — **51.5%** risk (**ELEVATED**), driven by **vibration_rms**
 
-Examples include:
-- **PLT-N-C01** (Plant North) — **99.86%** risk, **HIGH**, driven by **hydraulic_pressure_bar**
-- **PLT-S-B01** (Plant South) — **99.28%** risk, **HIGH**, driven by **motor_current_a**
-- **PLT-S-D01** (Plant South) — **97.08%** risk, **HIGH**, driven by **cycle_time_s**
-- **PLT-S-A01** (Plant South) — **92.76%** risk, **HIGH**, driven by **cycle_time_s**
-- **PLT-S-C04** (Plant South) — **70.83%** risk, **HIGH**, driven by **vibration_rms**
-
-Plant South accounts for **4 of the 6** at-risk stations, and the risk levels range from **50.76%** to **99.86%**.
+Across these 7 stations, risk ranges from **47.6% to 99.6%**, and **Plant South** accounts for **4 of the 7** stations flagged for near-term maintenance.
 Genie SQL:
-SELECT `station_id`, `plant_id`, `line_id`, `station_type`, `criticality`, `risk_band`, `failure_probability` * 100 AS `risk_pct`, `top_signal`, `top_signal_deviation_pct`, `last_reading_ts`
-FROM `serverless_stable_am1uc2_catalog`.`pdm_core`.`station_health_current`
-WHERE `risk_band` IN ('HIGH', 'ELEVATED')
-  AND `failure_probability` IS NOT NULL
-ORDER BY `failure_probability` DESC, `station_id` ASC
-rows: [['PLT-N-C01', 'PLT-N', 'PLT-N-C', 'press', 'high', 'HIGH', 99.92, 'hydraulic_pressure_bar', 10.1, datetime.datetime(2026, 10, 6, 17, 49, 9)], ['PLT-S-B01', 'PLT-S', 'PLT-S-B', 'press', 'medium', 'HIGH', 99.61, 'motor_current_a', 10.7, datetime.datetime(2026, 10, 6, 17, 49, 9)], ['PLT-S-A01', 'PLT-S', 'PLT-S-A', 'press', 'medium', 'HIGH', 97.96000000000001, 'cycle_time_s', 8.2, datetime.datetime(2026, 10, 6, 17, 49, 9)], ['PLT-S-D01', 'PLT-S', 'PLT-S-D', 'press', 'low', 'HIGH', 96.95, 'cycle_time_s', 11.0, datetime.datetime(2026, 10, 6, 17, 49, 9)], ['PLT-S-C04', 'PLT-S', 'PLT-S-C', 'robot_arm', 'low', 'ELEVATED', 48.38, 'vibration_rms', 19.7, datetime.datetime(2026, 10, 6, 17, 49, 9)]]
+SELECT station_health_current.station_id, station_health_current.plant_id, station_health_current.line_id, station_health_current.station_type, station_health_current.risk_band, ROUND(station_health_current.failure_probability * 100, 1) AS risk_pct, station_health_current.top_signal, station_health_current.top_signal_deviation_pct
+FROM serverless_stable_am1uc2_catalog.pdm_core.station_health_current
+WHERE station_health_current.risk_band IN ('HIGH', 'ELEVATED')
+  AND station_health_current.failure_probability IS NOT NULL
+ORDER BY station_health_current.failure_probability DESC, station_health_current.station_id ASC
+rows: [['PLT-S-C08', 'PLT-S', 'PLT-S-C', 'press', 'HIGH', 99.9, 'vibration_rms', 29.9], ['PLT-S-D04', 'PLT-S', 'PLT-S-D', 'robot_arm', 'HIGH', 99.5, 'bearing_temp_c', 41.6], ['PLT-N-C05', 'PLT-N', 'PLT-N-C', 'conveyor', 'HIGH', 91.8, 'vibration_rms', 75.9], ['PLT-S-C02', 'PLT-S', 'PLT-S-C', 'cnc_mill', 'HIGH', 76.9, 'motor_current_a', 10.9], ['PLT-N-D03', 'PLT-N', 'PLT-N-D', 'welder', 'ELEVATED', 54.4, 'vibration_rms', 34.1]]
 
 ### Why is the riskiest station at risk?
-Genie text: The riskiest station is **PLT-N-C01** in **PLT-N**, and **PLT-N-C01** is at risk because the top warning signal is **hydraulic_pressure_bar** with a **12.2%** deviation. **PLT-N-C01** has a maintenance risk of **99.9%** and is in the **HIGH** risk band, which makes **PLT-N-C01** the highest-risk station in the current view.
+Genie text: The riskiest station is **PLT-S-C08** in plant **PLT-S** on line **PLT-S-C**, with a failure probability of **99.91%** and a risk band of **HIGH**. Station **PLT-S-C08** is at risk because the top signal is **vibration_rms**, which is running **28.7%** above normal; the station type is **press**.
 Genie SQL:
 WITH ranked AS (
   SELECT
@@ -323,7 +405,7 @@ WITH ranked AS (
     plant_id,
     line_id,
     station_type,
-    failure_probability,
+    failure_probability * 100 AS risk_pct,
     risk_band,
     top_signal,
     top_signal_deviation_pct,
@@ -336,14 +418,14 @@ SELECT
   plant_id,
   line_id,
   station_type,
-  ROUND(failure_probability * 100, 1) AS risk_pct,
+  risk_pct,
   risk_band,
   top_signal,
   top_signal_deviation_pct
 FROM ranked
 WHERE risk_rank = 1
 ORDER BY station_id ASC
-rows: [['PLT-S-B01', 'PLT-S', 'PLT-S-B', 'press', 99.9, 'HIGH', 'motor_current_a', 12.4]]
+rows: [['PLT-S-C08', 'PLT-S', 'PLT-S-C', 'press', 99.95, 'HIGH', 'vibration_rms', 27.7]]
 
 ### Which station types fail most often and what is their MTTR?
 Genie text: The station type that fails most often is **cnc_mill** with **296** failures and an average repair time of **115.2 minutes**. Examples include:
@@ -352,10 +434,12 @@ Genie text: The station type that fails most often is **cnc_mill** with **296** 
 - **welder** — **260** failures, **112.5 minutes** MTTR
 - **robot_arm** — **137** failures, **108.9 minutes** MTTR
 - **conveyor** — **124** failures, **112.0 minutes** MTTR
-
-Across these 5 station types, failure counts drop sharply after the top three, while MTTR stays fairly consistent at about **109 to 115 minutes**.
+Across these 5 station types, failures drop sharply after the top three, while MTTR stays fairly consistent at about **109 to 115 minutes**.
 Genie SQL:
-SELECT `Station Type`, MEASURE(`Failures`) AS `failures`, MEASURE(`Mean Time To Repair Minutes`) AS `mttr_minutes`
+SELECT
+  `Station Type`,
+  MEASURE(`Failures`) AS `failures`,
+  MEASURE(`Mean Time To Repair Minutes`) AS `mttr_minutes`
 FROM `serverless_stable_am1uc2_catalog`.`pdm_ops`.`maintenance_metrics`
 WHERE `Station Type` IS NOT NULL
 GROUP BY ALL
@@ -363,14 +447,15 @@ ORDER BY `failures` DESC
 rows: [['cnc_mill', 296, 115.1976376037942], ['press', 280, 110.83746264557489], ['welder', 260, 112.50394617635841], ['robot_arm', 137, 108.85064914589415], ['conveyor', 124, 112.01279122873008]]
 
 ### How many open work orders do we have by priority?
-Genie text: The visible result shows **Priority P1 = 0 open work orders**. In the returned data, **P1** is the only priority shown, so there are **no open work orders** in this result set.
+Genie text: There are **0** open work orders in the visible results for both priorities returned: **P1** and **P2**. Across these **2** priority levels shown, open work orders are **zero in every case**.
+
+- **P1:** **0** open work orders
+- **P2:** **0** open work orders
 Genie SQL:
-SELECT
-  `Priority`,
-  MEASURE(`Open Work Orders`) AS `open_work_orders`
+SELECT `Priority`, MEASURE(`Open Work Orders`) AS `open_work_orders`
 FROM `serverless_stable_am1uc2_catalog`.`pdm_ops`.`work_order_metrics`
 WHERE `Priority` IS NOT NULL
 GROUP BY ALL
 ORDER BY `open_work_orders` DESC
-rows: [['P1', 0]]
+rows: [['P1', 0], ['P2', 0]]
 ```

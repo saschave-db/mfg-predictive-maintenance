@@ -1,10 +1,10 @@
 # Executed notebook: E01_zerobus_ingestion
 
-Exported from Databricks job run `980301348000608` (task `E01_zerobus_ingestion`, task run `96008841838528`).
+Exported from Databricks job run `994447175034582` (task `E01_zerobus_ingestion`, task run `916008253330264`).
 
-Result: **SUCCESS** · start 2026-10-06T18:06:35.144000+00:00 · end 2026-10-06T18:08:06.766000+00:00
+Result: **SUCCESS** · start 2026-10-07T22:56:54.424000+00:00 · end 2026-10-07T22:58:19.974000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E01 · Data generation and Lakeflow Connect Zerobus ingestion
@@ -67,14 +67,15 @@ Output:
 job: pdm_simulator_zerobus | job_id: 16077621483238
 compute: serverless environment 4 | dependencies: ['databricks-zerobus-ingest-sdk>=1.0.0', 'databricks-sdk>=0.81.0', 'pg8000>=1.31']
 task parameters: ['--src-path=/Workspace/Users/sascha.vetter@databricks.com/.bundle/mfg-predictive-maintenance/demo/files/src', '--catalog=serverless_stable_am1uc2_catalog', '--endpoint=7474651880045550.zerobus.us-east-2.cloud.databricks.com', '--duration-min={{job.parameters.duration_min}}', '--lakebase-endpoint=projects/pdm-demo/branches/production/endpoints/primary', '--lakebase-host=ep-autumn-paper-d8fiis3p.database.us-east-2.cloud.databricks.com', '--extra={{job.parameters.extra_args}}']
-run 433290942380103: RUNNING  started 2026-10-06T16:54:20.522000
+run 599986915233103: RUNNING  started 2026-10-07T22:49:11.550000
+run 433290942380103: TERMINATED CANCELED started 2026-10-06T16:54:20.522000
 run 320983066504714: TERMINATED CANCELED started 2026-10-05T22:27:17.055000
 ```
 
 Output:
 
 ```text
-/home/spark-3c2cbc6d-c4e7-474c-8926-b4/.ipykernel/67/command-6364727878986308-2057826776:8: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+/home/spark-e49c84ee-710a-4c82-a997-0c/.ipykernel/67/command-6364727878986308-2057826776:8: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
   f"started {datetime.datetime.utcfromtimestamp(r.start_time / 1000).isoformat() if r.start_time else ''}")
 ```
 
@@ -120,31 +121,31 @@ Output:
 
 | version | timestamp | userName | operation | engineInfo |
 |---|---|---|---|---|
-| 1157 | 2026-10-06T18:07:10.000Z | (not recorded) | WRITE | Zerobus |
-| 1156 | 2026-10-06T18:07:05.000Z | (not recorded) | WRITE | Zerobus |
-| 1155 | 2026-10-06T18:07:00.000Z | (not recorded) | WRITE | Zerobus |
-| 1154 | 2026-10-06T18:06:55.000Z | (not recorded) | WRITE | Zerobus |
-| 1153 | 2026-10-06T18:06:50.000Z | (not recorded) | WRITE | Zerobus |
-| 1152 | 2026-10-06T18:06:45.000Z | (not recorded) | WRITE | Zerobus |
-| 1151 | 2026-10-06T18:06:40.000Z | (not recorded) | WRITE | Zerobus |
-| 1150 | 2026-10-06T18:06:35.000Z | (not recorded) | WRITE | Zerobus |
-| 1149 | 2026-10-06T18:06:30.000Z | (not recorded) | WRITE | Zerobus |
-| 1148 | 2026-10-06T18:06:25.000Z | (not recorded) | WRITE | Zerobus |
+| 1790 | 2026-10-07T22:57:10.000Z | (not recorded) | WRITE | Zerobus |
+| 1789 | 2026-10-07T22:57:05.000Z | (not recorded) | WRITE | Zerobus |
+| 1788 | 2026-10-07T22:57:00.000Z | (not recorded) | WRITE | Zerobus |
+| 1787 | 2026-10-07T22:56:55.000Z | (not recorded) | WRITE | Zerobus |
+| 1786 | 2026-10-07T22:56:50.000Z | (not recorded) | WRITE | Zerobus |
+| 1785 | 2026-10-07T22:56:45.000Z | (not recorded) | WRITE | Zerobus |
+| 1784 | 2026-10-07T22:56:40.000Z | (not recorded) | WRITE | Zerobus |
+| 1783 | 2026-10-07T22:56:35.000Z | (not recorded) | WRITE | Zerobus |
+| 1782 | 2026-10-07T22:56:30.000Z | (not recorded) | WRITE | Zerobus |
+| 1781 | 2026-10-07T22:56:25.000Z | (not recorded) | WRITE | Zerobus |
 
 Output:
 
 | engineInfo | operation | commits | first_commit | last_commit |
 |---|---|---|---|---|
-| Zerobus | WRITE | 1157 | 2026-10-05T22:07:30.000Z | 2026-10-06T18:07:20.000Z |
+| Zerobus | WRITE | 1791 | 2026-10-05T22:07:30.000Z | 2026-10-07T22:57:30.000Z |
+| Databricks-Runtime/19.9.x-aarch64-photon-scala2.13 | OPTIMIZE | 2 | 2026-10-06T17:15:44.000Z | 2026-10-06T21:46:23.000Z |
 | Databricks-Runtime/19.8.x-aarch64-photon-scala2.13 | OPTIMIZE | 1 | 2026-10-05T22:53:49.000Z | 2026-10-05T22:53:49.000Z |
-| Databricks-Runtime/19.9.x-aarch64-photon-scala2.13 | OPTIMIZE | 1 | 2026-10-06T17:15:44.000Z | 2026-10-06T17:15:44.000Z |
 | Databricks-Runtime/19.9.x-aarch64-photon-scala2.13 | CREATE TABLE | 1 | 2026-10-05T21:57:47.000Z | 2026-10-05T21:57:47.000Z |
 
 Output:
 
 | zerobus_commits_last_10min | avg_seconds_between_commits |
 |---|---|
-| 120 | 5.0 |
+| 98 | 1031.9 |
 
 ```python
 ## 4 · Throughput and freshness per gateway (last 10 minutes)
@@ -164,25 +165,24 @@ Output:
 
 | gateway_id | rows | stations | rows_per_s | newest_reading | seconds_behind_now |
 |---|---|---|---|---|---|
-| gw-plt-e | 19040 | 32 | 31.7 | 2026-10-06T18:07:39.000Z | 5 |
-| gw-plt-n | 19040 | 32 | 31.7 | 2026-10-06T18:07:39.000Z | 5 |
-| gw-plt-s | 19040 | 32 | 31.7 | 2026-10-06T18:07:39.000Z | 5 |
+| gw-plt-e | 16224 | 32 | 27.0 | 2026-10-07T22:57:59.000Z | 2 |
+| gw-plt-n | 16224 | 32 | 27.0 | 2026-10-07T22:57:59.000Z | 2 |
+| gw-plt-s | 16224 | 32 | 27.0 | 2026-10-07T22:57:59.000Z | 2 |
 
 Output:
 
 | minute | rows | stations |
 |---|---|---|
-| 2026-10-06T17:57:00.000Z | 768 | 96 |
-| 2026-10-06T17:58:00.000Z | 5760 | 96 |
-| 2026-10-06T17:59:00.000Z | 5760 | 96 |
-| 2026-10-06T18:00:00.000Z | 5760 | 96 |
-| 2026-10-06T18:01:00.000Z | 5760 | 96 |
-| 2026-10-06T18:02:00.000Z | 5760 | 96 |
-| 2026-10-06T18:03:00.000Z | 5760 | 96 |
-| 2026-10-06T18:04:00.000Z | 5760 | 96 |
-| 2026-10-06T18:05:00.000Z | 5760 | 96 |
-| 2026-10-06T18:06:00.000Z | 5760 | 96 |
-| 2026-10-06T18:07:00.000Z | 4800 | 96 |
+| 2026-10-07T22:49:00.000Z | 2592 | 96 |
+| 2026-10-07T22:50:00.000Z | 5760 | 96 |
+| 2026-10-07T22:51:00.000Z | 5760 | 96 |
+| 2026-10-07T22:52:00.000Z | 5760 | 96 |
+| 2026-10-07T22:53:00.000Z | 5760 | 96 |
+| 2026-10-07T22:54:00.000Z | 5760 | 96 |
+| 2026-10-07T22:55:00.000Z | 5760 | 96 |
+| 2026-10-07T22:56:00.000Z | 5760 | 96 |
+| 2026-10-07T22:57:00.000Z | 5760 | 96 |
+| 2026-10-07T22:58:00.000Z | 480 | 96 |
 
 ## 5 · Sample records and duplicate rate
 `event_id` = station + second. Duplicates would come from Zerobus retries (at-least-once); silver removes them.
@@ -199,20 +199,20 @@ Output:
 
 | event_id | gateway_id | plant_id | line_id | station_id | ts | seq | vibration_rms | bearing_temp_c | motor_current_a | spindle_rpm | hydraulic_pressure_bar | acoustic_db | cycle_time_s | firmware |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| PLT-E-A01-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A01 | 2026-10-06T18:07:49.000Z | 1791310069 | 1.894 | 45.893 | 32.668 | 1245.745 | 185.074 | 84.326 | 10.744 | gw-fw-3.2.1 |
-| PLT-E-A02-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A02 | 2026-10-06T18:07:49.000Z | 1791310069 | 1.518 | 54.105 | 18.741 | 9132.268 | 61.372 | 73.418 | 47.82 | gw-fw-3.2.1 |
-| PLT-E-A03-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A03 | 2026-10-06T18:07:49.000Z | 1791310069 | 0.78 | 63.754 | 121.557 | 307.416 | 5.972 | 69.772 | 19.035 | gw-fw-3.2.1 |
-| PLT-E-A04-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A04 | 2026-10-06T18:07:49.000Z | 1791310069 | 0.896 | 41.078 | 11.207 | 3130.321 | 5.978 | 67.691 | 15.096 | gw-fw-3.2.1 |
-| PLT-E-A05-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A05 | 2026-10-06T18:07:49.000Z | 1791310069 | 1.287 | 40.374 | 7.498 | 1390.915 | 5.843 | 66.389 | 5.421 | gw-fw-3.2.1 |
-| PLT-E-A06-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A06 | 2026-10-06T18:07:49.000Z | 1791310069 | 1.447 | 48.626 | 15.677 | 9205.837 | 60.364 | 67.882 | 45.055 | gw-fw-3.2.1 |
-| PLT-E-A07-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A07 | 2026-10-06T18:07:49.000Z | 1791310069 | 0.744 | 60.134 | 110.71 | 299.755 | 6.408 | 69.42 | 18.291 | gw-fw-3.2.1 |
-| PLT-E-A08-1791310069 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A08 | 2026-10-06T18:07:49.000Z | 1791310069 | 1.803 | 45.251 | 28.841 | 1146.993 | 169.307 | 74.306 | 12.915 | gw-fw-3.2.1 |
+| PLT-E-A01-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A01 | 2026-10-07T22:58:04.000Z | 1791413884 | 1.964 | 45.144 | 32.545 | 1269.132 | 175.815 | 82.594 | 11.985 | gw-fw-3.2.1 |
+| PLT-E-A02-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A02 | 2026-10-07T22:58:04.000Z | 1791413884 | 1.602 | 54.169 | 18.659 | 9107.568 | 60.341 | 72.123 | 46.979 | gw-fw-3.2.1 |
+| PLT-E-A03-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A03 | 2026-10-07T22:58:04.000Z | 1791413884 | 0.773 | 60.855 | 114.022 | 304.743 | 5.904 | 72.884 | 21.049 | gw-fw-3.2.1 |
+| PLT-E-A04-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A04 | 2026-10-07T22:58:04.000Z | 1791413884 | 1.017 | 39.316 | 10.68 | 3172.369 | 5.72 | 65.352 | 16.3 | gw-fw-3.2.1 |
+| PLT-E-A05-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A05 | 2026-10-07T22:58:04.000Z | 1791413884 | 1.285 | 40.046 | 7.399 | 1413.817 | 5.837 | 65.24 | 5.128 | gw-fw-3.2.1 |
+| PLT-E-A06-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A06 | 2026-10-07T22:58:04.000Z | 1791413884 | 1.539 | 47.225 | 17.849 | 9041.084 | 61.064 | 66.909 | 43.264 | gw-fw-3.2.1 |
+| PLT-E-A07-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A07 | 2026-10-07T22:58:04.000Z | 1791413884 | 0.864 | 60.762 | 115.544 | 297.32 | 6.479 | 69.996 | 18.906 | gw-fw-3.2.1 |
+| PLT-E-A08-1791413884 | gw-plt-e | PLT-E | PLT-E-A | PLT-E-A08 | 2026-10-07T22:58:04.000Z | 1791413884 | 1.799 | 46.472 | 30.185 | 1164.4 | 170.296 | 74.086 | 11.96 | gw-fw-3.2.1 |
 
 Output:
 
 | bronze_rows | distinct_event_ids | silver_rows |
 |---|---|---|
-| 558528 | 558528 | 558048 |
+| 863232 | 863232 | 862272 |
 
 ## 6 · The simulated degradation is visible in the raw data
 Stations in a degradation episode drift away from their nominal operating point. This lists stations whose
@@ -235,13 +235,13 @@ Output:
 
 | station_id | station_type | vibration_x_nominal | temp_x_nominal | pressure_x_nominal | rpm |
 |---|---|---|---|---|---|
-| PLT-N-C03 | welder | 0.21 | 0.83 | 1.0 | 47.0 |
-| PLT-S-B02 | cnc_mill | 0.65 | 0.96 | 0.97 | 6175.0 |
-| PLT-S-B07 | welder | 1.23 | 1.24 | 1.05 | 288.0 |
-| PLT-S-B06 | cnc_mill | 1.2 | 1.0 | 1.09 | 8695.0 |
-| PLT-S-A01 | press | 1.19 | 0.98 | 1.02 | 1174.0 |
-| PLT-S-C02 | cnc_mill | 1.17 | 1.17 | 1.01 | 8823.0 |
-| PLT-N-D05 | conveyor | 1.14 | 1.06 | 1.06 | 1410.0 |
-| PLT-S-B04 | robot_arm | 1.13 | 0.93 | 0.96 | 3042.0 |
-| PLT-N-A06 | cnc_mill | 1.12 | 0.99 | 1.02 | 8813.0 |
-| PLT-E-D05 | conveyor | 0.95 | 0.88 | 1.02 | 1510.0 |
+| PLT-S-A04 | robot_arm | 3.17 | 1.13 | 1.02 | 2956.0 |
+| PLT-N-C07 | welder | 1.19 | 1.32 | 1.01 | 298.0 |
+| PLT-S-D07 | welder | 1.28 | 1.08 | 0.98 | 290.0 |
+| PLT-E-B01 | press | 1.13 | 0.97 | 0.98 | 1273.0 |
+| PLT-S-C08 | press | 1.12 | 0.99 | 0.95 | 1214.0 |
+| PLT-E-D05 | conveyor | 0.95 | 0.9 | 1.01 | 1509.0 |
+| PLT-S-C02 | cnc_mill | 1.1 | 1.05 | 1.01 | 8840.0 |
+| PLT-S-A06 | cnc_mill | 1.07 | 1.1 | 1.05 | 8960.0 |
+| PLT-N-D06 | cnc_mill | 1.09 | 1.04 | 0.99 | 9028.0 |
+| PLT-E-B03 | welder | 1.09 | 1.0 | 1.0 | 294.0 |

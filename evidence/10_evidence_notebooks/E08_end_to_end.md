@@ -1,10 +1,10 @@
 # Executed notebook: E08_end_to_end
 
-Exported from Databricks job run `980301348000608` (task `E08_end_to_end`, task run `175823207056605`).
+Exported from Databricks job run `994447175034582` (task `E08_end_to_end`, task run `472079048977763`).
 
-Result: **SUCCESS** · start 2026-10-06T17:51:40.307000+00:00 · end 2026-10-06T17:59:07.512000+00:00
+Result: **SUCCESS** · start 2026-10-07T23:05:46.571000+00:00 · end 2026-10-07T23:14:01.994000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E08 · End-to-end live run: fault -> alert -> work order -> repair -> recovery
@@ -57,17 +57,17 @@ pg_table(conn, "SELECT command_id, status, requested_at, applied_at FROM pdm_ops
 Output:
 
 ```text
-target station: PLT-S-B06 | current risk: 0.001
-command 3 requested at 2026-10-06 17:51:52.893947+00:00
+target station: PLT-S-B06 | current risk: 0.0014
+command 7 requested at 2026-10-07 23:05:59.258649+00:00
 | command_id | status | requested_at | applied_at |
 |---|---|---|---|
-| 3 | applied | 2026-10-06 17:51:52.893947+00:00 | 2026-10-06 17:51:53.002039+00:00 |
+| 7 | applied | 2026-10-07 23:05:59.258649+00:00 | 2026-10-07 23:06:01.001355+00:00 |
 ```
 
 Output:
 
 ```text
-{"text/plain": "[[3,\n  'applied',\n  datetime.datetime(2026, 10, 6, 17, 51, 52, 893947, tzinfo=datetime.timezone.utc),\n  datetime.datetime(2026, 10, 6, 17, 51, 53, 2039, tzinfo=datetime.timezone.utc)]]"}
+{"text/plain": "[[7,\n  'applied',\n  datetime.datetime(2026, 10, 7, 23, 5, 59, 258649, tzinfo=datetime.timezone.utc),\n  datetime.datetime(2026, 10, 7, 23, 6, 1, 1355, tzinfo=datetime.timezone.utc)]]"}
 ```
 
 ## 2 · Watch Delta and Postgres until the station is HIGH where the app reads it
@@ -100,31 +100,33 @@ Output:
 
 | t (UTC) | Delta window | Delta risk | Delta band | Postgres window | Postgres risk | Postgres band | top signal | vibration |
 |---|---|---|---|---|---|---|---|---|
-| 17:51:59 | 17:51:10 | 0.1% | NORMAL | 17:51:10 | 0.1% | NORMAL | hydraulic_pressure_bar | 1.56 |
-| 17:52:17 | 17:51:30 | 0.1% | NORMAL | 17:51:20 | 0.1% | NORMAL | hydraulic_pressure_bar | 1.56 |
-| 17:52:33 | 17:51:40 | 0.1% | NORMAL | 17:51:40 | 0.1% | NORMAL | hydraulic_pressure_bar | 1.53 |
-| 17:52:50 | 17:52:00 | 0.1% | NORMAL | 17:51:50 | 0.1% | NORMAL | hydraulic_pressure_bar | 1.54 |
-| 17:53:06 | 17:52:20 | 0.1% | NORMAL | 17:52:10 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.54 |
-| 17:53:22 | 17:52:30 | 0.2% | NORMAL | 17:52:30 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.55 |
-| 17:53:39 | 17:52:50 | 0.3% | NORMAL | 17:52:40 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.54 |
-| 17:53:55 | 17:53:10 | 0.6% | NORMAL | 17:53:00 | 0.5% | NORMAL | hydraulic_pressure_bar | 1.55 |
-| 17:54:11 | 17:53:20 | 0.7% | NORMAL | 17:53:10 | 0.6% | NORMAL | hydraulic_pressure_bar | 1.54 |
-| 17:54:27 | 17:53:40 | 0.8% | NORMAL | 17:53:30 | 0.7% | NORMAL | hydraulic_pressure_bar | 1.54 |
-| 17:54:43 | 17:53:50 | 0.9% | NORMAL | 17:53:50 | 0.9% | NORMAL | hydraulic_pressure_bar | 1.55 |
-| 17:55:00 | 17:54:10 | 0.4% | NORMAL | 17:54:10 | 0.4% | NORMAL | hydraulic_pressure_bar | 1.57 |
-| 17:55:16 | 17:54:30 | 1.1% | NORMAL | 17:54:20 | 0.5% | NORMAL | hydraulic_pressure_bar | 1.58 |
-| 17:55:32 | 17:54:50 | 5.6% | NORMAL | 17:54:50 | 5.6% | NORMAL | vibration_rms | 1.68 |
-| 17:55:48 | 17:55:00 | 21.9% | NORMAL | 17:55:00 | 21.9% | NORMAL | vibration_rms | 1.75 |
-| 17:56:05 | 17:55:10 | 32.2% | NORMAL | 17:55:10 | 32.2% | NORMAL | vibration_rms | 1.78 |
-| 17:56:21 | 17:55:40 | 35.0% | NORMAL | 17:55:40 | 35.0% | NORMAL | vibration_rms | 1.90 |
-| 17:56:37 | 17:55:50 | 42.7% | ELEVATED | 17:55:40 | 35.0% | NORMAL | vibration_rms | 1.90 |
-| 17:56:54 | 17:56:00 | 43.4% | ELEVATED | 17:56:00 | 43.4% | ELEVATED | vibration_rms | 2.01 |
-| 17:57:10 | 17:56:20 | 37.4% | NORMAL | 17:56:20 | 37.4% | NORMAL | vibration_rms | 2.16 |
-| 17:57:26 | 17:56:40 | 88.8% | HIGH | 17:56:40 | 88.8% | HIGH | vibration_rms | 2.34 |
-first delta_elevated: 17:56:37 UTC, 285 s after injection
-first postgres_elevated: 17:56:54 UTC, 302 s after injection
-first delta_high: 17:57:26 UTC, 334 s after injection
-first postgres_high: 17:57:26 UTC, 334 s after injection
+| 23:06:05 | 23:05:20 | 0.2% | NORMAL | 23:05:20 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.54 |
+| 23:06:23 | 23:05:30 | 0.5% | NORMAL | 23:05:20 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.54 |
+| 23:06:39 | 23:05:40 | 0.4% | NORMAL | 23:05:40 | 0.4% | NORMAL | hydraulic_pressure_bar | 1.55 |
+| 23:06:55 | 23:06:10 | 0.5% | NORMAL | 23:06:10 | 0.5% | NORMAL | hydraulic_pressure_bar | 1.55 |
+| 23:07:11 | 23:06:20 | 0.4% | NORMAL | 23:06:20 | 0.4% | NORMAL | hydraulic_pressure_bar | 1.55 |
+| 23:07:29 | 23:06:40 | 0.4% | NORMAL | 23:06:40 | 0.4% | NORMAL | hydraulic_pressure_bar | 1.55 |
+| 23:07:45 | 23:07:00 | 0.3% | NORMAL | 23:07:00 | 0.3% | NORMAL | hydraulic_pressure_bar | 1.56 |
+| 23:08:01 | 23:07:10 | 0.2% | NORMAL | 23:07:10 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.55 |
+| 23:08:18 | 23:07:30 | 0.2% | NORMAL | 23:07:30 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.54 |
+| 23:08:34 | 23:07:50 | 0.2% | NORMAL | 23:07:50 | 0.2% | NORMAL | hydraulic_pressure_bar | 1.55 |
+| 23:08:51 | 23:08:00 | 0.1% | NORMAL | 23:08:00 | 0.1% | NORMAL | hydraulic_pressure_bar | 1.54 |
+| 23:09:08 | 23:08:20 | 0.1% | NORMAL | 23:08:20 | 0.1% | NORMAL | hydraulic_pressure_bar | 1.55 |
+| 23:09:24 | 23:08:40 | 0.2% | NORMAL | 23:08:30 | 0.1% | NORMAL | motor_current_a | 1.55 |
+| 23:09:40 | 23:08:50 | 0.2% | NORMAL | 23:08:50 | 0.2% | NORMAL | motor_current_a | 1.56 |
+| 23:09:56 | 23:09:10 | 0.6% | NORMAL | 23:09:00 | 0.5% | NORMAL | motor_current_a | 1.56 |
+| 23:10:13 | 23:09:20 | 2.0% | NORMAL | 23:09:20 | 2.0% | NORMAL | motor_current_a | 1.64 |
+| 23:10:28 | 23:09:40 | 3.0% | NORMAL | 23:09:40 | 3.0% | NORMAL | vibration_rms | 1.68 |
+| 23:10:45 | 23:10:00 | 18.1% | NORMAL | 23:10:00 | 18.1% | NORMAL | vibration_rms | 1.73 |
+| 23:11:01 | 23:10:10 | 18.8% | NORMAL | 23:10:10 | 18.8% | NORMAL | vibration_rms | 1.76 |
+| 23:11:17 | 23:10:30 | 30.8% | NORMAL | 23:10:30 | 30.8% | NORMAL | vibration_rms | 1.84 |
+| 23:11:33 | 23:10:50 | 33.7% | NORMAL | 23:10:50 | 33.7% | NORMAL | vibration_rms | 1.92 |
+| 23:11:50 | 23:11:10 | 37.5% | NORMAL | 23:11:10 | 37.5% | NORMAL | vibration_rms | 2.03 |
+| 23:12:06 | 23:11:20 | 75.9% | HIGH | 23:11:20 | 75.9% | HIGH | vibration_rms | 2.03 |
+first delta_elevated: 23:12:06 UTC, 367 s after injection
+first delta_high: 23:12:06 UTC, 367 s after injection
+first postgres_elevated: 23:12:06 UTC, 367 s after injection
+first postgres_high: 23:12:06 UTC, 367 s after injection
 
 ## 3 · Act: work order, then complete it (writes a repair command)
 
@@ -148,8 +150,8 @@ print("work order completed; repair command", rep[0][0], "at", REPAIR_AT)
 Output:
 
 ```text
-work order 2 created at 2026-10-06 17:57:26.883429+00:00 with risk 0.8876 HIGH top signal vibration_rms
-work order completed; repair command 4 at 2026-10-06 17:57:46.905634+00:00
+work order 4 created at 2026-10-07 23:12:06.472146+00:00 with risk 0.7595 HIGH top signal vibration_rms
+work order completed; repair command 8 at 2026-10-07 23:12:26.498801+00:00
 ```
 
 ## 4 · Recovery
@@ -172,13 +174,14 @@ Output:
 
 | t (UTC) | Postgres window | risk | band |
 |---|---|---|---|
-| 17:57:46 | 17:57:00 | 93.0% | HIGH |
-| 17:58:01 | 17:57:10 | 93.6% | HIGH |
-| 17:58:17 | 17:57:30 | 92.7% | HIGH |
-| 17:58:32 | 17:57:40 | 93.2% | HIGH |
-| 17:58:47 | 17:57:50 | 85.4% | HIGH |
-| 17:59:02 | 17:58:10 | 6.7% | NORMAL |
-recovered: 2026-10-06 17:59:02.024269+00:00 (75 s after repair)
+| 23:12:26 | 23:11:30 | 79.0% | HIGH |
+| 23:12:41 | 23:11:50 | 92.0% | HIGH |
+| 23:12:56 | 23:12:10 | 89.1% | HIGH |
+| 23:13:11 | 23:12:20 | 90.3% | HIGH |
+| 23:13:26 | 23:12:40 | 55.3% | ELEVATED |
+| 23:13:41 | 23:12:50 | 33.5% | NORMAL |
+| 23:13:56 | 23:13:00 | 2.5% | NORMAL |
+recovered: 2026-10-07 23:13:56.687514+00:00 (90 s after repair)
 
 ## 5 · Summary from the system of record
 
@@ -204,29 +207,33 @@ Output:
 |---|---|---|---|---|---|
 | 3 | inject_fault | applied | 2026-10-06 17:51:52.893947+00:00 | 2026-10-06 17:51:53.002039+00:00 | 0.11 |
 | 4 | repair | applied | 2026-10-06 17:57:46.905634+00:00 | 2026-10-06 17:57:47.001418+00:00 | 0.10 |
+| 7 | inject_fault | applied | 2026-10-07 23:05:59.258649+00:00 | 2026-10-07 23:06:01.001355+00:00 | 1.74 |
+| 8 | repair | applied | 2026-10-07 23:12:26.498801+00:00 | 2026-10-07 23:12:27.001374+00:00 | 0.50 |
 
 Output:
 
 | window_end | risk_pct | risk_band | top_signal | vibration | acoustic_db | temp_c |
 |---|---|---|---|---|---|---|
-| 2026-10-06T17:51:00.000Z | 0.1 | NORMAL | hydraulic_pressure_bar | 1.56 | 73.7 | 47.7 |
-| 2026-10-06T17:51:30.000Z | 0.1 | NORMAL | hydraulic_pressure_bar | 1.52 | 73.7 | 47.7 |
-| 2026-10-06T17:52:00.000Z | 0.1 | NORMAL | hydraulic_pressure_bar | 1.54 | 73.7 | 47.7 |
-| 2026-10-06T17:52:30.000Z | 0.2 | NORMAL | hydraulic_pressure_bar | 1.55 | 73.6 | 47.7 |
-| 2026-10-06T17:53:00.000Z | 0.5 | NORMAL | hydraulic_pressure_bar | 1.55 | 73.6 | 47.7 |
-| 2026-10-06T17:53:30.000Z | 0.7 | NORMAL | hydraulic_pressure_bar | 1.54 | 73.7 | 47.8 |
-| 2026-10-06T17:54:00.000Z | 0.5 | NORMAL | hydraulic_pressure_bar | 1.56 | 73.8 | 48.0 |
-| 2026-10-06T17:54:30.000Z | 1.1 | NORMAL | hydraulic_pressure_bar | 1.59 | 74.1 | 48.4 |
-| 2026-10-06T17:55:00.000Z | 21.9 | NORMAL | vibration_rms | 1.75 | 74.7 | 48.8 |
-| 2026-10-06T17:55:30.000Z | 33.5 | NORMAL | vibration_rms | 1.86 | 74.9 | 49.2 |
-| 2026-10-06T17:56:00.000Z | 43.4 | ELEVATED | vibration_rms | 2.01 | 75.5 | 49.8 |
-| 2026-10-06T17:56:30.000Z | 84.9 | HIGH | vibration_rms | 2.25 | 76.1 | 50.4 |
-| 2026-10-06T17:57:00.000Z | 93.0 | HIGH | vibration_rms | 2.46 | 76.7 | 51.1 |
-| 2026-10-06T17:57:30.000Z | 92.7 | HIGH | vibration_rms | 2.87 | 77.8 | 51.8 |
-| 2026-10-06T17:58:00.000Z | 21.2 | NORMAL | vibration_rms | 3.08 | 78.0 | 51.8 |
+| 2026-10-07T23:05:00.000Z | 0.1 | NORMAL | hydraulic_pressure_bar | 1.53 | 73.7 | 47.9 |
+| 2026-10-07T23:05:30.000Z | 0.5 | NORMAL | hydraulic_pressure_bar | 1.54 | 73.7 | 48.0 |
+| 2026-10-07T23:06:00.000Z | 0.3 | NORMAL | hydraulic_pressure_bar | 1.55 | 73.7 | 48.1 |
+| 2026-10-07T23:06:30.000Z | 0.4 | NORMAL | hydraulic_pressure_bar | 1.55 | 73.7 | 48.1 |
+| 2026-10-07T23:07:00.000Z | 0.3 | NORMAL | hydraulic_pressure_bar | 1.56 | 73.6 | 48.2 |
+| 2026-10-07T23:07:30.000Z | 0.2 | NORMAL | hydraulic_pressure_bar | 1.54 | 73.6 | 48.3 |
+| 2026-10-07T23:08:00.000Z | 0.1 | NORMAL | hydraulic_pressure_bar | 1.54 | 73.7 | 48.4 |
+| 2026-10-07T23:08:30.000Z | 0.1 | NORMAL | motor_current_a | 1.55 | 73.7 | 48.7 |
+| 2026-10-07T23:09:00.000Z | 0.5 | NORMAL | motor_current_a | 1.56 | 74.0 | 49.0 |
+| 2026-10-07T23:09:30.000Z | 3.5 | NORMAL | vibration_rms | 1.66 | 74.3 | 49.4 |
+| 2026-10-07T23:10:00.000Z | 18.1 | NORMAL | vibration_rms | 1.73 | 74.5 | 49.8 |
+| 2026-10-07T23:10:30.000Z | 30.8 | NORMAL | vibration_rms | 1.84 | 75.0 | 50.3 |
+| 2026-10-07T23:11:00.000Z | 38.0 | NORMAL | vibration_rms | 1.98 | 75.3 | 50.7 |
+| 2026-10-07T23:11:30.000Z | 79.0 | HIGH | vibration_rms | 2.09 | 75.7 | 51.1 |
+| 2026-10-07T23:12:00.000Z | 88.8 | HIGH | vibration_rms | 2.3 | 76.3 | 51.6 |
+| 2026-10-07T23:12:30.000Z | 69.1 | ELEVATED | vibration_rms | 2.52 | 76.9 | 52.0 |
+| 2026-10-07T23:13:00.000Z | 2.5 | NORMAL | vibration_rms | 2.35 | 76.3 | 51.3 |
 
 Output:
 
 ```text
-{'station': 'PLT-S-B06', 'injected_at': '2026-10-06 17:51:52.893947+00:00', 'delta_elevated': '2026-10-06 17:56:37.894904+00:00', 'postgres_elevated': '2026-10-06 17:56:54.545896+00:00', 'delta_high': '2026-10-06 17:57:26.783864+00:00', 'postgres_high': '2026-10-06 17:57:26.783866+00:00', 'work_order': 2, 'repair_at': '2026-10-06 17:57:46.905634+00:00', 'recovered_at': '2026-10-06 17:59:02.024269+00:00', 'station_went_down': False}
+{'station': 'PLT-S-B06', 'injected_at': '2026-10-07 23:05:59.258649+00:00', 'delta_elevated': '2026-10-07 23:12:06.343379+00:00', 'delta_high': '2026-10-07 23:12:06.343382+00:00', 'postgres_elevated': '2026-10-07 23:12:06.343383+00:00', 'postgres_high': '2026-10-07 23:12:06.343385+00:00', 'work_order': 4, 'repair_at': '2026-10-07 23:12:26.498801+00:00', 'recovered_at': '2026-10-07 23:13:56.687514+00:00', 'station_went_down': False}
 ```

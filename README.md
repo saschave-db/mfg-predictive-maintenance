@@ -34,7 +34,7 @@ Every requirement maps to the code that implements it and to **executed output**
 | R2 | Lakeflow Connect **Zerobus** ingestion | `src/simulator/zerobus_producer.py`, `resources/simulator.job.yml`, `src/notebooks/00_setup_uc.py` | E01 §1 (job, serverless env), §2 (SP grants), §3 (**every data commit `engineInfo = Zerobus`**, cadence), §4 (rows/s per gateway); `02_zerobus_simulator/zerobus_producer.log` (ACK latency) |
 | R3 | **SDP** ETL, continuous, with data quality | `src/pipeline/*.py`, `resources/pipeline.yml` | E02 §1 (deployed spec, `continuous=true`), §2 (flow states), §3 (expectation pass/drop counts), §4 (freshness per table) |
 | R4 | Code that runs = code in repo | `evidence/source_snapshot/` (byte-identical copy + `SHA256SUMS`), `tools/snapshot_source.py` | E09 §2 (SHA-256 of **deployed** files = committed), §3 (full deployed pipeline source) |
-| R5 | **Unity Catalog** governance: least privilege, masks, row filter, tags, lineage | `src/notebooks/03_governance_semantic.py`, `src/setup/app_uc_grants.sql` | E05 §1 grants, §2 masks/filter, **§2b enforcement on the app's service principal (non-owner): 6 of 18 rows, PII redacted, from query history**; `08_app/governance_as_app_sp.json` (raw response); E02 §7 lineage |
+| R5 | **Unity Catalog** governance: least privilege, masks, row filter, tags, lineage | `src/notebooks/03_governance_semantic.py`, `src/setup/app_uc_grants.sql` | E05 §1 grants, §2 masks/filter, **§2b enforcement on the app's service principal (non-owner): 6 of 18 rows, PII redacted, confirmed in query history**; `08_app/governance_as_app_sp.json` (raw responses of a control run: SP granted PLT-N → 6 rows; PLT-S added to `plant_access` → 12 rows; revoked → 6 rows); E02 §7 lineage |
 | R6 | **ML** model, registered in UC, scored in-stream | `src/notebooks/02_train_model.py`, `src/pipeline/02_station_risk_scores.py` | `04_training/02_train_model.md` (PR-AUC 0.91, 271/271 failures, lead time); E03 §1–2 (versions, alias, metrics), §3 (pipeline = registry = serving) |
 | R7 | **Model Serving** real call | `resources/serving.yml`, `src/app/app.py` (`/api/whatif`) | E03 §4 (**raw HTTP request + response**); `08_app/whatif_warm.md` (41–140 ms) |
 | R8 | **Genie agent** on metric views + work orders, with benchmarks | `src/genie/space_config.py`, `tools/genie_deploy.py`, metric views in `03_governance_semantic.py` | E06 §1 (deployed config), §2 (**raw Genie API response**, 10/10 vs reference SQL); `07_genie/benchmark.md` and `_run1_before_fixes.md` |
@@ -75,7 +75,11 @@ Every requirement maps to the code that implements it and to **executed output**
 | Writer of the bronze table | 1,157 commits, all `engineInfo = Zerobus`, one every 5.0 s | `10_evidence_notebooks/E01_zerobus_ingestion.md` |
 | Delta to Lakebase sync | Delta commit synced to Postgres in about 4 s | `09_deployed_resources/lakebase_synced_table.json` |
 | Score consistency | Pipeline, registry model and Model Serving agree (max diff 0.00005, rounding) | `10_evidence_notebooks/E03_ml_model.md` |
-| Notebook-driven E2E loop | Fault to HIGH in Delta and Postgres 334 s; repair to NORMAL 75 s; station never went down | `10_evidence_notebooks/E08_end_to_end.md` |
+| Notebook-driven E2E loop | Fault to HIGH in Delta and Postgres 367 s; repair to NORMAL 90 s; station never went down | `10_evidence_notebooks/E08_end_to_end.md` |
+| Row filter on a non-owner identity | App SP sees 6 of 18 rows (Plant North), 12 after granting Plant South, 6 after revoking; PII redacted; confirmed in `system.query.history` | `08_app/governance_as_app_sp.json`, `10_evidence_notebooks/E05_governance.md` §2b |
+| Raw Model Serving call | POST in 77 ms, response equals the pipeline score | `10_evidence_notebooks/E03_ml_model.md` §4 |
+| Lakebase round trip from a notebook | INSERT + SELECT 11.7 to 13.8 ms each | `10_evidence_notebooks/E04_lakebase.md` §7 |
+| Deployed code = repo code | SHA-256 of every deployed pipeline file equals the committed snapshot | `10_evidence_notebooks/E09_source_integrity.md` |
 
 Time is compressed: one demo minute is about one real operating hour.
 
@@ -92,10 +96,11 @@ All evidence is text. Executed notebooks are exported from the Databricks job ru
 | `E02_sdp_pipeline` | Deployed spec, update history, flow states, expectations, row counts, per-hop latency, UC lineage |
 | `E03_ml_model` | UC versions and alias, MLflow metrics, in-stream scores reproduced with the registry model and Model Serving |
 | `E04_lakebase` | Endpoint, Postgres tables, app-role grants, synced-table status, Delta vs Postgres freshness, query plan, Lakehouse Sync CDC |
-| `E05_governance` | Grants, masks, row filter, tags, metric view YAML, KPI queries |
+| `E05_governance` | Grants, masks, row filter, tags, metric view YAML, KPI queries; enforcement on the app SP (non-owner) via query history |
 | `E06_genie` | Deployed agent config, live benchmark with Genie SQL vs reference SQL, sample answers |
 | `E07_app` | App status, resources, deployments, API call attempt, the app's writes in Lakebase and UC |
 | `E08_end_to_end` | Live loop driven from the notebook: fault, alert in Delta and Postgres, work order, repair, recovery |
+| `E09_source_integrity` | SHA-256 of deployed files vs committed snapshot, full deployed pipeline source |
 
 The build notebooks and tool outputs:
 
@@ -146,5 +151,5 @@ Prerequisites: a serverless workspace with Zerobus and Lakebase, Databricks CLI 
 - Recovery after a repair takes about 3 minutes in the app. The 2-minute window must fill with post-repair data first.
 - The serving endpoint scales to zero. The first what-if after idle took 62 s (cold start).
 - "Top signal" is a simple explanation: the sensor deviating most from its nominal value. It is not SHAP.
-- Genie answers use the app service principal, so per-user row filters do not apply inside the app.
+- Genie answers and app queries run as the app service principal. Row filters therefore apply to the app's identity (proven: Plant North only), not per end user. Per-user filtering would need on-behalf-of-user auth.
 - See `docs/BUILD_SPEC.md` for every deviation from the original plan and why.

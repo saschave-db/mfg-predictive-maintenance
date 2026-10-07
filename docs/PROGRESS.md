@@ -18,22 +18,16 @@ Workspace profile `fevm-serverless-stable-am1uc2`. Bundle target `demo`. All dat
 | 9 | Genie agent, benchmark 10/10 | Done | `evidence/07_genie/` |
 | 10 | App `pdm-plant-health-live` + grants | Running | `evidence/08_app/` |
 | 11 | End-to-end fault injection | Done | `evidence/08_app/e2e_fault_injection.md` |
-| 12 | Evidence notebooks E00 to E08 (one per step, job `pdm_evidence_notebooks`, run 980301348000608) | Done, all SUCCESS | `evidence/10_evidence_notebooks/` |
+| 12 | Evidence notebooks E00 to E09 (job `pdm_evidence_notebooks`, run 994447175034582) | Done, all SUCCESS | `evidence/10_evidence_notebooks/` |
+| 13 | Requirement matrix, source snapshot (SHA256SUMS), non-owner governance proof | Done | README, `evidence/source_snapshot/`, `evidence/08_app/governance_as_app_sp.json` |
 
 Decision 2026-10-06: accept about 60 s sensor-to-screen latency and document it (see README, Known limitations).
 
-## Paused (2026-10-06, for later validation)
+## Running again (2026-10-07)
 
-Everything that costs compute is stopped. Data, models, tables, Genie agent and code are kept.
-
-| Resource | State |
-|---|---|
-| Simulator run `433290942380103` | Cancelled |
-| SDP pipeline `pdm_live_pipeline` | Stopped (IDLE) |
-| Synced-table pipeline for `pdm_live.station_risk_scores` | Stopped (IDLE) |
-| App `pdm-plant-health-live` | Stopped |
-| Lakebase endpoint `primary` | Disabled |
-| Serving endpoint `pdm-station-risk` | Scales to zero on its own |
+Restarted for the evidence hardening run. Simulator run `599986915233103` (4 h from about 22:50 UTC), both pipelines,
+the app and Lakebase are running. To pause again: cancel the simulator run, `databricks pipelines stop` for both
+pipelines, `databricks apps stop pdm-plant-health-live`, and disable the Lakebase endpoint (`spec.disabled = true`).
 
 Resume in this order (profile `fevm-serverless-stable-am1uc2`):
 1. `databricks postgres update-endpoint projects/pdm-demo/branches/production/endpoints/primary spec.disabled --json '{"spec": {"disabled": false}}'`

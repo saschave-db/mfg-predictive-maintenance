@@ -71,26 +71,31 @@ display(spark.sql("SELECT home_plant_id, count(*) AS technicians FROM pdm_raw.te
 
 # COMMAND ----------
 
+import json, os
 from databricks.sdk.service.sql import QueryFilter
 sp_user = next(w.service_principals.list(filter=f"applicationId eq {APP_SP}"))
 print("app service principal:", sp_user.display_name, "| application id:", APP_SP, "| user id:", sp_user.id)
-resp = w.query_history.list(filter_by=QueryFilter(user_ids=[int(sp_user.id)]), include_metrics=True, max_results=50)
-hist = list(getattr(resp, "res", None) or ([] if hasattr(resp, "res") else resp))
-tech = [q for q in hist if "pdm_raw.technicians" in (q.query_text or "")]
-print(f"{len(tech)} technician queries executed by the app SP (Query History API):")
-for q in tech[:5]:
-    print(f"- query_id={q.query_id} status={q.status.value} executed_as={q.executed_as_user_name} "
-          f"rows_produced={q.metrics.rows_produced_count if q.metrics else None} start={q.query_start_time_ms}")
-    print("  ", q.query_text[:160])
+# Statement ids of the SP's calls, from the committed raw capture evidence/08_app/governance_as_app_sp.json
+cap = json.load(open(os.path.abspath("../../../evidence/08_app/governance_as_app_sp.json")))
+steps = {k: v for k, v in cap.items() if k.startswith("step_")}
+resp = w.query_history.list(filter_by=QueryFilter(statement_ids=[v["statement_id"] for v in steps.values()]),
+                            include_metrics=True, max_results=10)
+by_id = {q.query_id: q for q in (getattr(resp, "res", None) or ([] if hasattr(resp, "res") else resp))}
+print("\n| control step | statement_id | executed_as (from Query History) | status | rows produced | plants in app response |")
+print("|---|---|---|---|---|---|")
+for step, v in steps.items():
+    q = by_id.get(v["statement_id"])
+    print(f"| {step} | {v['statement_id']} | {q.executed_as_user_name if q else 'not found'} | {q.status.value if q else ''} | "
+          f"{q.metrics.rows_produced_count if q and q.metrics else ''} | {v['plants_visible']} |")
+print("\nQuery text recorded for the first statement:\n", by_id[steps['step_1_mapping_PLT_N_only']['statement_id']].query_text)
 
 # COMMAND ----------
 
-# Same facts from the audit system table (system tables can lag a few minutes behind).
-display(spark.sql(f"""
-SELECT statement_id, executed_by, executed_as, execution_status, produced_rows, start_time, left(statement_text, 120) AS statement
-FROM system.query.history
-WHERE executed_by_user_id = '{sp_user.id}' AND statement_text LIKE '%pdm_raw.technicians%'
-ORDER BY start_time DESC LIMIT 5"""))
+# Same statements in the audit system table (it can lag behind the Query History API).
+ids = ", ".join(f"'{v['statement_id']}'" for v in steps.values())
+st = spark.sql(f"""SELECT statement_id, executed_by, executed_as, execution_status, produced_rows, start_time
+                   FROM system.query.history WHERE statement_id IN ({ids}) ORDER BY start_time""")
+display(st) if st.count() else print("system.query.history has not ingested these statements yet (system table latency).")
 
 # COMMAND ----------
 

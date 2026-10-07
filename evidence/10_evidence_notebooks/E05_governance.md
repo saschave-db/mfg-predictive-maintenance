@@ -1,10 +1,10 @@
 # Executed notebook: E05_governance
 
-Exported from Databricks job run `980301348000608` (task `E05_governance`, task run `683592822528662`).
+Exported from Databricks job run `994447175034582` (task `E05_governance`, task run `748346428709987`).
 
-Result: **SUCCESS** · start 2026-10-06T17:44:55.196000+00:00 · end 2026-10-06T17:46:32.271000+00:00
+Result: **SUCCESS** · start 2026-10-07T23:14:43.094000+00:00 · end 2026-10-07T23:16:22.209000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E05 · Unity Catalog governance and the semantic layer
@@ -16,8 +16,9 @@ Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=747465188
 * Metric views `maintenance_metrics`, `station_risk_metrics`, `work_order_metrics` with synonyms for Genie.
 * The model is a UC securable (`pdm_ml.station_failure_model`) with alias `@champion`.
 
-**What this notebook proves.** Each control as recorded in Unity Catalog, plus the effect of masking, and metric
-views answering KPI queries.
+**What this notebook proves.** Each control as recorded in Unity Catalog, and that the row filter and masks are
+**enforced on a non-owner identity**: the app's service principal. Owners are often exempt, so the owner's view alone
+proves little. Section 2b shows the SP's own queries (from query history) and what Unity Catalog returned to it.
 
 ```python
 %pip install -q "databricks-sdk>=0.81" pg8000
@@ -122,10 +123,99 @@ Function bodies:
                                                                                        function_desc
                                     Function:      serverless_stable_am1uc2_catalog.pdm_ops.mask_pii
 Body:          CASE WHEN is_account_group_member('pdm_supervisors') THEN v ELSE '***redacted***' END
-                                                                                                                                                                                             function_desc
-                                                                                                                                  Function:      serverless_stable_am1uc2_catalog.pdm_ops.plant_row_filter
-Body:          is_account_group_member('pdm_all_plants') OR current_user() = 'sascha.vetter@databricks.com'\n              OR is_account_group_member(concat('pdm_plant_', lower(substr(plant_id, 5, 1))))
+                                                                                                                                                                                                                          function_desc
+                                                                                                                                                               Function:      serverless_stable_am1uc2_catalog.pdm_ops.plant_row_filter
+Body:          current_user() = 'sascha.vetter@databricks.com' OR is_account_group_member('pdm_all_plants')\n              OR EXISTS (SELECT 1 FROM pdm_ops.plant_access a WHERE a.principal = current_user() AND a.plant_id = p_plant)
 ```
+
+## 2b · Enforcement on a non-owner identity: the app's service principal
+The app endpoint `/api/governance/technicians` runs `SELECT current_user(), ... FROM pdm_raw.technicians` on the SQL
+warehouse **as the app SP**. The SP has `SELECT` on the table, is granted only `PLT-N` in `pdm_ops.plant_access`, and is
+not in `pdm_supervisors`. Expected: 6 of 18 technicians (Plant North only), email and phone redacted.
+The raw HTTP response of that call is in `evidence/08_app/governance_as_app_sp.json`.
+
+```python
+display(spark.sql("SELECT * FROM pdm_ops.plant_access"))
+print("Row filter function as deployed:")
+print(spark.sql("DESCRIBE FUNCTION EXTENDED pdm_ops.plant_row_filter").filter("function_desc LIKE 'Body:%'").first()[0])
+print("\nOwner view for contrast (owner is exempt from the filter, masks still apply because the owner is not a supervisor):")
+display(spark.sql("SELECT home_plant_id, count(*) AS technicians FROM pdm_raw.technicians GROUP BY ALL ORDER BY 1"))
+```
+
+Output:
+
+| principal | plant_id | granted_at |
+|---|---|---|
+| 2a9b01a6-1050-4c7d-b389-45351bf8e97b | PLT-N | 2026-10-07T22:53:47.492Z |
+
+Output:
+
+```text
+Row filter function as deployed:
+Body:          current_user() = 'sascha.vetter@databricks.com' OR is_account_group_member('pdm_all_plants')
+              OR EXISTS (SELECT 1 FROM pdm_ops.plant_access a WHERE a.principal = current_user() AND a.plant_id = p_plant)
+
+Owner view for contrast (owner is exempt from the filter, masks still apply because the owner is not a supervisor):
+```
+
+Output:
+
+| home_plant_id | technicians |
+|---|---|
+| PLT-E | 6 |
+| PLT-N | 6 |
+| PLT-S | 6 |
+
+```python
+import json, os
+from databricks.sdk.service.sql import QueryFilter
+sp_user = next(w.service_principals.list(filter=f"applicationId eq {APP_SP}"))
+print("app service principal:", sp_user.display_name, "| application id:", APP_SP, "| user id:", sp_user.id)
+# Statement ids of the SP's calls, from the committed raw capture evidence/08_app/governance_as_app_sp.json
+cap = json.load(open(os.path.abspath("../../../evidence/08_app/governance_as_app_sp.json")))
+steps = {k: v for k, v in cap.items() if k.startswith("step_")}
+resp = w.query_history.list(filter_by=QueryFilter(statement_ids=[v["statement_id"] for v in steps.values()]),
+                            include_metrics=True, max_results=10)
+by_id = {q.query_id: q for q in (getattr(resp, "res", None) or ([] if hasattr(resp, "res") else resp))}
+print("\n| control step | statement_id | executed_as (from Query History) | status | rows produced | plants in app response |")
+print("|---|---|---|---|---|---|")
+for step, v in steps.items():
+    q = by_id.get(v["statement_id"])
+    print(f"| {step} | {v['statement_id']} | {q.executed_as_user_name if q else 'not found'} | {q.status.value if q else ''} | "
+          f"{q.metrics.rows_produced_count if q and q.metrics else ''} | {v['plants_visible']} |")
+print("\nQuery text recorded for the first statement:\n", by_id[steps['step_1_mapping_PLT_N_only']['statement_id']].query_text)
+```
+
+Output:
+
+```text
+app service principal: app-3jm8lb pdm-plant-health-live | application id: 2a9b01a6-1050-4c7d-b389-45351bf8e97b | user id: 71763000173026
+
+| control step | statement_id | executed_as (from Query History) | status | rows produced | plants in app response |
+|---|---|---|---|---|---|
+| step_1_mapping_PLT_N_only | 01f1c2a2-15d6-1609-83d7-b6f2191e0df3 | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | FINISHED | 6 | ['PLT-N'] |
+| step_2_after_granting_PLT_S_in_plant_access | 01f1c2a2-2e98-1b39-aac3-c40e88911df1 | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | FINISHED | 12 | ['PLT-N', 'PLT-S'] |
+| step_3_after_revoking_PLT_S_again | 01f1c2a2-330e-1324-85ee-57afe1a71d57 | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | FINISHED | 6 | ['PLT-N'] |
+
+Query text recorded for the first statement:
+ <REDACTED>
+```
+
+```python
+# Same statements in the audit system table (it can lag behind the Query History API).
+ids = ", ".join(f"'{v['statement_id']}'" for v in steps.values())
+st = spark.sql(f"""SELECT statement_id, executed_by, executed_as, execution_status, produced_rows, start_time
+                   FROM system.query.history WHERE statement_id IN ({ids}) ORDER BY start_time""")
+display(st) if st.count() else print("system.query.history has not ingested these statements yet (system table latency).")
+```
+
+Output:
+
+| statement_id | executed_by | executed_as | execution_status | produced_rows | start_time |
+|---|---|---|---|---|---|
+| 01f1c2a2-15d6-1609-83d7-b6f2191e0df3 | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | FINISHED | 6 | 2026-10-07T22:54:43.211Z |
+| 01f1c2a2-2e98-1b39-aac3-c40e88911df1 | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | FINISHED | 12 | 2026-10-07T22:55:24.748Z |
+| 01f1c2a2-330e-1324-85ee-57afe1a71d57 | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | 2a9b01a6-1050-4c7d-b389-45351bf8e97b | FINISHED | 6 | 2026-10-07T22:55:32.231Z |
 
 ## 3 · Tags
 
@@ -520,12 +610,13 @@ Output:
 
 | Plant | high_risk_stations | avg_risk | latency_s |
 |---|---|---|---|
-| Plant East | 6 | 0.10948363636363634 | 38.16345454545454 |
-| Plant North | 4 | 0.05677392045454546 | 38.16345454545454 |
-| Plant South | 4 | 0.05701380681818181 | 38.16345454545454 |
+| Plant East | 5 | 0.05213801136363641 | 35.41061818181818 |
+| Plant North | 3 | 0.052515852272727266 | 35.41061818181818 |
+| Plant South | 9 | 0.10495880681818184 | 35.41061818181818 |
 
 Output:
 
 | Status | Priority | work_orders | avg_risk_at_creation |
 |---|---|---|---|
-| completed | P1 | 1 | 0.78680000 |
+| completed | P1 | 3 | 0.81130000 |
+| completed | P2 | 1 | 0.98980000 |

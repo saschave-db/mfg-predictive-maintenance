@@ -1,10 +1,10 @@
 # Executed notebook: E00_overview
 
-Exported from Databricks job run `980301348000608` (task `E00_overview`, task run `477146033037446`).
+Exported from Databricks job run `994447175034582` (task `E00_overview`, task run `389548815414273`).
 
-Result: **SUCCESS** · start 2026-10-06T18:00:28.579000+00:00 · end 2026-10-06T18:01:11.452000+00:00
+Result: **SUCCESS** · start 2026-10-07T22:56:13.297000+00:00 · end 2026-10-07T22:56:54.102000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E00 · Evidence overview: live predictive maintenance on Databricks
@@ -27,10 +27,11 @@ Metric views pdm_ops.*_metrics --> Genie agent;  UC model --> Model Serving pdm-
 | ETL | E02 | Continuous SDP pipeline, expectations, freshness, lineage |
 | ML | E03 | Registered model, metrics, in-stream scores reproducible with the registry and Model Serving |
 | Lakebase | E04 | OLTP tables, synced table, freshness Delta vs Postgres, Lakehouse Sync back to UC |
-| Governance | E05 | Grants, masks, row filter, tags, metric views |
+| Governance | E05 | Grants, masks, row filter, tags, metric views; enforcement proven on the app's service principal (non-owner) |
 | Genie | E06 | Agent configuration and live answers checked against reference SQL |
 | App | E07 | App deployment, resources, and its writes to Lakebase |
 | End to end | E08 | Live fault injected and traced to a HIGH alert, work order, repair, recovery |
+| Source integrity | E09 | Deployed files are byte-identical to the committed source (SHA-256), full pipeline source printed |
 
 ```python
 %pip install -q "databricks-sdk>=0.81" pg8000
@@ -54,7 +55,7 @@ print("run as:", w.current_user.me().user_name)
 Output:
 
 ```text
-evidence run at (UTC): 2026-10-06T18:00:53.127545+00:00
+evidence run at (UTC): 2026-10-07T22:56:35.799923+00:00
 workspace: https://fevm-serverless-stable-am1uc2.cloud.databricks.com
 run as: sascha.vetter@databricks.com
 ```

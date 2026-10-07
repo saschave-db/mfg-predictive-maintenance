@@ -1,0 +1,257 @@
+{
+  "description": "Raw responses of the app endpoint, which queries pdm_raw.technicians on the SQL warehouse AS the app service principal (non-owner). Row filter = pdm_ops.plant_access mapping; PII masks = pdm_ops.mask_pii.",
+  "request": "GET https://pdm-plant-health-live-7474651880045550.aws.databricksapps.com/api/governance/technicians",
+  "step_1_mapping_PLT_N_only": {
+    "statement_id": "01f1c2a2-15d6-1609-83d7-b6f2191e0df3",
+    "state": "SUCCEEDED",
+    "sql": "SELECT current_user() AS executed_as, technician_id, full_name, home_plant_id, email, phone FROM serverless_stable_am1uc2_catalog.pdm_raw.technicians ORDER BY technician_id",
+    "elapsed_ms": 5879.4,
+    "columns": [
+      "executed_as",
+      "technician_id",
+      "full_name",
+      "home_plant_id",
+      "email",
+      "phone"
+    ],
+    "row_count": 6,
+    "plants_visible": [
+      "PLT-N"
+    ],
+    "rows": [
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T001",
+        "Jamie Brennan",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T004",
+        "Jamie Iyer",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T007",
+        "Reese Novak",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T010",
+        "Jordan Iyer",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T013",
+        "Avery Novak",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T016",
+        "Quinn Tanaka",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ]
+    ]
+  },
+  "step_2_after_granting_PLT_S_in_plant_access": {
+    "statement_id": "01f1c2a2-2e98-1b39-aac3-c40e88911df1",
+    "state": "SUCCEEDED",
+    "sql": "SELECT current_user() AS executed_as, technician_id, full_name, home_plant_id, email, phone FROM serverless_stable_am1uc2_catalog.pdm_raw.technicians ORDER BY technician_id",
+    "elapsed_ms": 2822.4,
+    "columns": [
+      "executed_as",
+      "technician_id",
+      "full_name",
+      "home_plant_id",
+      "email",
+      "phone"
+    ],
+    "row_count": 12,
+    "plants_visible": [
+      "PLT-N",
+      "PLT-S"
+    ],
+    "rows": [
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T001",
+        "Jamie Brennan",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T002",
+        "Jamie Brennan",
+        "PLT-S",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T004",
+        "Jamie Iyer",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T005",
+        "Sam Haddad",
+        "PLT-S",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T007",
+        "Reese Novak",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T008",
+        "Riley Haddad",
+        "PLT-S",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T010",
+        "Jordan Iyer",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T011",
+        "Drew Okafor",
+        "PLT-S",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T013",
+        "Avery Novak",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T014",
+        "Casey Haddad",
+        "PLT-S",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T016",
+        "Quinn Tanaka",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T017",
+        "Alex Okafor",
+        "PLT-S",
+        "***redacted***",
+        "***redacted***"
+      ]
+    ]
+  },
+  "step_3_after_revoking_PLT_S_again": {
+    "statement_id": "01f1c2a2-330e-1324-85ee-57afe1a71d57",
+    "state": "SUCCEEDED",
+    "sql": "SELECT current_user() AS executed_as, technician_id, full_name, home_plant_id, email, phone FROM serverless_stable_am1uc2_catalog.pdm_raw.technicians ORDER BY technician_id",
+    "elapsed_ms": 1125.5,
+    "columns": [
+      "executed_as",
+      "technician_id",
+      "full_name",
+      "home_plant_id",
+      "email",
+      "phone"
+    ],
+    "row_count": 6,
+    "plants_visible": [
+      "PLT-N"
+    ],
+    "rows": [
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T001",
+        "Jamie Brennan",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T004",
+        "Jamie Iyer",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T007",
+        "Reese Novak",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T010",
+        "Jordan Iyer",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T013",
+        "Avery Novak",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ],
+      [
+        "2a9b01a6-1050-4c7d-b389-45351bf8e97b",
+        "T016",
+        "Quinn Tanaka",
+        "PLT-N",
+        "***redacted***",
+        "***redacted***"
+      ]
+    ]
+  }
+}

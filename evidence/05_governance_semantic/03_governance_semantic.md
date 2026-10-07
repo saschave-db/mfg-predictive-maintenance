@@ -1,10 +1,10 @@
 # Executed notebook: 03_governance_semantic
 
-Exported from Databricks job run `941909688389884` (task `governance`, task run `734234853998093`).
+Exported from Databricks job run `228827275405717` (task `governance`, task run `194313748562087`).
 
-Result: **SUCCESS** · start 2026-10-06T16:59:16.537000+00:00 · end 2026-10-06T17:00:15.871000+00:00
+Result: **SUCCESS** · start 2026-10-07T22:52:57.556000+00:00 · end 2026-10-07T22:54:04.607000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/438031727317059/run/941909688389884
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/438031727317059/run/228827275405717
 
 
 # 03 · Governance and semantic layer
@@ -15,7 +15,9 @@ Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=747465188
 
 ```python
 dbutils.widgets.text("catalog", "serverless_stable_am1uc2_catalog")
+dbutils.widgets.text("app_sp", "2a9b01a6-1050-4c7d-b389-45351bf8e97b")
 CATALOG = dbutils.widgets.get("catalog")
+APP_SP = dbutils.widgets.get("app_sp")  # the app's service principal: the non-owner identity used to prove enforcement
 OWNER = spark.sql("SELECT current_user()").first()[0]
 spark.sql(f"USE CATALOG {CATALOG}")
 
@@ -55,6 +57,7 @@ Output:
 
 | status | work_orders |
 |---|---|
+| completed | 2 |
 
 ## Metric views
 
@@ -268,23 +271,28 @@ Output:
 
 | Plant | high_risk_stations | avg_risk | latency_s | latest |
 |---|---|---|---|---|
-| Plant East | 0 | 0.03087604166666666 | 116.197 | 2026-10-06T16:57:00.000Z |
-| Plant North | 0 | 0.031736458333333335 | 116.197 | 2026-10-06T16:57:00.000Z |
-| Plant South | 0 | 0.04150416666666665 | 116.197 | 2026-10-06T16:57:00.000Z |
 
 ## Fine-grained access control and tags
 * `email` / `phone` are masked unless the reader is in `pdm_supervisors`.
 * Tag keys are `pdm_`-prefixed: this workspace enforces governed tag policies on `domain`, `source` and `pii`.
-* Technicians are filtered to the reader's plant group (`pdm_plant_n|s|e`); `pdm_all_plants` and the demo owner see all.
+* Technicians are filtered by `pdm_ops.plant_access` (principal -> plant). The app's service principal is granted
+  Plant North only and is not a supervisor, so it is the non-owner identity used to prove enforcement (see E05).
 
 ```python
 run("""CREATE OR REPLACE FUNCTION pdm_ops.mask_pii(v STRING) RETURNS STRING
        COMMENT 'Reveal PII only to members of pdm_supervisors'
        RETURN CASE WHEN is_account_group_member('pdm_supervisors') THEN v ELSE '***redacted***' END""")
-run(f"""CREATE OR REPLACE FUNCTION pdm_ops.plant_row_filter(plant_id STRING) RETURNS BOOLEAN
-       COMMENT 'Plant managers see their own plant; pdm_all_plants and the demo owner see everything'
-       RETURN is_account_group_member('pdm_all_plants') OR current_user() = '{OWNER}'
-              OR is_account_group_member(concat('pdm_plant_', lower(substr(plant_id, 5, 1))))""")
+# Principal -> plant mapping drives row-level security (no account-group changes needed).
+run("""CREATE TABLE IF NOT EXISTS pdm_ops.plant_access (principal STRING NOT NULL, plant_id STRING NOT NULL,
+       granted_at TIMESTAMP) COMMENT 'Row-level security mapping: which principal may see which plant'""")
+run(f"DELETE FROM pdm_ops.plant_access WHERE principal = '{APP_SP}'")
+run(f"INSERT INTO pdm_ops.plant_access VALUES ('{APP_SP}', 'PLT-N', current_timestamp())")
+run(f"""CREATE OR REPLACE FUNCTION pdm_ops.plant_row_filter(p_plant STRING) RETURNS BOOLEAN
+       COMMENT 'Owner and pdm_all_plants see everything; other principals only plants granted in pdm_ops.plant_access'
+       RETURN current_user() = '{OWNER}' OR is_account_group_member('pdm_all_plants')
+              OR EXISTS (SELECT 1 FROM pdm_ops.plant_access a WHERE a.principal = current_user() AND a.plant_id = p_plant)""")
+# The app SP may query the table; the row filter and masks decide what it actually sees.
+run(f"GRANT SELECT ON TABLE pdm_raw.technicians TO `{APP_SP}`")
 run("ALTER TABLE pdm_raw.technicians ALTER COLUMN email SET MASK pdm_ops.mask_pii")
 run("ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET MASK pdm_ops.mask_pii")
 run("ALTER TABLE pdm_raw.technicians SET ROW FILTER pdm_ops.plant_row_filter ON (home_plant_id)")
@@ -300,7 +308,11 @@ Output:
 
 ```text
 OK   CREATE OR REPLACE FUNCTION pdm_ops.mask_pii(v STRING) RETURNS STRING COMMENT 'Reveal PII only to members of pdm_supervisors' RETURN CASE WHEN is_accou
-OK   CREATE OR REPLACE FUNCTION pdm_ops.plant_row_filter(plant_id STRING) RETURNS BOOLEAN COMMENT 'Plant managers see their own plant; pdm_all_plants and t
+OK   CREATE TABLE IF NOT EXISTS pdm_ops.plant_access (principal STRING NOT NULL, plant_id STRING NOT NULL, granted_at TIMESTAMP) COMMENT 'Row-level securit
+OK   DELETE FROM pdm_ops.plant_access WHERE principal = '2a9b01a6-1050-4c7d-b389-45351bf8e97b'
+OK   INSERT INTO pdm_ops.plant_access VALUES ('2a9b01a6-1050-4c7d-b389-45351bf8e97b', 'PLT-N', current_timestamp())
+OK   CREATE OR REPLACE FUNCTION pdm_ops.plant_row_filter(p_plant STRING) RETURNS BOOLEAN COMMENT 'Owner and pdm_all_plants see everything; other principals
+OK   GRANT SELECT ON TABLE pdm_raw.technicians TO `2a9b01a6-1050-4c7d-b389-45351bf8e97b`
 OK   ALTER TABLE pdm_raw.technicians ALTER COLUMN email SET MASK pdm_ops.mask_pii
 OK   ALTER TABLE pdm_raw.technicians ALTER COLUMN phone SET MASK pdm_ops.mask_pii
 OK   ALTER TABLE pdm_raw.technicians SET ROW FILTER pdm_ops.plant_row_filter ON (home_plant_id)

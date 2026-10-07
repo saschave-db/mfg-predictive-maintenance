@@ -1,10 +1,10 @@
 # Executed notebook: E03_ml_model
 
-Exported from Databricks job run `980301348000608` (task `E03_ml_model`, task run `678790405288660`).
+Exported from Databricks job run `994447175034582` (task `E03_ml_model`, task run `724594144272016`).
 
-Result: **SUCCESS** · start 2026-10-06T17:43:19.820000+00:00 · end 2026-10-06T17:43:49.971000+00:00
+Result: **SUCCESS** · start 2026-10-07T22:58:59.886000+00:00 · end 2026-10-07T22:59:29.694000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E03 · ML: failure-probability model (MLflow, UC registry, in-stream + Model Serving)
@@ -33,7 +33,7 @@ Output:
 
 ```python
 from _helpers import *  # noqa: F401,F403
-import sys, os, time
+import sys, os, time, json
 sys.path.append(os.path.abspath("../.."))
 import mlflow
 from mlflow import MlflowClient
@@ -119,22 +119,45 @@ Output:
 
 | station_id | window_end | risk_band | failure_probability | p_registry | p_serving | max_abs_diff |
 |---|---|---|---|---|---|---|
-| PLT-N-C04 | 2026-10-06T17:42:40.000Z | HIGH | 0.9989 | 0.9989 | 0.9989 | 0.0 |
-| PLT-E-A07 | 2026-10-06T17:42:40.000Z | HIGH | 0.9969 | 0.9969 | 0.9969 | 0.0 |
-| PLT-E-B02 | 2026-10-06T17:42:40.000Z | HIGH | 0.953 | 0.953 | 0.953 | 0.0 |
-| PLT-S-C02 | 2026-10-06T17:42:40.000Z | HIGH | 0.7762 | 0.7762 | 0.7762 | 0.0 |
-| PLT-S-A06 | 2026-10-06T17:42:40.000Z | ELEVATED | 0.5645 | 0.5645 | 0.5645 | 0.0 |
-| PLT-S-B05 | 2026-10-06T17:42:40.000Z | NORMAL | 0.3964 | 0.3964 | 0.3964 | 0.0 |
-| PLT-S-D01 | 2026-10-06T17:42:40.000Z | NORMAL | 0.0009 | 0.0009 | 0.0009 | 0.0 |
-| PLT-E-B05 | 2026-10-06T17:42:40.000Z | NORMAL | 0.001 | 0.001 | 0.001 | 0.0 |
-| PLT-N-B08 | 2026-10-06T17:42:40.000Z | NORMAL | 0.0011 | 0.0011 | 0.0011 | 0.0 |
-| PLT-N-C05 | 2026-10-06T17:42:40.000Z | NORMAL | 0.0018 | 0.0018 | 0.0018 | 0.0 |
-| PLT-S-D06 | 2026-10-06T17:42:40.000Z | NORMAL | 0.0019 | 0.0019 | 0.0019 | 0.0 |
-| PLT-S-B06 | 2026-10-06T17:42:40.000Z | NORMAL | 0.002 | 0.002 | 0.002 | 0.0 |
+| PLT-S-A04 | 2026-10-07T22:58:20.000Z | HIGH | 0.9977 | 0.9977 | 0.9977 | 0.0 |
+| PLT-S-A06 | 2026-10-07T22:58:20.000Z | HIGH | 0.9966 | 0.9966 | 0.9966 | 0.0 |
+| PLT-N-C07 | 2026-10-07T22:58:20.000Z | HIGH | 0.7751 | 0.7751 | 0.7751 | 0.0 |
+| PLT-E-D07 | 2026-10-07T22:58:20.000Z | NORMAL | 0.3185 | 0.3185 | 0.3185 | 0.0 |
+| PLT-S-C02 | 2026-10-07T22:58:20.000Z | NORMAL | 0.2407 | 0.2407 | 0.2407 | 0.0 |
+| PLT-N-D08 | 2026-10-07T22:58:20.000Z | NORMAL | 0.2285 | 0.2285 | 0.2285 | 0.0 |
+| PLT-S-D05 | 2026-10-07T22:58:20.000Z | NORMAL | 0.0018 | 0.0018 | 0.0018 | 0.0 |
+| PLT-N-D03 | 2026-10-07T22:58:20.000Z | NORMAL | 0.0021 | 0.0021 | 0.0021 | 0.0 |
+| PLT-S-B06 | 2026-10-07T22:58:20.000Z | NORMAL | 0.0024 | 0.0024 | 0.0024 | 0.0 |
+| PLT-N-C04 | 2026-10-07T22:58:20.000Z | NORMAL | 0.0026 | 0.0026 | 0.0026 | 0.0 |
+| PLT-E-B02 | 2026-10-07T22:58:20.000Z | NORMAL | 0.0026 | 0.0026 | 0.0026 | 0.0 |
+| PLT-N-C01 | 2026-10-07T22:58:20.000Z | NORMAL | 0.0028 | 0.0028 | 0.0028 | 0.0 |
 
 Output:
 
 ```text
-Model Serving round trip for 12 rows: 442 ms
+Model Serving round trip for 12 rows: 409 ms
 max |pipeline - registry| = 5e-05 | max |pipeline - serving| = 5e-05 (pipeline rounds to 4 decimals)
+```
+
+## 4 · Raw Model Serving call (HTTP request and response as sent and received)
+
+```python
+one = {k: float(v) for k, v in X.iloc[0].items()}
+body = {"dataframe_records": [one]}
+t0 = time.perf_counter()
+raw = w.api_client.do("POST", f"/serving-endpoints/{SERVING_ENDPOINT}/invocations", body=body)
+ms = (time.perf_counter() - t0) * 1000
+print(f"POST {w.config.host}/serving-endpoints/{SERVING_ENDPOINT}/invocations  ({ms:.0f} ms)")
+print("request body:", json.dumps(body)[:1200])
+print("response body:", json.dumps(raw))
+print(f"station {live.iloc[0].station_id}: pipeline score {live.iloc[0].failure_probability} vs serving {raw['predictions'][0]:.4f}")
+```
+
+Output:
+
+```text
+POST https://fevm-serverless-stable-am1uc2.cloud.databricks.com/serving-endpoints/pdm-station-risk/invocations  (77 ms)
+request body: {"dataframe_records": [{"vibration_rms_mean": 2.7819333333333334, "vibration_rms_std": 0.8732179907581802, "vibration_rms_max": 9.101, "vibration_rms_min": 1.732, "bearing_temp_c_mean": 1.1158126984126986, "bearing_temp_c_std": 0.02717320213805548, "bearing_temp_c_max": 1.1854761904761904, "bearing_temp_c_min": 1.0256904761904762, "motor_current_a_mean": 1.0133354166666666, "motor_current_a_std": 0.027219541056462793, "motor_current_a_max": 1.075, "motor_current_a_min": 0.9108333333333333, "spindle_rpm_mean": 0.9853302916666666, "spindle_rpm_std": 0.009891278936523668, "spindle_rpm_max": 1.0098386666666668, "spindle_rpm_min": 0.9531013333333334, "hydraulic_pressure_bar_mean": 1.0228472222222222, "hydraulic_pressure_bar_std": 0.016258181641161468, "hydraulic_pressure_bar_max": 1.059, "hydraulic_pressure_bar_min": 0.9898333333333333, "acoustic_db_mean": 1.0824830769230769, "acoustic_db_std": 0.027289450968376712, "acoustic_db_max": 1.189323076923077, "acoustic_db_min": 1.0225230769230769, "cycle_time_s_mean": 0.9510522222222222, "cycle_time_s_std": 0.02698055347458991, "cycle_time_s_max": 1.0092, "cycle_time_s_min": 0.8887333333333333}]}
+response body: {"predictions": [0.9976580682640668]}
+station PLT-S-A04: pipeline score 0.9977 vs serving 0.9977
 ```

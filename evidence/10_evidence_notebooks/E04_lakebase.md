@@ -1,10 +1,10 @@
 # Executed notebook: E04_lakebase
 
-Exported from Databricks job run `980301348000608` (task `E04_lakebase`, task run `213085373190640`).
+Exported from Databricks job run `994447175034582` (task `E04_lakebase`, task run `136200307398885`).
 
-Result: **SUCCESS** · start 2026-10-06T18:02:18.080000+00:00 · end 2026-10-06T18:03:07.992000+00:00
+Result: **SUCCESS** · start 2026-10-07T22:59:30.085000+00:00 · end 2026-10-07T23:00:19.252000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/980301348000608
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/994447175034582
 
 
 # E04 · Lakebase: OLTP tables, continuous synced table, Lakehouse Sync back to UC
@@ -77,12 +77,12 @@ Output:
 
 | postgres_version | current_user | server_time |
 |---|---|---|
-| PostgreSQL 17.11 (fcae950) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit | sascha.vetter@databricks.com | 2026-10-06 18:02:32.047970+00:00 |
+| PostgreSQL 17.11 (fcae950) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit | sascha.vetter@databricks.com | 2026-10-07 22:59:43.969493+00:00 |
 
 Output:
 
 ```text
-{"text/plain": "[['PostgreSQL 17.11 (fcae950) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit',\n  'sascha.vetter@databricks.com',\n  datetime.datetime(2026, 10, 6, 18, 2, 32, 47970, tzinfo=datetime.timezone.utc)]]"}
+{"text/plain": "[['PostgreSQL 17.11 (fcae950) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit',\n  'sascha.vetter@databricks.com',\n  datetime.datetime(2026, 10, 7, 22, 59, 43, 969493, tzinfo=datetime.timezone.utc)]]"}
 ```
 
 ## 2 · Tables in Postgres and their row counts
@@ -104,14 +104,14 @@ Output:
 | pdm_ops | work_orders | BASE TABLE |
 | t | count |
 |---|---|
-| pdm_ops.work_orders | 2 |
-| pdm_ops.sim_commands | 4 |
-| pdm_live.station_risk_scores | 48384 |
+| pdm_ops.work_orders | 3 |
+| pdm_ops.sim_commands | 6 |
+| pdm_live.station_risk_scores | 81888 |
 
 Output:
 
 ```text
-{"text/plain": "[['pdm_ops.work_orders', 2],\n ['pdm_ops.sim_commands', 4],\n ['pdm_live.station_risk_scores', 48384]]"}
+{"text/plain": "[['pdm_ops.work_orders', 3],\n ['pdm_ops.sim_commands', 6],\n ['pdm_live.station_risk_scores', 81888]]"}
 ```
 
 ## 3 · Least-privilege grants for the app's Postgres role
@@ -157,14 +157,14 @@ Output:
 {
   "synced_table": "synced_tables/serverless_stable_am1uc2_catalog.pdm_live.station_risk_scores",
   "state": "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE",
-  "message": "Synced table creation succeeded using Delta Live Tables: https://fevm-serverless-stable-am1uc2.cloud.databricks.com#joblist/pipelines/5135c1d5-fce7-4893-898c-d902dc34a0ea/updates/8d9b79e6-dcc4-4a5e-a3ce-dde8fa89e270.",
+  "message": "Synced table creation succeeded using Delta Live Tables: https://fevm-serverless-stable-am1uc2.cloud.databricks.com#joblist/pipelines/5135c1d5-fce7-4893-898c-d902dc34a0ea/updates/b2ea1b10-07ae-44f4-8dde-08b95e305402.",
   "last_sync": {
     "delta_table_sync_info": {
-      "delta_commit_time": "2026-10-06T18:02:28Z",
-      "delta_commit_version": 616
+      "delta_commit_time": "2026-10-07T22:59:35Z",
+      "delta_commit_version": 1365
     },
-    "sync_end_time": "2026-10-06T18:02:32.256115Z",
-    "sync_start_time": "2026-10-06T18:02:31.489313Z"
+    "sync_end_time": "2026-10-07T22:59:37.222332Z",
+    "sync_start_time": "2026-10-07T22:59:36.949660Z"
   },
   "sync_pipeline_id": "5135c1d5-fce7-4893-898c-d902dc34a0ea"
 }
@@ -183,9 +183,9 @@ for i in range(3):
 Output:
 
 ```text
-check 1: Delta newest window 2026-10-06 18:01:50 (48480 rows) | Postgres newest window 2026-10-06 18:01:50+00:00 (48480 rows) at 2026-10-06 18:02:36.383909+00:00
-check 2: Delta newest window 2026-10-06 18:02:00 (48576 rows) | Postgres newest window 2026-10-06 18:02:00+00:00 (48576 rows) at 2026-10-06 18:02:47.585484+00:00
-check 3: Delta newest window 2026-10-06 18:02:10 (48672 rows) | Postgres newest window 2026-10-06 18:02:10+00:00 (48672 rows) at 2026-10-06 18:02:58.675462+00:00
+check 1: Delta newest window 2026-10-07 22:59:00 (81984 rows) | Postgres newest window 2026-10-07 22:59:00+00:00 (81984 rows) at 2026-10-07 22:59:47.376189+00:00
+check 2: Delta newest window 2026-10-07 22:59:00 (81984 rows) | Postgres newest window 2026-10-07 22:59:00+00:00 (81984 rows) at 2026-10-07 22:59:58.599044+00:00
+check 3: Delta newest window 2026-10-07 22:59:20 (82176 rows) | Postgres newest window 2026-10-07 22:59:20+00:00 (82176 rows) at 2026-10-07 23:00:09.872485+00:00
 ```
 
 ## 5 · The app's read query, timed in Postgres
@@ -206,32 +206,32 @@ Output:
 
 | station_id | window_end | failure_probability | risk_band | top_signal |
 |---|---|---|---|---|
-| PLT-E-C03 | 2026-10-06 18:02:10+00:00 | 0.9995 | HIGH | bearing_temp_c |
-| PLT-N-B06 | 2026-10-06 18:02:10+00:00 | 0.9984 | HIGH | vibration_rms |
-| PLT-N-C08 | 2026-10-06 18:02:10+00:00 | 0.998 | HIGH | vibration_rms |
-| PLT-N-A05 | 2026-10-06 18:02:10+00:00 | 0.8804 | HIGH | vibration_rms |
-| PLT-N-C03 | 2026-10-06 18:02:10+00:00 | 0.8048 | HIGH | vibration_rms |
-| PLT-N-D03 | 2026-10-06 18:02:10+00:00 | 0.6492 | ELEVATED | vibration_rms |
-| PLT-S-B02 | 2026-10-06 18:02:10+00:00 | 0.488 | ELEVATED | vibration_rms |
-| PLT-N-B03 | 2026-10-06 18:02:10+00:00 | 0.3927 | NORMAL | vibration_rms |
+| PLT-S-A06 | 2026-10-07 22:59:20+00:00 | 0.9972 | HIGH | motor_current_a |
+| PLT-S-A04 | 2026-10-07 22:59:20+00:00 | 0.9968 | HIGH | vibration_rms |
+| PLT-S-D04 | 2026-10-07 22:59:20+00:00 | 0.7934 | HIGH | vibration_rms |
+| PLT-N-D08 | 2026-10-07 22:59:20+00:00 | 0.5515 | ELEVATED | acoustic_db |
+| PLT-S-C02 | 2026-10-07 22:59:20+00:00 | 0.3209 | NORMAL | vibration_rms |
+| PLT-E-B05 | 2026-10-07 22:59:20+00:00 | 0.265 | NORMAL | hydraulic_pressure_bar |
+| PLT-S-B01 | 2026-10-07 22:59:20+00:00 | 0.2248 | NORMAL | vibration_rms |
+| PLT-S-D07 | 2026-10-07 22:59:20+00:00 | 0.1908 | NORMAL | vibration_rms |
 ... 88 more rows
-query time incl. network from notebook: 33 ms
+query time incl. network from notebook: 26 ms
 | QUERY PLAN |
 |---|
-| Unique (actual time=18.739..19.272 rows=96 loops=1) |
-|   ->  Sort (actual time=18.738..18.954 rows=5376 loops=1) |
+| Unique (actual time=0.122..13.077 rows=96 loops=1) |
+|   ->  Incremental Sort (actual time=0.122..12.821 rows=4608 loops=1) |
 |         Sort Key: station_risk_scores.station_id, station_risk_scores.window_end DESC |
-|         Sort Method: quicksort  Memory: 2838kB |
-|         ->  Seq Scan on partition_49197 station_risk_scores (actual time=8.768..9.522 rows=5376 loops=1) |
-|               Filter: (window_end > (now() - '00:10:00'::interval)) |
-|               Rows Removed by Filter: 43296 |
-| Planning Time: 0.236 ms |
-| Execution Time: 19.371 ms |
+|         Presorted Key: station_risk_scores.station_id |
+|         Full-sort Groups: 96  Sort Method: quicksort  Average Memory: 48kB  Peak Memory: 48kB |
+|         ->  Index Scan using "__db_tmp_791a7023-b483-4e22-8269-ee3a5b3a99fa_pkey" on partition_49197 station_risk_scores (actual time=0.029..9.439 rows=4608 loops=1) |
+|               Index Cond: (window_end > (now() - '00:10:00'::interval)) |
+| Planning Time: 0.308 ms |
+| Execution Time: 13.108 ms |
 
 Output:
 
 ```text
-{"text/plain": "[['Unique (actual time=18.739..19.272 rows=96 loops=1)'],\n ['  ->  Sort (actual time=18.738..18.954 rows=5376 loops=1)'],\n ['        Sort Key: station_risk_scores.station_id, station_risk_scores.window_end DESC'],\n ['        Sort Method: quicksort  Memory: 2838kB'],\n ['        ->  Seq Scan on partition_49197 station_risk_scores (actual time=8.768..9.522 rows=5376 loops=1)'],\n [\"              Filter: (window_end > (now() - '00:10:00'::interval))\"],\n ['              Rows Removed by Filter: 43296'],\n ['Planning Time: 0.236 ms'],\n ['Execution Time: 19.371 ms']]"}
+{"text/plain": "[['Unique (actual time=0.122..13.077 rows=96 loops=1)'],\n ['  ->  Incremental Sort (actual time=0.122..12.821 rows=4608 loops=1)'],\n ['        Sort Key: station_risk_scores.station_id, station_risk_scores.window_end DESC'],\n ['        Presorted Key: station_risk_scores.station_id'],\n ['        Full-sort Groups: 96  Sort Method: quicksort  Average Memory: 48kB  Peak Memory: 48kB'],\n ['        ->  Index Scan using \"__db_tmp_791a7023-b483-4e22-8269-ee3a5b3a99fa_pkey\" on partition_49197 station_risk_scores (actual time=0.029..9.439 rows=4608 loops=1)'],\n [\"              Index Cond: (window_end > (now() - '00:10:00'::interval))\"],\n ['Planning Time: 0.308 ms'],\n ['Execution Time: 13.108 ms']]"}
 ```
 
 ## 6 · OLTP contents and Lakehouse Sync back to Unity Catalog
@@ -249,10 +249,13 @@ Output:
 
 | work_order_id | station_id | plant_id | line_id | priority | status | failure_probability | risk_band | top_signal | description | assigned_technician_id | created_by | created_at | updated_at | completed_at |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 3 | PLT-N-C07 | PLT-N | PLT-N-C | P2 | completed | 0.9898 | HIGH | bearing_temp_c | Predicted bearing_temp_c issue |  | sascha.vetter@databricks.com | 2026-10-07 22:57:59.169938+00:00 | 2026-10-07 22:58:12.718962+00:00 | 2026-10-07 22:58:12.718962+00:00 |
 | 2 | PLT-S-B06 | PLT-S | PLT-S-B | P1 | completed | 0.8876 | HIGH | vibration_rms | E08 notebook: predicted bearing wear |  | sascha.vetter@databricks.com | 2026-10-06 17:57:26.883429+00:00 | 2026-10-06 17:57:46.897278+00:00 | 2026-10-06 17:57:46.897278+00:00 |
 | 1 | PLT-E-A03 | PLT-E | PLT-E-A | P1 | completed | 0.7868 | HIGH | motor_current_a | E2E test: overheating alert |  | sascha.vetter@databricks.com | 2026-10-06 17:16:25.838121+00:00 | 2026-10-06 17:17:43.289537+00:00 | 2026-10-06 17:17:43.289537+00:00 |
 | command_id | command | station_id | failure_mode | requested_by | status | requested_at | applied_at |
 |---|---|---|---|---|---|---|---|
+| 6 | repair | PLT-N-C07 |  | sascha.vetter@databricks.com | applied | 2026-10-07 22:58:12.724309+00:00 | 2026-10-07 22:58:13.001443+00:00 |
+| 5 | inject_fault | PLT-S-A04 | overheating | sascha.vetter@databricks.com | applied | 2026-10-07 22:57:32.212895+00:00 | 2026-10-07 22:57:33.001346+00:00 |
 | 4 | repair | PLT-S-B06 |  | sascha.vetter@databricks.com | applied | 2026-10-06 17:57:46.905634+00:00 | 2026-10-06 17:57:47.001418+00:00 |
 | 3 | inject_fault | PLT-S-B06 | bearing_wear | sascha.vetter@databricks.com | applied | 2026-10-06 17:51:52.893947+00:00 | 2026-10-06 17:51:53.002039+00:00 |
 | 2 | repair | PLT-E-A03 |  | sascha.vetter@databricks.com | applied | 2026-10-06 17:17:43.295412+00:00 | 2026-10-06 17:17:45.001512+00:00 |
@@ -263,11 +266,14 @@ Output:
 | _pg_change_type | _pg_lsn | _timestamp | work_order_id | station_id | status | priority | failure_probability |
 |---|---|---|---|---|---|---|---|
 | insert | 59450264 | 2026-10-06T17:16:26.509 | 1 | PLT-E-A03 | open | P1 | 0.7868 |
-| update_preimage | 60162312 | 2026-10-06T17:17:43.290 | 1 | PLT-E-A03 | open | P1 | 0.7868 |
 | update_postimage | 60162312 | 2026-10-06T17:17:43.290 | 1 | PLT-E-A03 | completed | P1 | 0.7868 |
+| update_preimage | 60162312 | 2026-10-06T17:17:43.290 | 1 | PLT-E-A03 | open | P1 | 0.7868 |
 | insert | 90103520 | 2026-10-06T17:57:26.883 | 2 | PLT-S-B06 | open | P1 | 0.8876 |
-| update_preimage | 90338344 | 2026-10-06T17:57:46.897 | 2 | PLT-S-B06 | open | P1 | 0.8876 |
 | update_postimage | 90338344 | 2026-10-06T17:57:46.897 | 2 | PLT-S-B06 | completed | P1 | 0.8876 |
+| update_preimage | 90338344 | 2026-10-06T17:57:46.897 | 2 | PLT-S-B06 | open | P1 | 0.8876 |
+| insert | 137451520 | 2026-10-07T22:57:59.518 | 3 | PLT-N-C07 | open | P2 | 0.9898 |
+| update_preimage | 137452704 | 2026-10-07T22:58:12.719 | 3 | PLT-N-C07 | open | P2 | 0.9898 |
+| update_postimage | 137452704 | 2026-10-07T22:58:12.719 | 3 | PLT-N-C07 | completed | P2 | 0.9898 |
 
 Output:
 
@@ -275,3 +281,30 @@ Output:
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | PLT-E-A03 | PLT-E | PLT-E-A | P1 | completed | 0.7868 | HIGH | motor_current_a | E2E test: overheating alert |  | sascha.vetter@databricks.com | 2026-10-06T17:16:25.838Z | 2026-10-06T17:17:43.289Z | 2026-10-06T17:17:43.289Z |
 | 2 | PLT-S-B06 | PLT-S | PLT-S-B | P1 | completed | 0.8876 | HIGH | vibration_rms | E08 notebook: predicted bearing wear |  | sascha.vetter@databricks.com | 2026-10-06T17:57:26.883Z | 2026-10-06T17:57:46.897Z | 2026-10-06T17:57:46.897Z |
+| 3 | PLT-N-C07 | PLT-N | PLT-N-C | P2 | completed | 0.9898 | HIGH | bearing_temp_c | Predicted bearing_temp_c issue |  | sascha.vetter@databricks.com | 2026-10-07T22:57:59.169Z | 2026-10-07T22:58:12.718Z | 2026-10-07T22:58:12.718Z |
+
+## 7 · Timed database round trips (write + read) from this notebook
+A temporary table lives only in this session, so the test touches no demo data.
+
+```python
+conn.run("CREATE TEMP TABLE rt_probe (id int PRIMARY KEY, payload text, at timestamptz DEFAULT now())")
+print("| iteration | INSERT ms | SELECT ms | value read back |\n|---|---|---|---|")
+for i in range(1, 6):
+    t0 = time.perf_counter()
+    conn.run("INSERT INTO rt_probe (id, payload) VALUES (:i, :p)", i=i, p=f"probe-{i}")
+    t1 = time.perf_counter()
+    v = conn.run("SELECT payload FROM rt_probe WHERE id = :i", i=i)[0][0]
+    t2 = time.perf_counter()
+    print(f"| {i} | {(t1 - t0) * 1000:.1f} | {(t2 - t1) * 1000:.1f} | {v} |")
+conn.run("DROP TABLE rt_probe")
+```
+
+Output:
+
+| iteration | INSERT ms | SELECT ms | value read back |
+|---|---|---|---|
+| 1 | 13.8 | 13.5 | probe-1 |
+| 2 | 12.7 | 12.1 | probe-2 |
+| 3 | 11.8 | 11.8 | probe-3 |
+| 4 | 12.3 | 12.1 | probe-4 |
+| 5 | 11.7 | 11.8 | probe-5 |
