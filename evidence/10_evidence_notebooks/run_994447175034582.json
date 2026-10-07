@@ -18,7 +18,7 @@
     }
   },
   "start_time": "2026-10-07T22:56:13.271000+00:00",
-  "end_time": "2026-10-07T23:16:22.756000+00:00",
+  "end_time": "2026-10-07T23:43:22.293000+00:00",
   "tasks": [
     {
       "task_key": "E00_overview",
@@ -162,6 +162,19 @@
       "start_time": "2026-10-07T23:14:43.094000+00:00",
       "end_time": "2026-10-07T23:16:22.209000+00:00",
       "duration_s": 99.1
+    },
+    {
+      "task_key": "E03_ml_model",
+      "run_id": 864594253859726,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-07T23:42:04.825000+00:00",
+      "end_time": "2026-10-07T23:43:21.726000+00:00",
+      "duration_s": 76.9
     }
   ]
 }

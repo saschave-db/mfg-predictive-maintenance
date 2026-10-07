@@ -78,6 +78,7 @@ Every requirement maps to the code that implements it and to **executed output**
 | Notebook-driven E2E loop | Fault to HIGH in Delta and Postgres 367 s; repair to NORMAL 90 s; station never went down | `10_evidence_notebooks/E08_end_to_end.md` |
 | Row filter on a non-owner identity | App SP sees 6 of 18 rows (Plant North), 12 after granting Plant South, 6 after revoking; PII redacted; confirmed in `system.query.history` | `08_app/governance_as_app_sp.json`, `10_evidence_notebooks/E05_governance.md` §2b |
 | Raw Model Serving call | POST in 77 ms, response equals the pipeline score | `10_evidence_notebooks/E03_ml_model.md` §4 |
+| AI Gateway usage tracking | 3 app what-if calls recorded in `system.serving.endpoint_usage` as the app SP, status 200 (system table lags about 15 to 20 min) | `10_evidence_notebooks/E03_ml_model.md` §5, `08_app/whatif_via_ai_gateway.md` |
 | Lakebase round trip from a notebook | INSERT + SELECT 11.7 to 13.8 ms each | `10_evidence_notebooks/E04_lakebase.md` §7 |
 | Deployed code = repo code | SHA-256 of every deployed pipeline file equals the committed snapshot | `10_evidence_notebooks/E09_source_integrity.md` |
 
