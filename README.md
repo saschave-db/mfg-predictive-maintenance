@@ -4,6 +4,8 @@ An end-to-end demo. Plant gateways stream station telemetry through **Lakeflow C
 
 All data is synthetic. No customer data is used.
 
+**Business presentation:** [`presentation/deck.md`](presentation/deck.md). It covers the outcome, the KPI impact, the value model, and the pilot plan for the executive sponsor and the maintenance owner.
+
 ## Architecture
 
 ```
@@ -131,6 +133,7 @@ src/genie/                   Genie agent as code (instructions, example SQL, ben
 src/app/                     FastAPI backend + static JS front end
 tools/                       Evidence export, Genie deploy and benchmark, Lakebase SQL, E2E script
 docs/                        Build spec, progress log
+presentation/                Business deck (Markdown, Marp-compatible slides)
 ```
 
 ## Deploy
