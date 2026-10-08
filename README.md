@@ -1,10 +1,10 @@
 # Live predictive maintenance for manufacturing on Databricks
 
-An end-to-end demo. Plant gateways stream station telemetry through **Lakeflow Connect Zerobus**. **Spark Declarative Pipelines** clean it, build features and score failure risk in-stream with a **Unity Catalog** model. **Lakebase** serves the live state to a **Databricks App** and stores work orders. A **Genie agent** answers questions over governed **metric views**.
+An end-to-end demo for **Volta Industrial**, a fictional discrete manufacturer with three plants. Plant gateways stream station telemetry through **Lakeflow Connect Zerobus**. **Spark Declarative Pipelines** clean it, build features and score failure risk in-stream with a **Unity Catalog** model. **Lakebase** serves the live state to a **Databricks App** and stores work orders. A **Genie agent** answers questions over governed **metric views**.
 
-All data is synthetic. No customer data is used.
+All data is synthetic, and Volta Industrial is a fictional customer. No real customer data is used.
 
-**Business presentation:** [`presentation/deck.md`](presentation/deck.md). It covers the outcome, the KPI impact, the value model, and the pilot plan for the executive sponsor and the maintenance owner.
+**Business presentation:** [`presentation/deck.md`](presentation/deck.md). It covers the outcome, the KPI impact, the value model, and the pilot plan for Volta's COO (executive sponsor) and Head of Maintenance & Reliability (domain owner).
 
 ## Architecture
 
