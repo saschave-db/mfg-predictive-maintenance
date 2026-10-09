@@ -4,6 +4,8 @@ An end-to-end demo for **Volta Industrial**, a fictional Tier-1 automotive suppl
 
 All data is synthetic, and Volta Industrial is a fictional customer. No real customer data is used.
 
+**Industry fit:** [`docs/INDUSTRY_FIT.md`](docs/INDUSTRY_FIT.md) maps each industry review gap to the change and its executed evidence.
+
 **Business presentation:** [`presentation/deck.md`](presentation/deck.md). It covers the outcome, the KPI impact, the value model, and the pilot plan for Volta's COO (executive sponsor) and Head of Maintenance & Reliability (domain owner).
 
 ## Architecture
@@ -44,7 +46,7 @@ Every requirement maps to the code that implements it and to **executed output**
 | R10 | **Databricks App** with actions | `src/app/*`, `resources/app.yml` | E07 (status, resources, deployments, writes); `08_app/e2e_fault_injection.md` (every API call through the app, with timings) |
 | R11 | **Low-latency live probability** of maintenance need | all of the above | E02 §5 (per-hop latency); E08 (fault → HIGH in Delta and Postgres, repair → NORMAL); `06_live_pipeline/04_live_evidence.md` |
 | R12 | Synthetic data only | `src/pdm/physics.py`, `00_setup_uc.py` (`example-mfg.test` emails, `+1-555` phones) | E00 (UC objects); E05 §2 (masked PII) |
-| R13 | Industry fit: risk expressed in OEM delivery exposure (JIS buffer, line-stop charge, vehicle program, process step) | `src/notebooks/05_industry_context.py`, `resources/industry_context.job.yml`, `src/genie/space_config.py` | `11_industry_context/05_industry_context.md` (OEM programs, process steps, live exposure per line and per OEM); `07_genie/benchmark.md` (OEM exposure questions pass) |
+| R13 | Industry fit: risk expressed in OEM delivery exposure (JIS buffer, line-stop charge, vehicle program, process step) | `src/notebooks/05_industry_context.py`, `resources/industry_context.job.yml`, `src/genie/space_config.py` | `11_industry_context/05_industry_context.md` (OEM programs, process steps, live exposure per line and per OEM, scorecard KPIs and value model computed from the history); `07_genie/benchmark.md` (OEM exposure questions pass) |
 
 ## Why each piece
 
@@ -74,7 +76,7 @@ Every requirement maps to the code that implements it and to **executed output**
 | Fault from app to simulator | applied 0.4 s after the click | `06_live_pipeline/04_live_evidence.md` |
 | Injected fault to HIGH risk | 3 min 2 s in Delta, 3 min 47 s in the app | same, and `08_app/` |
 | Model Serving what-if (warm) | 41 to 140 ms round trip | `08_app/whatif_warm.md` |
-| Genie benchmark | 12/12 graded questions match reference SQL, including 2 OEM delivery exposure questions (the earlier 10-question set was reproduced live in E06) | `07_genie/benchmark.md`, `10_evidence_notebooks/E06_genie.md` |
+| Genie benchmark | 12/12 graded questions match reference SQL, including 2 OEM delivery exposure questions (reproduced live in E06) | `07_genie/benchmark.md`, `10_evidence_notebooks/E06_genie.md` |
 | OEM delivery exposure | An unplanned failure (112 min) outlasts every JIS buffer (45 to 90 min): about 44 min of OEM line stop, about $595k contract charge on average (synthetic terms) | `11_industry_context/05_industry_context.md` |
 | Writer of the bronze table | 1,157 commits, all `engineInfo = Zerobus`, one every 5.0 s | `10_evidence_notebooks/E01_zerobus_ingestion.md` |
 | Delta to Lakebase sync | Delta commit synced to Postgres in about 4 s | `09_deployed_resources/lakebase_synced_table.json` |

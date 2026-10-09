@@ -1,10 +1,10 @@
 # Executed notebook: 05_industry_context
 
-Exported from Databricks job run `517479541358465` (task `industry_context`, task run `222724314415679`).
+Exported from Databricks job run `507331426177429` (task `industry_context`, task run `374801135625232`).
 
-Result: **SUCCESS** · start 2026-10-09T16:36:41.376000+00:00 · end 2026-10-09T16:37:36.248000+00:00
+Result: **SUCCESS** · start 2026-10-09T16:55:38.048000+00:00 · end 2026-10-09T16:56:36.386000+00:00
 
-Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/233410447833891/run/517479541358465
+Run URL: https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/233410447833891/run/507331426177429
 
 
 # 05 · Industry context: Tier-1 EV battery enclosure supplier
@@ -254,3 +254,141 @@ Output:
 | fleet_avg_oem_line_stop_min | fleet_avg_charge_usd_per_failure |
 |---|---|
 | 43.5 | 594853.0 |
+
+## Scorecard KPIs: what moves for the COO and the Head of Maintenance & Reliability
+Every number on the deck's scorecard and value slides is computed here from the maintenance history
+(`source = 'history'`) and the OEM contract terms above. The business assumptions are widgets, so finance can
+replace them with actuals and re-run.
+* **Measured in the data:** repair counts, downtime and parts cost per repair type, JIS buffers, line-stop charges.
+* **Measured by the model** (`evidence/04_training/02_train_model.md`): alert precision 0.95 at the HIGH threshold.
+* **Assumptions:** failures per station per year, share converted to planned repairs, internal downtime cost,
+  share of unplanned failures that reach the OEM, operating hours per line.
+
+```python
+dbutils.widgets.text("failures_per_station_year", "2")
+dbutils.widgets.text("conversion", "0.7")
+dbutils.widgets.text("downtime_cost_usd_per_hour", "15000")
+dbutils.widgets.text("oem_escape_share", "0.05")
+dbutils.widgets.text("alert_precision", "0.95")
+dbutils.widgets.text("operating_hours_per_line_year", "6000")
+A = {k: float(dbutils.widgets.get(k)) for k in ("failures_per_station_year", "conversion", "downtime_cost_usd_per_hour",
+                                                "oem_escape_share", "alert_precision", "operating_hours_per_line_year")}
+print("assumptions:", A)
+
+h = {r.event_type: r for r in spark.sql("""
+SELECT event_type, COUNT(*) AS n, SUM(downtime_min) AS dt, SUM(parts_cost_usd) AS parts
+FROM pdm_core.maintenance_events WHERE source = 'history' AND event_type IN ('corrective_repair', 'preventive_repair')
+GROUP BY event_type""").collect()}
+c, p = h["corrective_repair"], h["preventive_repair"]
+avg_c_dt, avg_p_dt = c.dt / c.n, p.dt / p.n
+avg_c_parts, avg_p_parts = c.parts / c.n, p.parts / p.n
+avg_charge = spark.sql(f"""
+SELECT CAST(AVG(GREATEST(0, {avg_c_dt} - jis_buffer_min) * line_stop_charge_usd_per_min) AS DOUBLE) AS v,
+       CAST(AVG(GREATEST(0, {avg_c_dt} - jis_buffer_min)) AS DOUBLE) AS m, MIN(jis_buffer_min) AS bmin, MAX(jis_buffer_min) AS bmax,
+       COUNT(*) AS lines FROM pdm_raw.line_programs""").first()
+stations = spark.table("pdm_raw.station_master").count()
+print(f"history: {c.n} corrective repairs (avg {avg_c_dt:.1f} min, ${avg_c_parts:,.0f}), "
+      f"{p.n} preventive repairs (avg {avg_p_dt:.1f} min, ${avg_p_parts:,.0f}); {stations} stations, {avg_charge.lines} lines")
+print(f"JIS buffers {avg_charge.bmin} to {avg_charge.bmax} min; avg OEM line stop per unplanned failure "
+      f"{avg_charge.m:.1f} min; avg contract charge ${avg_charge.v:,.0f}")
+```
+
+Output:
+
+```text
+assumptions: {'failures_per_station_year': 2.0, 'conversion': 0.7, 'downtime_cost_usd_per_hour': 15000.0, 'oem_escape_share': 0.05, 'alert_precision': 0.95, 'operating_hours_per_line_year': 6000.0}
+history: 1096 corrective repairs (avg 112.3 min, $7,200), 268 preventive repairs (avg 27.7 min, $871); 96 stations, 12 lines
+JIS buffers 45 to 90 min; avg OEM line stop per unplanned failure 43.5 min; avg contract charge $594,853
+```
+
+### Henrik Lindqvist (Head of Maintenance & Reliability): monthly operations review KPIs
+Same maintenance history, with the assumed share of failures converted into planned repairs.
+
+```python
+conv_n = round(c.n * A["conversion"])
+c2, p2 = c.n - conv_n, p.n + conv_n
+rows = [
+    ("Planned maintenance share (% of repairs)", 100 * p.n / (c.n + p.n), 100 * p2 / (c2 + p2)),
+    ("Mean repair time per maintenance event (min)", (c.dt + p.dt) / (c.n + p.n),
+     (c2 * avg_c_dt + p2 * avg_p_dt) / (c2 + p2)),
+    ("Maintenance parts spend (USD, same history)", c.parts + p.parts, c2 * avg_c_parts + p2 * avg_p_parts),
+    ("Unplanned (corrective) repairs", float(c.n), float(c2)),
+]
+display(spark.createDataFrame([(k, round(a, 1), round(b, 1), round(100 * (b - a) / a, 1)) for k, a, b in rows],
+                              "kpi string, today double, with_conversion double, change_pct double"))
+```
+
+Output:
+
+| kpi | today | with_conversion | change_pct |
+|---|---|---|---|
+| Planned maintenance share (% of repairs) | 19.6 | 75.9 | 286.2 |
+| Mean repair time per maintenance event (min) | 95.7 | 48.1 | -49.7 |
+| Maintenance parts spend (USD, same history) | 8124123.1 | 3270150.3 | -59.7 |
+| Unplanned (corrective) repairs | 1096.0 | 329.0 | -70.0 |
+
+### Value model: layer 1 (Volta's own P&L) and layer 2 (OEM line-stop charges avoided)
+
+```python
+def value(conversion, cost_per_hour, escape):
+    failures = stations * A["failures_per_station_year"]
+    n = failures * conversion
+    saved_min, saved_parts = avg_c_dt - avg_p_dt, avg_c_parts - avg_p_parts
+    false_alarms = n / A["alert_precision"] - n
+    l1 = (n * saved_min / 60 * cost_per_hour + n * saved_parts
+          - false_alarms * (avg_p_parts + avg_p_dt / 60 * cost_per_hour))
+    l2 = failures * escape * conversion * avg_charge.v
+    return dict(failures=failures, converted=n, downtime_h_avoided=n * saved_min / 60,
+                downtime_usd=n * saved_min / 60 * cost_per_hour, parts_usd=n * saved_parts,
+                false_alarms=false_alarms, layer1_net_usd=l1, oem_stops=failures * escape, layer2_usd=l2)
+
+base = value(A["conversion"], A["downtime_cost_usd_per_hour"], A["oem_escape_share"])
+lines = avg_charge.lines
+base["oee_availability_pts"] = 100 * base["downtime_h_avoided"] / (lines * A["operating_hours_per_line_year"])
+display(spark.createDataFrame([(k, round(float(v), 2)) for k, v in base.items()], "metric string, base_case double"))
+```
+
+Output:
+
+| metric | base_case |
+|---|---|
+| failures | 192.0 |
+| converted | 134.4 |
+| downtime_h_avoided | 189.42 |
+| downtime_usd | 2841244.04 |
+| parts_usd | 850552.73 |
+| false_alarms | 7.07 |
+| layer1_net_usd | 3636596.85 |
+| oem_stops | 9.6 |
+| layer2_usd | 3997410.52 |
+| oee_availability_pts | 0.26 |
+
+### Sensitivity
+Layer 1 by conversion share and internal downtime cost. Layer 2 by the share of unplanned failures that reach the OEM.
+
+```python
+display(spark.createDataFrame(
+    [(f"{int(cv * 100)}%", *[round(value(cv, ch, A["oem_escape_share"])["layer1_net_usd"] / 1e6, 1) for ch in (5000, 15000, 50000)])
+     for cv in (0.5, 0.7, 0.9)],
+    "converted_to_planned string, layer1_musd_at_5k_per_h double, layer1_musd_at_15k_per_h double, layer1_musd_at_50k_per_h double"))
+display(spark.createDataFrame(
+    [(f"{int(e * 100)}%", round(value(A["conversion"], A["downtime_cost_usd_per_hour"], e)["oem_stops"], 1),
+      round(value(A["conversion"], A["downtime_cost_usd_per_hour"], e)["layer2_usd"] / 1e6, 1)) for e in (0.02, 0.05, 0.10)],
+    "share_reaching_oem string, oem_stops_per_year double, layer2_musd_avoided double"))
+```
+
+Output:
+
+| converted_to_planned | layer1_musd_at_5k_per_h | layer1_musd_at_15k_per_h | layer1_musd_at_50k_per_h |
+|---|---|---|---|
+| 50% | 1.3 | 2.6 | 7.3 |
+| 70% | 1.8 | 3.6 | 10.2 |
+| 90% | 2.3 | 4.7 | 13.1 |
+
+Output:
+
+| share_reaching_oem | oem_stops_per_year | layer2_musd_avoided |
+|---|---|---|
+| 2% | 3.8 | 1.6 |
+| 5% | 9.6 | 4.0 |
+| 10% | 19.2 | 8.0 |

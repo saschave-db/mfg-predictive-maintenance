@@ -1,6 +1,46 @@
 {
+  "captured_at": "2026-10-09T17:04:20.796642+00:00",
+  "source": "GET /api/2.0/genie/spaces/01f1c10d662111078cd7326dff1774c6?include_serialized_space=true",
   "space_id": "01f1c10d662111078cd7326dff1774c6",
   "title": "Plant Maintenance Agent",
-  "description": "Ask about live failure risk, maintenance history (failures, repairs, downtime, cost) and work orders across Plant North, South and East. Synthetic demo data; time is compressed.",
-  "warehouse_id": "fb9bc265e9f4578a"
+  "description": "Volta Industrial (Tier-1 EV battery enclosure supplier): ask about live failure risk, OEM delivery exposure, maintenance history (failures, repairs, downtime, cost) and work orders across Plant North, South and East. Synthetic demo data; time is compressed.",
+  "warehouse_id": "fb9bc265e9f4578a",
+  "tables": [
+    "serverless_stable_am1uc2_catalog.pdm_core.station_health_current",
+    "serverless_stable_am1uc2_catalog.pdm_ops.maintenance_metrics",
+    "serverless_stable_am1uc2_catalog.pdm_ops.oem_delivery_exposure",
+    "serverless_stable_am1uc2_catalog.pdm_ops.station_risk_metrics",
+    "serverless_stable_am1uc2_catalog.pdm_ops.work_order_metrics",
+    "serverless_stable_am1uc2_catalog.pdm_ops.work_orders_current"
+  ],
+  "metric_views": [],
+  "sample_questions": [
+    "How many open work orders do we have by priority?",
+    "Which OEM programs are exposed to a line stop right now?",
+    "Why is the riskiest station at risk?",
+    "Which stations need maintenance soon?",
+    "Which station types fail most often and what is their MTTR?"
+  ],
+  "example_questions": [
+    "How did average risk develop per plant over the last 15 minutes?",
+    "Which OEM customer has the highest delivery exposure right now?",
+    "How many open work orders are there per plant?",
+    "Which stations are at high risk right now?",
+    "What is the MTTR and failure count by station type?"
+  ],
+  "benchmark_questions": [
+    "What is the JIS buffer in minutes for each line supplying Nordvik Motors?",
+    "What are the 5 stations with the highest failure probability right now?",
+    "What is the mean time to repair in minutes for each plant?",
+    "Which line has the highest risk-weighted OEM delivery exposure right now, and which OEM program does it supply?",
+    "Which station type had the most failures?",
+    "How many failures did Plant North have?",
+    "List the stations on line PLT-S-B with their current risk band.",
+    "Which failure mode caused the most downtime?",
+    "What is the total parts cost per plant?",
+    "How many stations are at high risk right now?",
+    "How many stations are currently down?",
+    "What share of repairs were preventive for each station type?"
+  ],
+  "text_instructions": "You are a maintenance planning assistant for Volta Industrial, a Tier-1 supplier of aluminum EV battery enclosures.\n"
 }

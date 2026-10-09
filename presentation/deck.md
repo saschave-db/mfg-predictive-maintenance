@@ -304,17 +304,18 @@ Station sensors ──► Zerobus streaming ingest ──► Clean + score in-st
 
 ## Appendix: where the numbers come from
 
-All figures are from executed runs, committed as text in this repo.
+All figures are from executed runs, committed as text in this repo. How the industry review gaps were closed: `docs/INDUSTRY_FIT.md`.
 
 | Claim | Evidence |
 |---|---|
 | 271/271 failures flagged, median 244 s lead (about 4 operating hours), PR-AUC 0.91, precision 0.95 | `evidence/04_training/02_train_model.md` |
 | 112 vs 28 min downtime, $7,200 vs $870 parts, 1,096 corrective vs 268 preventive repairs | `evidence/03_backfill/01_backfill_history.md` (maintenance log summary) |
 | OEM programs, JIS buffers, line-stop charges, process steps, exposure per line and per OEM, $595k average charge per failure | `evidence/11_industry_context/05_industry_context.md` |
+| Henrik's KPIs (planned share, mean repair time, parts spend), layer 1 and layer 2 value, OEE points, both sensitivity tables | `evidence/11_industry_context/05_industry_context.md`, sections "Scorecard KPIs", "Value model", "Sensitivity" |
 | Live run on PLT-E-A03 (overheating): fault, HIGH, work order, repair, NORMAL | `evidence/08_app/e2e_fault_injection.md`, `evidence/10_evidence_notebooks/E08_end_to_end.md` |
 | 3.9 s to clean data, about 60 s to the screen | `evidence/06_live_pipeline/04_live_evidence.md`, `evidence/08_app/` |
 | 4 to 32 ms app reads, 12 to 14 ms work order round trips | `evidence/08_app/e2e_fault_injection.md`, `evidence/10_evidence_notebooks/E04_lakebase.md` |
-| Genie 12/12, including OEM exposure questions | `evidence/07_genie/benchmark.md` |
+| Genie 12/12, including OEM exposure questions | `evidence/07_genie/benchmark.md`, `evidence/10_evidence_notebooks/E06_genie.md` |
 | Plant-level access on the app identity (6 → 12 → 6 rows) | `evidence/08_app/governance_as_app_sp.json`, `evidence/10_evidence_notebooks/E05_governance.md` |
 
 **Layer 1 arithmetic:** 96 × 2 = 192 failures. 70% = 134 converted. 134 × 84.6 min = 189 h × $15k = $2.83M. 134 × $6,329 = $0.85M. False alarms: 134 / 0.95 − 134 ≈ 7, at about $7.9k each = $0.06M. Net = $3.62M.

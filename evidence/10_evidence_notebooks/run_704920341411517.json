@@ -1,0 +1,37 @@
+{
+  "job_id": 755461157363253,
+  "run_id": 704920341411517,
+  "run_name": "pdm_evidence_notebooks",
+  "run_page_url": "https://fevm-serverless-stable-am1uc2.cloud.databricks.com/?o=7474651880045550#job/755461157363253/run/704920341411517",
+  "state": {
+    "life_cycle_state": "TERMINATED",
+    "result_state": "SUCCESS",
+    "state_message": "",
+    "user_cancelled_or_timedout": false
+  },
+  "status": {
+    "state": "TERMINATED",
+    "termination_details": {
+      "code": "SUCCESS",
+      "message": "",
+      "type": "SUCCESS"
+    }
+  },
+  "start_time": "2026-10-09T16:56:40.488000+00:00",
+  "end_time": "2026-10-09T17:02:40.862000+00:00",
+  "tasks": [
+    {
+      "task_key": "E06_genie",
+      "run_id": 559327244084078,
+      "state": {
+        "life_cycle_state": "TERMINATED",
+        "result_state": "SUCCESS",
+        "state_message": "",
+        "user_cancelled_or_timedout": false
+      },
+      "start_time": "2026-10-09T16:56:40.525000+00:00",
+      "end_time": "2026-10-09T17:02:40.189000+00:00",
+      "duration_s": 359.7
+    }
+  ]
+}

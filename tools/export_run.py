@@ -124,6 +124,8 @@ def main():
     }
     # Repair runs add later attempts of the same task: process in start order so the latest attempt wins.
     for t in sorted(run.get("tasks", []), key=lambda t: t.get("start_time", 0)):
+        if t.get("state", {}).get("result_state") == "DISABLED":
+            continue  # not selected in a partial run (run-now with "only")
         summary["tasks"].append({
             "task_key": t["task_key"], "run_id": t["run_id"], "state": t.get("state"),
             "start_time": ts(t.get("start_time")), "end_time": ts(t.get("end_time")),
