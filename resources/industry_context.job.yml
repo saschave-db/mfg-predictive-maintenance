@@ -1,0 +1,11 @@
+resources:
+  jobs:
+    pdm_industry_context:
+      name: pdm_05_industry_context
+      tasks:
+        - task_key: industry_context
+          notebook_task:
+            notebook_path: ../src/notebooks/05_industry_context.py
+            base_parameters:
+              catalog: ${var.catalog}
+              app_sp: ${var.app_sp_client_id}

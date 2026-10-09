@@ -20,6 +20,7 @@ Workspace profile `fevm-serverless-stable-am1uc2`. Bundle target `demo`. All dat
 | 11 | End-to-end fault injection | Done | `evidence/08_app/e2e_fault_injection.md` |
 | 12 | Evidence notebooks E00 to E09 (job `pdm_evidence_notebooks`, run 994447175034582) | Done, all SUCCESS | `evidence/10_evidence_notebooks/` |
 | 13 | Requirement matrix, source snapshot (SHA256SUMS), non-owner governance proof | Done | README, `evidence/source_snapshot/`, `evidence/08_app/governance_as_app_sp.json` |
+| 14 | Industry context (2026-10-09): OEM programs, JIS terms, process steps, `pdm_ops.oem_delivery_exposure`; Genie 12/12 | Done | `evidence/11_industry_context/`, `evidence/07_genie/benchmark.md` |
 
 Decision 2026-10-06: accept about 60 s sensor-to-screen latency and document it (see README, Known limitations).
 

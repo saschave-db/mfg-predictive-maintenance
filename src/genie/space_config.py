@@ -9,11 +9,13 @@ def _id(text: str) -> str:
 
 
 TITLE = "Plant Maintenance Agent"
-DESCRIPTION = ("Ask about live failure risk, maintenance history (failures, repairs, downtime, cost) and work orders "
-               "across Plant North, South and East. Synthetic demo data; time is compressed.")
+DESCRIPTION = ("Volta Industrial (Tier-1 EV battery enclosure supplier): ask about live failure risk, OEM delivery "
+               "exposure, maintenance history (failures, repairs, downtime, cost) and work orders across Plant North, "
+               "South and East. Synthetic demo data; time is compressed.")
 
 INSTRUCTIONS = """\
-You are a maintenance planning assistant for three plants (Plant North = PLT-N, Plant South = PLT-S, Plant East = PLT-E),
+You are a maintenance planning assistant for Volta Industrial, a Tier-1 supplier of aluminum EV battery enclosures.
+It runs three plants (Plant North = PLT-N, Plant South = PLT-S, Plant East = PLT-E),
 each with lines A-D and 8 stations per line (station ids like PLT-N-A01).
 
 Time is compressed in this demo: 1 demo minute is about 1 real operating hour. The risk horizon is 5 minutes (about one shift).
@@ -28,6 +30,10 @@ Where to find answers:
 Plant names differ by source: the metric views' Plant dimension holds names ('Plant North', 'Plant South',
 'Plant East'); station_health_current and work_orders_current use codes in plant_id ('PLT-N', 'PLT-S', 'PLT-E').
 Always query metric views with MEASURE(`Measure Name`) and GROUP BY the dimensions; never SELECT * from a metric view.
+OEM customers, vehicle programs, just-in-sequence (JIS) buffers, line-stop charges, chargebacks or "delivery exposure":
+use pdm_ops.oem_delivery_exposure (one row per line). exposure_usd_if_fails is the contract charge if the riskiest station
+on the line fails now; risk_weighted_exposure_usd weights it by the failure probability. Rank lines or OEMs by
+risk_weighted_exposure_usd unless the user asks for the unweighted exposure.
 When asked "why" a station is at risk, report top_signal and top_signal_deviation_pct from station_health_current.
 """
 
@@ -45,6 +51,15 @@ def sources(catalog: str) -> dict:
                   "synonyms": ["driver", "anomalous sensor", "reason"]},
                  {"column_name": "failure_probability", "synonyms": ["risk", "maintenance probability"]},
              ], key=lambda c: c["column_name"])},
+            {"identifier": f"{catalog}.pdm_ops.oem_delivery_exposure",
+             "column_configs": sorted([
+                 {"column_name": "oem_customer", "enable_format_assistance": True, "enable_entity_matching": True,
+                  "synonyms": ["OEM", "customer", "automaker"]},
+                 {"column_name": "vehicle_program", "enable_format_assistance": True, "enable_entity_matching": True,
+                  "synonyms": ["program", "vehicle", "model"]},
+                 {"column_name": "risk_weighted_exposure_usd",
+                  "synonyms": ["delivery exposure", "chargeback exposure", "line-stop exposure"]},
+             ], key=lambda c: c["column_name"])},
             {"identifier": f"{catalog}.pdm_ops.work_orders_current"},
         ], key=lambda t: t["identifier"]),
         "metric_views": sorted([
@@ -60,6 +75,7 @@ SAMPLE_QUESTIONS = [
     "Why is the riskiest station at risk?",
     "Which station types fail most often and what is their MTTR?",
     "How many open work orders do we have by priority?",
+    "Which OEM programs are exposed to a line stop right now?",
 ]
 
 
@@ -76,6 +92,10 @@ def example_sqls(c: str) -> list[tuple[str, str]]:
          f"SELECT Plant, `Score Minute`, MEASURE(`Avg Failure Probability`) AS avg_risk "
          f"FROM {c}.pdm_ops.station_risk_metrics WHERE `Score Time` > current_timestamp() - INTERVAL 15 MINUTES "
          f"GROUP BY ALL ORDER BY Plant, `Score Minute`"),
+        ("Which OEM customer has the highest delivery exposure right now?",
+         f"SELECT oem_customer, SUM(risk_weighted_exposure_usd) AS risk_weighted_exposure_usd, "
+         f"SUM(high_risk_stations) AS high_risk_stations FROM {c}.pdm_ops.oem_delivery_exposure "
+         f"GROUP BY ALL ORDER BY risk_weighted_exposure_usd DESC"),
         ("How many open work orders are there per plant?",
          f"SELECT Plant, MEASURE(`Open Work Orders`) AS open_work_orders FROM {c}.pdm_ops.work_order_metrics "
          f"GROUP BY ALL ORDER BY open_work_orders DESC"),
@@ -85,6 +105,7 @@ def example_sqls(c: str) -> list[tuple[str, str]]:
 def benchmarks(c: str) -> list[tuple[str, str]]:
     hc = f"{c}.pdm_core.station_health_current"
     mm = f"{c}.pdm_ops.maintenance_metrics"
+    ox = f"{c}.pdm_ops.oem_delivery_exposure"
     return [
         ("How many stations are at high risk right now?",
          f"SELECT count(*) AS high_risk_stations FROM {hc} WHERE risk_band = 'HIGH'"),
@@ -107,6 +128,10 @@ def benchmarks(c: str) -> list[tuple[str, str]]:
          f"SELECT MEASURE(`Failures`) AS failures FROM {mm} WHERE Plant = 'Plant North'"),
         ("List the stations on line PLT-S-B with their current risk band.",
          f"SELECT station_id, risk_band FROM {hc} WHERE line_id = 'PLT-S-B' ORDER BY station_id"),
+        ("Which line has the highest risk-weighted OEM delivery exposure right now, and which OEM program does it supply?",
+         f"SELECT line_id, vehicle_program FROM {ox} ORDER BY risk_weighted_exposure_usd DESC LIMIT 1"),
+        ("What is the JIS buffer in minutes for each line supplying Nordvik Motors?",
+         f"SELECT line_id, jis_buffer_min FROM {ox} WHERE oem_customer = 'Nordvik Motors' ORDER BY line_id"),
     ]
 
 

@@ -1,6 +1,6 @@
 # Live predictive maintenance for manufacturing on Databricks
 
-An end-to-end demo for **Volta Industrial**, a fictional discrete manufacturer with three plants. Plant gateways stream station telemetry through **Lakeflow Connect Zerobus**. **Spark Declarative Pipelines** clean it, build features and score failure risk in-stream with a **Unity Catalog** model. **Lakebase** serves the live state to a **Databricks App** and stores work orders. A **Genie agent** answers questions over governed **metric views**.
+An end-to-end demo for **Volta Industrial**, a fictional Tier-1 automotive supplier. It builds aluminum EV battery enclosures (trays, covers, cooling plates) for three OEMs and ships them just-in-sequence from 12 lines in three plants. If a station is down longer than the line's JIS buffer, the OEM's assembly line stops and Volta pays a line-stop charge. Plant gateways stream station telemetry through **Lakeflow Connect Zerobus**. **Spark Declarative Pipelines** clean it, build features and score failure risk in-stream with a **Unity Catalog** model. **Lakebase** serves the live state to a **Databricks App** and stores work orders. A **Genie agent** answers questions over governed **metric views**.
 
 All data is synthetic, and Volta Industrial is a fictional customer. No real customer data is used.
 
@@ -44,6 +44,7 @@ Every requirement maps to the code that implements it and to **executed output**
 | R10 | **Databricks App** with actions | `src/app/*`, `resources/app.yml` | E07 (status, resources, deployments, writes); `08_app/e2e_fault_injection.md` (every API call through the app, with timings) |
 | R11 | **Low-latency live probability** of maintenance need | all of the above | E02 §5 (per-hop latency); E08 (fault → HIGH in Delta and Postgres, repair → NORMAL); `06_live_pipeline/04_live_evidence.md` |
 | R12 | Synthetic data only | `src/pdm/physics.py`, `00_setup_uc.py` (`example-mfg.test` emails, `+1-555` phones) | E00 (UC objects); E05 §2 (masked PII) |
+| R13 | Industry fit: risk expressed in OEM delivery exposure (JIS buffer, line-stop charge, vehicle program, process step) | `src/notebooks/05_industry_context.py`, `resources/industry_context.job.yml`, `src/genie/space_config.py` | `11_industry_context/05_industry_context.md` (OEM programs, process steps, live exposure per line and per OEM); `07_genie/benchmark.md` (OEM exposure questions pass) |
 
 ## Why each piece
 
@@ -73,7 +74,8 @@ Every requirement maps to the code that implements it and to **executed output**
 | Fault from app to simulator | applied 0.4 s after the click | `06_live_pipeline/04_live_evidence.md` |
 | Injected fault to HIGH risk | 3 min 2 s in Delta, 3 min 47 s in the app | same, and `08_app/` |
 | Model Serving what-if (warm) | 41 to 140 ms round trip | `08_app/whatif_warm.md` |
-| Genie benchmark | 10/10 graded questions match reference SQL (reproduced live in E06) | `07_genie/benchmark.md`, `10_evidence_notebooks/E06_genie.md` |
+| Genie benchmark | 12/12 graded questions match reference SQL, including 2 OEM delivery exposure questions (the earlier 10-question set was reproduced live in E06) | `07_genie/benchmark.md`, `10_evidence_notebooks/E06_genie.md` |
+| OEM delivery exposure | An unplanned failure (112 min) outlasts every JIS buffer (45 to 90 min): about 44 min of OEM line stop, about $595k contract charge on average (synthetic terms) | `11_industry_context/05_industry_context.md` |
 | Writer of the bronze table | 1,157 commits, all `engineInfo = Zerobus`, one every 5.0 s | `10_evidence_notebooks/E01_zerobus_ingestion.md` |
 | Delta to Lakebase sync | Delta commit synced to Postgres in about 4 s | `09_deployed_resources/lakebase_synced_table.json` |
 | Score consistency | Pipeline, registry model and Model Serving agree (max diff 0.00005, rounding) | `10_evidence_notebooks/E03_ml_model.md` |
@@ -118,6 +120,7 @@ The build notebooks and tool outputs:
 | `evidence/07_genie/` | Benchmark before fixes (7/10) and after (10/10), with Genie SQL and results |
 | `evidence/08_app/` | End-to-end run through the app API, warm serving calls |
 | `evidence/09_deployed_resources/` | State of pipeline, synced table, serving endpoint, app, Genie space, Lakebase |
+| `evidence/11_industry_context/` | OEM programs and JIS terms per line, enclosure process steps, live OEM delivery exposure |
 
 ## Repo layout
 
@@ -126,7 +129,7 @@ databricks.yml, resources/   Declarative Automation Bundle: jobs, pipeline, serv
 src/pdm/                     Shared Python: config, physics simulator, feature definition
 src/simulator/               Zerobus producer (serverless job)
 src/pipeline/                SDP pipeline sources
-src/notebooks/               Setup, backfill, training, governance + metric views, live evidence
+src/notebooks/               Setup, backfill, training, governance + metric views, live evidence, industry context
 src/lakebase/                Postgres DDL and app grants
 src/setup/                   UC grants for the app service principal
 src/genie/                   Genie agent as code (instructions, example SQL, benchmarks)
@@ -145,7 +148,7 @@ Prerequisites: a serverless workspace with Zerobus and Lakebase, Databricks CLI 
 3. Create the Lakebase project `pdm-demo`, run `src/lakebase/01_oltp_schema.sql` (`python tools/pg.py -f ...`), and create the Lakehouse Sync config for Postgres schema `pdm_ops`.
 4. Set `model_version` to the `@champion` version, deploy again. Start the simulator job. The continuous pipeline starts on deploy.
 5. Create the continuous synced table `pdm_live.station_risk_scores` (PK `station_id, window_end`).
-6. Run `pdm_governance`. Create the Genie agent with `tools/genie_deploy.py`, set `genie_space_id`, deploy.
+6. Run `pdm_governance` and `pdm_industry_context`. Create the Genie agent with `tools/genie_deploy.py`, set `genie_space_id`, deploy.
 7. `databricks bundle run pdm_app`. Apply `src/setup/app_uc_grants.sql` and `src/lakebase/02_app_grants.sql` for the app service principal.
 8. Evidence: `tools/genie_benchmark.py`, `tools/e2e_demo.py`, job `pdm_live_evidence`, `tools/export_run.py <run_id> <dir>`.
 
