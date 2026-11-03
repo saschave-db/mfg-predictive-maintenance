@@ -10,7 +10,7 @@ paginate: true
 
 Volta Industrial is a Tier-1 automotive supplier. It builds battery trays, covers and cooling plates for three EV makers: Nordvik Motors, Fjord Electric and Aurora Elbil. It ships them just-in-sequence from 12 lines in three plants.
 
-Prepared for **Ingrid Solberg** (COO, executive sponsor) and **Bjørn Halvorsen** (Maintenance Supervisor, Plant East, the person who uses the app every shift)
+Prepared for **Ingrid Solberg** (COO, executive sponsor) and **Linnea Berg** (Lead App Developer, Volta Digital Manufacturing, who would own and run the app). The app is built for **Bjørn Halvorsen**, Maintenance Supervisor in Plant East.
 
 All companies, people and data are fictional and synthetic. No real customer data was used.
 
@@ -20,11 +20,13 @@ All companies, people and data are fictional and synthetic. No real customer dat
 
 ## Who is in the room
 
-| | **Ingrid Solberg**, COO | **Bjørn Halvorsen**, Maintenance Supervisor, Plant East |
+| | **Ingrid Solberg**, COO | **Linnea Berg**, Lead App Developer |
 |---|---|---|
-| Decides | Funds the program and the rollout to all plants | Whether his crew trusts and uses the app |
-| Judged on | EBITDA margin under OEM price-downs, OEM charges, the OEM scorecard that decides the next program award, capex | Keeping his lines inside the JIS buffer, planned vs. emergency repairs, repair minutes, call-outs |
-| Wants to hear | What it is worth, how fast, what the risk is | Which station, why, how much time he has, one click to act |
+| Decides | Funds the program and the rollout to all plants | Whether her team can own, extend and run the app in production |
+| Judged on | EBITDA margin under OEM price-downs, OEM charges, the OEM scorecard that decides the next program award, capex | Uptime and response time of the plant apps, release speed, security reviews passed, on-call load |
+| Wants to hear | What it is worth, how fast, what the risk is | How it is built, how data and auth work, how it is tested and deployed, what breaks |
+
+The app's user is **Bjørn Halvorsen**, Maintenance Supervisor in Plant East. He is not in the room, but every screen in the demo is his.
 
 ---
 
@@ -32,7 +34,7 @@ All companies, people and data are fictional and synthetic. No real customer dat
 
 **Every failure in the test set was flagged before it happened, with a median of about 4 operating hours of warning. Volta's JIS buffers are only 45 to 90 minutes.**
 
-| | What we showed | For Ingrid | For Bjørn |
+| | What we showed | For Ingrid | For Bjørn, the app's user |
 |---|---|---|---|
 | Failures caught early | **271 of 271** on a held-out time window | No OEM line stop from a flagged station | Repairs get planned, not rushed |
 | Warning | **About 4 operating hours** (median) | The OEM never notices | Fix it in the next planned break |
@@ -111,7 +113,7 @@ Illustrative for the 96-station fleet. Assumptions: 2 unplanned failures per sta
 
 ---
 
-## For Bjørn: how his shift changes
+## For Bjørn, the app's user: how his shift changes
 
 **Today**
 - He finds out about a failure when the line stops, and the JIS clock is already running.
@@ -134,22 +136,27 @@ Illustrative for the 96-station fleet. Assumptions: 2 unplanned failures per sta
 
 ---
 
-## How it works, and why it can be trusted
+## For Linnea: how the app is built, and what her team would own
 
 ```
-Station sensors ──► Zerobus ingest ──► Clean + score every 10 s ──► Bjørn's plant screen (App)
-                    (no Kafka)          (governed model)                  │ one-click work orders
-                                              │                           ▼
-OEM programs + JIS terms ──► Unity Catalog: governed KPIs ◄──── Lakebase (operational database)
-                                              │
-                                              ▼
-                               Genie: Ingrid's questions in plain language
+Station sensors ──► Zerobus ──► SDP pipeline: clean + score every 10 s (UC model) ──► Delta
+                                                                        │ synced table, about 4 s
+Bjørn's browser ◄── FastAPI on Databricks Apps ◄── Lakebase (Postgres) ◄┘
+   (polls 2 s)        │  writes work orders ──► Lakebase ──► Lakehouse Sync ──► Unity Catalog
+                      ├─► Model Serving via AI Gateway (what-if)
+                      └─► Genie Conversation API (plain-language questions)
 ```
 
-- **Fast where it matters:** sensor to clean data in 3.9 s, to Bjørn's screen in about 60 s. The decision window is hours.
-- **Data quality is enforced:** invalid readings are dropped and counted, never silently passed on.
-- **Each plant sees only its own data,** enforced by the platform. We proved it on the app's own identity. Technician contact details are masked.
-- **Auditable:** lineage from sensor to screen, model versions and every work order are tracked.
+| Concern | How it works today | Measured |
+|---|---|---|
+| **Data quality** | Pipeline expectations drop invalid readings and count them. A window with too few readings is not scored | 3.9 s sensor to clean data, about 60 s to screen |
+| **Reads** | The live risk state is a Lakebase synced table: read-only Postgres, primary key (station, window) | 4 to 32 ms per query |
+| **Writes** | Work orders and commands are transactional Postgres rows. Lakehouse Sync streams the changes back to UC | 12 to 14 ms round trip |
+| **Identity** | The app's own service principal. Credentials are injected by the platform; Postgres OAuth tokens are minted and refreshed in the connection pool | no secrets in code |
+| **Access** | Least-privilege grants on the app identity. A plant-level row filter, proven on that identity | 6 → 12 → 6 rows |
+| **Model calls** | What-if goes through AI Gateway, with every call tracked | 41 to 140 ms warm |
+| **Deploy** | App, pipeline, endpoint and jobs are one bundle in Git. The deployed code is verified against the repo by checksum | one command per environment |
+| **Test** | A scripted end-to-end run drives every API call through the deployed app, with timings | fault → HIGH → work order → NORMAL |
 
 ---
 
@@ -168,10 +175,10 @@ OEM programs + JIS terms ──► Unity Catalog: governed KPIs ◄──── 
 
 **The ask**
 1. **Ingrid:** sponsor the 90-day pilot on PLT-E-A.
-2. **Bjørn:** his crew runs it, and he sets the alert threshold with us.
+2. **Linnea:** her team co-owns the app from week 1: code, deployment and on-call, with us alongside. Bjørn's crew runs the alerts and sets the threshold with us.
 3. **Together:** agree the baseline and the success criteria before day 1.
 
-**What we are honest about:** the demo uses synthetic data and fictional contracts, so the value model is illustrative until the pilot. About 60 s to screen is right for this decision, but it is not a safety interlock. Alerts name the most deviating sensor, not a full root cause.
+**What we are honest about:** the demo uses synthetic data and fictional contracts, so the value model is illustrative until the pilot. About 60 s to screen is right for this decision, but it is not a safety interlock. Alerts name the most deviating sensor, not a full root cause. For Linnea: Genie runs as the app identity, so per-viewer filtering needs on-behalf-of-user auth; the model endpoint scales to zero and its first call after idle took about 60 s; a few settings in the app config are still hard-coded instead of bundle variables.
 
 ---
 
