@@ -34,9 +34,9 @@ The build passed. The industry review named two gaps. This page lists each gap, 
 
 | Change | Where | Executed evidence |
 |---|---|---|
-| The COO slide maps a typical Tier-1 board scorecard to the levers this solution moves, with numbers. The scorecard covers EBITDA under price-downs, OEM charges and premium freight, the OEM scorecard and next program awards, capex and free cash flow, and rollout risk | `presentation/deck.md`, "For Ingrid Solberg, COO" | Layer 1 and layer 2 values below |
-| The Head of Maintenance slide maps the KPIs of his monthly operations review, which usually also set his bonus through plant OEE and the maintenance budget, to before and after values | `presentation/deck.md`, "For Henrik Lindqvist" | `05_industry_context.md`, section "Henrik Lindqvist ... operations review KPIs": planned share 19.6% → 75.9%, mean repair time 95.7 → 48.1 min, parts spend $8.12M → $3.27M |
-| The value model has two layers. Layer 1 is Volta's own P&L. Layer 2 is OEM line-stop charges avoided | `presentation/deck.md`, value slides | `05_industry_context.md`, section "Value model": layer 1 $3.64M, layer 2 $4.00M, +0.26 OEE availability points |
+| The COO slide maps a typical Tier-1 board scorecard to the levers this solution moves, with numbers. The scorecard covers EBITDA under price-downs, OEM charges and premium freight, the OEM scorecard and next program awards, capex and free cash flow, and rollout risk | `presentation/deck.md`, "For Ingrid: what it is worth, and what moves on her scorecard" | Layer 1 and layer 2 values below |
+| The app user's slide maps the numbers the maintenance supervisor is judged on (lines inside the JIS buffer, planned vs. emergency repairs, repair minutes) to before and after values. Since the 20-minute version, the deck addresses two personas: the sponsor (COO) and the supervisor who uses the app | `presentation/deck.md`, "For Bjørn: how his shift changes" | `05_industry_context.md`, section "Henrik Lindqvist ... operations review KPIs": planned share 19.6% → 75.9%, mean repair time 95.7 → 48.1 min, parts spend $8.12M → $3.27M |
+| The value model has two layers. Layer 1 is Volta's own P&L. Layer 2 is OEM line-stop charges avoided | `presentation/deck.md`, "For Ingrid" slide | `05_industry_context.md`, section "Value model": layer 1 $3.64M, layer 2 $4.00M, +0.26 OEE availability points |
 | Sensitivity for both layers | same | `05_industry_context.md`, section "Sensitivity": layer 1 $1.3M to $13.1M, layer 2 $1.6M to $8.0M |
 
 **Measured vs. assumed:**
