@@ -21,6 +21,42 @@ All companies, people and data are fictional and synthetic. No real customer dat
 
 ---
 
+<!-- _class: tiny -->
+
+## Demo launchpad 1 · the live data journey
+
+Links open in a new tab. Workspace: <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com?o=7474651880045550" target="_blank">fevm-serverless-stable-am1uc2</a>.
+
+| # | Step | Open | What to show |
+|---|---|---|---|
+| 1 | Data generation + **Zerobus** ingest | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/jobs/16077621483238?o=7474651880045550" target="_blank">simulator job</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_raw/sensor_readings?o=7474651880045550" target="_blank">pdm_raw.sensor_readings</a> | Job is running, 96 stations at 1 Hz. Table history: every write is `engineInfo = Zerobus` |
+| 2 | **SDP** pipeline (continuous) | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/pipelines/b5544be9-b72f-4e83-b029-1a7151fc53c1?o=7474651880045550" target="_blank">SDP pipeline</a> | Graph: clean → windowed scoring → current state. Data-quality tab: expectations pass/drop |
+| 3 | Silver and live scores | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_core/sensor_readings_clean?o=7474651880045550" target="_blank">pdm_core.sensor_readings_clean</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_core/station_risk_scores?o=7474651880045550" target="_blank">pdm_core.station_risk_scores</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_core/station_health_current?o=7474651880045550" target="_blank">pdm_core.station_health_current</a> | Fresh rows; Lineage tab from the Zerobus table to the app |
+| 4 | **ML** model in Unity Catalog | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/models/serverless_stable_am1uc2_catalog/pdm_ml/station_failure_model?o=7474651880045550" target="_blank">UC model station_failure_model</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/ml/experiments/2742082353844011?o=7474651880045550" target="_blank">MLflow experiment</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/jobs/269340780177784?o=7474651880045550" target="_blank">training job</a> | Version 2 = `@champion`, PR-AUC 0.91, lead time per failure mode |
+| 5 | **Lakebase** sync | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/pipelines/5135c1d5-fce7-4893-898c-d902dc34a0ea?o=7474651880045550" target="_blank">synced-table pipeline</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_live/station_risk_scores?o=7474651880045550" target="_blank">pdm_live.station_risk_scores</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/lakebase/projects/pdm-demo?o=7474651880045550" target="_blank">Lakebase project pdm-demo</a> | Synced table about 4 s behind Delta; work orders as Postgres rows |
+| 6 | **Databricks App** | <a href="https://pdm-plant-health-live-7474651880045550.aws.databricksapps.com" target="_blank">Plant Health Live app</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/apps/pdm-plant-health-live?o=7474651880045550" target="_blank">app config</a> | Inject fault on PLT-E-A03 → HIGH → work order → repair → NORMAL. Header shows data age and Lakebase ms |
+| 7 | **Model Serving** via AI Gateway | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/ml/endpoints/pdm-station-risk?o=7474651880045550" target="_blank">serving endpoint + AI Gateway</a> | What-if from the app; usage tracking in the gateway |
+
+---
+
+<!-- _class: tiny -->
+
+## Demo launchpad 2 · AI, governance, code and evidence
+
+| # | Step | Open | What to show |
+|---|---|---|---|
+| 8 | **Genie** agent | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/genie/rooms/01f1c10d662111078cd7326dff1774c6?o=7474651880045550" target="_blank">Genie: Plant Maintenance Agent</a> | Ask: "Which OEM programs are exposed to a line stop right now?" Benchmarks tab: 12/12 |
+| 9 | Governed KPIs (metric views) | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_ops/maintenance_metrics?o=7474651880045550" target="_blank">pdm_ops.maintenance_metrics</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_ops/station_risk_metrics?o=7474651880045550" target="_blank">pdm_ops.station_risk_metrics</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_ops/oem_delivery_exposure?o=7474651880045550" target="_blank">pdm_ops.oem_delivery_exposure</a> | One definition per KPI; OEM exposure view joins live risk to JIS contracts |
+| 10 | **Unity Catalog** governance | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_raw/technicians?o=7474651880045550" target="_blank">pdm_raw.technicians (masks, row filter)</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_ops/work_orders_current?o=7474651880045550" target="_blank">pdm_ops.work_orders_current</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/jobs/438031727317059?o=7474651880045550" target="_blank">governance job</a> | PII masks, plant row filter (app identity sees 6 of 18 rows), tags, grants |
+| 11 | Industry context | <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/jobs/233410447833891?o=7474651880045550" target="_blank">industry context job</a> | OEM programs, JIS buffers, line-stop charges, scorecard KPIs computed from the history |
+| 12 | Code, deployed as one bundle | <a href="https://github.com/saschave-db/mfg-predictive-maintenance" target="_blank">GitHub repo</a> · <a href="https://github.com/saschave-db/mfg-predictive-maintenance/blob/main/databricks.yml" target="_blank">databricks.yml</a> · <a href="https://github.com/saschave-db/mfg-predictive-maintenance/tree/main/src/pipeline" target="_blank">src/pipeline</a> · <a href="https://github.com/saschave-db/mfg-predictive-maintenance/tree/main/src/app" target="_blank">src/app</a> | Everything in Git; deployed code = repo (checksums) |
+| 13 | Proof, as text | <a href="https://github.com/saschave-db/mfg-predictive-maintenance#requirement--source--live-evidence" target="_blank">requirement → evidence matrix</a> · <a href="https://github.com/saschave-db/mfg-predictive-maintenance/tree/main/evidence" target="_blank">evidence/</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/jobs/755461157363253?o=7474651880045550" target="_blank">evidence notebooks job</a> · <a href="https://github.com/saschave-db/mfg-predictive-maintenance/blob/main/evidence/08_app/e2e_fault_injection.md" target="_blank">end-to-end run log</a> | Executed notebooks with outputs, raw API responses, timings |
+| 14 | Deep dive: data quality + CI/CD | <a href="https://github.com/saschave-db/mfg-telemetry-dq-cicd" target="_blank">mfg-telemetry-dq-cicd</a> | Zerobus + Auto Loader, SQL expectations, quarantine, DQ gate, dev/staging/prod promotion |
+
+*Before demoing: start Lakebase, both pipelines, the simulator and the app; warm the serving endpoint and Genie once.*
+
+---
+
 <!-- _class: dense -->
 
 ## Who is in the room
@@ -78,6 +114,8 @@ From Volta's synthetic maintenance history (96 stations, 1,096 failures):
 
 ## Live: Bjørn's shift on the Aurora Elbil line
 
+▶ <a href="https://pdm-plant-health-live-7474651880045550.aws.databricksapps.com" target="_blank">Plant Health Live app</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/genie/rooms/01f1c10d662111078cd7326dff1774c6?o=7474651880045550" target="_blank">Genie: Plant Maintenance Agent</a>
+
 Station **PLT-E-A03**, the frame welder on line PLT-E-A in Plant East. The line builds battery trays for the Aurora Elbil A3 Hatch, with a 60-minute JIS buffer. 1 demo minute ≈ 1 operating hour.
 
 | | Tell | Show | What it means |
@@ -94,7 +132,7 @@ Station **PLT-E-A03**, the frame welder on line PLT-E-A in Plant East. The line 
 
 One governed view joins live risk to each line's OEM contract: "If the riskiest station on this line fails now, does the OEM line stop, and what does it cost?"
 
-Snapshot from the running system (Genie's answer, reproduced in SQL):
+Snapshot from the running system (Genie's answer, reproduced in SQL). ▶ <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/genie/rooms/01f1c10d662111078cd7326dff1774c6?o=7474651880045550" target="_blank">Genie: Plant Maintenance Agent</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/explore/data/serverless_stable_am1uc2_catalog/pdm_ops/oem_delivery_exposure?o=7474651880045550" target="_blank">pdm_ops.oem_delivery_exposure</a>
 
 | Line | OEM program | Riskiest station | Risk | OEM stop if it fails | Risk-weighted exposure |
 |---|---|---|---|---|---|
@@ -156,6 +194,8 @@ Illustrative for the 96-station fleet. Assumptions: 2 unplanned failures per sta
 <!-- _class: dense -->
 
 ## For Linnea: how the app is built, and what her team would own
+
+▶ <a href="https://github.com/saschave-db/mfg-predictive-maintenance/tree/main/src/app" target="_blank">src/app</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/apps/pdm-plant-health-live?o=7474651880045550" target="_blank">app config</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/lakebase/projects/pdm-demo?o=7474651880045550" target="_blank">Lakebase project pdm-demo</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/ml/endpoints/pdm-station-risk?o=7474651880045550" target="_blank">serving endpoint + AI Gateway</a> · <a href="https://fevm-serverless-stable-am1uc2.cloud.databricks.com/pipelines/b5544be9-b72f-4e83-b029-1a7151fc53c1?o=7474651880045550" target="_blank">SDP pipeline</a> · <a href="https://github.com/saschave-db/mfg-predictive-maintenance/blob/main/databricks.yml" target="_blank">databricks.yml</a> · <a href="https://github.com/saschave-db/mfg-predictive-maintenance/blob/main/evidence/08_app/e2e_fault_injection.md" target="_blank">end-to-end run log</a>
 
 ```
 Station sensors ──► Zerobus ──► SDP pipeline: clean + score every 10 s (UC model) ──► Delta

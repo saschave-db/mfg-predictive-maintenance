@@ -107,3 +107,7 @@ section.dense li { margin: 3px 0; }
 section.tiny { font-size: 13px; }
 section.tiny table { font-size: 11.5px; }
 section.tiny h2 { font-size: 24px; }
+
+a { color: var(--accent); text-decoration: none; font-weight: 600; }
+a:hover { text-decoration: underline; }
+section.title a { color: #ffb4a8; }
