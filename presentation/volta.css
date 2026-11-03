@@ -1,0 +1,109 @@
+/* @theme volta */
+@import 'default';
+
+:root {
+  --navy: #1b3139;
+  --accent: #ff3621;
+  --muted: #5a6b72;
+  --line: #d9e0e3;
+  --tint: #f3f6f7;
+}
+
+section {
+  width: 1280px;
+  height: 720px;
+  padding: 44px 56px 40px 56px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.38;
+  color: var(--navy);
+  background: #fff;
+  border-top: 8px solid var(--accent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+}
+
+section::after {            /* page number */
+  color: var(--muted);
+  font-size: 13px;
+}
+
+h1 {
+  font-size: 44px;
+  line-height: 1.15;
+  color: var(--navy);
+  margin: 40px 0 18px 0;
+}
+
+h2 {
+  font-size: 30px;
+  color: var(--navy);
+  margin: 0 0 14px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--line);
+}
+
+p, li { margin: 6px 0; }
+ul, ol { margin: 4px 0 4px 0; padding-left: 26px; }
+strong { color: var(--navy); }
+em { color: var(--muted); }
+
+table {
+  display: table !important;
+  border-collapse: collapse;
+  width: 100% !important;
+  margin: 8px 0;
+  font-size: 15.5px;
+  line-height: 1.3;
+}
+th {
+  background: var(--navy);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  padding: 6px 9px;
+  border: 1px solid var(--navy);
+}
+th strong { color: #fff; }
+td {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: var(--tint); }
+
+pre {
+  background: var(--tint);
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin: 6px 0 10px 0;
+}
+pre code {
+  font-size: 12.5px;
+  line-height: 1.3;
+  color: var(--navy);
+  background: none;
+}
+
+/* Title slide */
+section.title {
+  justify-content: center !important;
+  background: linear-gradient(135deg, #1b3139 0%, #24434d 100%);
+  color: #fff;
+  border-top: 8px solid var(--accent);
+}
+section.title h1 { color: #fff; margin-top: 0; font-size: 50px; }
+section.title p, section.title strong { color: #e8eef0; }
+section.title em { color: #b8c7cc; }
+
+/* Dense slides */
+section.dense { font-size: 16.5px; }
+section.dense table { font-size: 13.5px; }
+section.dense h2 { font-size: 27px; margin-bottom: 10px; }
+section.dense li { margin: 3px 0; }
+
+section.tiny { font-size: 13px; }
+section.tiny table { font-size: 11.5px; }
+section.tiny h2 { font-size: 24px; }

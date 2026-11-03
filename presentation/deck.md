@@ -1,8 +1,11 @@
 ---
 marp: true
+theme: volta
 title: Volta Industrial. Never stop the OEM line. Live predictive maintenance for EV battery enclosures on Databricks
 paginate: true
 ---
+
+<!-- _class: title -->
 
 # Volta Industrial: never be the supplier that stops the OEM line
 
@@ -18,6 +21,8 @@ All companies, people and data are fictional and synthetic. No real customer dat
 
 ---
 
+<!-- _class: dense -->
+
 ## Who is in the room
 
 | | **Ingrid Solberg**, COO | **Linnea Berg**, Lead App Developer |
@@ -29,6 +34,8 @@ All companies, people and data are fictional and synthetic. No real customer dat
 The app's user is **Bjørn Halvorsen**, Maintenance Supervisor in Plant East. He is not in the room, but every screen in the demo is his.
 
 ---
+
+<!-- _class: dense -->
 
 ## The outcome in one slide
 
@@ -46,6 +53,8 @@ The app's user is **Bjørn Halvorsen**, Maintenance Supervisor in Plant East. He
 In the live run, the at-risk welder was **repaired and never failed**.
 
 ---
+
+<!-- _class: dense -->
 
 ## The problem, in Volta's numbers
 
@@ -65,6 +74,8 @@ From Volta's synthetic maintenance history (96 stations, 1,096 failures):
 
 ---
 
+<!-- _class: dense -->
+
 ## Live: Bjørn's shift on the Aurora Elbil line
 
 Station **PLT-E-A03**, the frame welder on line PLT-E-A in Plant East. The line builds battery trays for the Aurora Elbil A3 Hatch, with a 60-minute JIS buffer. 1 demo minute ≈ 1 operating hour.
@@ -76,6 +87,8 @@ Station **PLT-E-A03**, the frame welder on line PLT-E-A in Plant East. The line 
 | **3 · Ingrid's question** | "The question before an OEM review" | Genie: "Which OEM programs are exposed to a line stop right now?" It ranks the lines by risk-weighted exposure | Ingrid knows her exposure per OEM. Bjørn knows where to send the crew first |
 
 ---
+
+<!-- _class: dense -->
 
 ## Ingrid's view: OEM delivery exposure, live
 
@@ -93,6 +106,8 @@ Snapshot from the running system (Genie's answer, reproduced in SQL):
 - **Tested before anyone used it:** Genie answered 12 of 12 benchmark questions correctly, against reference SQL.
 
 ---
+
+<!-- _class: dense -->
 
 ## For Ingrid: what it is worth, and what moves on her scorecard
 
@@ -112,6 +127,8 @@ Illustrative for the 96-station fleet. Assumptions: 2 unplanned failures per sta
 | Capex and free cash flow | More output from the same 12 lines, no new equipment |
 
 ---
+
+<!-- _class: dense -->
 
 ## For Bjørn, the app's user: how his shift changes
 
@@ -135,6 +152,8 @@ Illustrative for the 96-station fleet. Assumptions: 2 unplanned failures per sta
 | Warning before a failure | none | **about 4 operating hours** |
 
 ---
+
+<!-- _class: dense -->
 
 ## For Linnea: how the app is built, and what her team would own
 
@@ -160,6 +179,8 @@ Bjørn's browser ◄── FastAPI on Databricks Apps ◄── Lakebase (Postgr
 
 ---
 
+<!-- _class: dense -->
+
 ## Pilot and the ask
 
 **90 days on line PLT-E-A (Aurora Elbil A3 Hatch, Plant East), with Bjørn's crew**
@@ -181,6 +202,8 @@ Bjørn's browser ◄── FastAPI on Databricks Apps ◄── Lakebase (Postgr
 **What we are honest about:** the demo uses synthetic data and fictional contracts, so the value model is illustrative until the pilot. About 60 s to screen is right for this decision, but it is not a safety interlock. Alerts name the most deviating sensor, not a full root cause. For Linnea: Genie runs as the app identity, so per-viewer filtering needs on-behalf-of-user auth; the model endpoint scales to zero and its first call after idle took about 60 s; a few settings in the app config are still hard-coded instead of bundle variables.
 
 ---
+
+<!-- _class: tiny -->
 
 ## Appendix: where the numbers come from
 
