@@ -127,3 +127,17 @@ section.title a { color: #ffb4a8; }
 .card { border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; background: #fff; }
 .card h3 { margin: 0 0 6px 0; font-size: 18px; color: var(--navy); }
 .big { font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1.1; }
+
+/* Hook slide */
+section.hook { background: #fff; }
+section.hook .story { font-size: 24px; line-height: 1.45; border-left: 6px solid var(--accent); padding: 6px 0 6px 22px; margin: 10px 0 18px 0; }
+section.hook .story b { color: var(--accent); }
+.ask { background: #fff4f2; border: 1px dashed var(--accent); border-radius: 6px; padding: 8px 14px; margin: 8px 0; font-size: 0.95em; }
+.ask .label { color: var(--accent); }
+.road { display: flex; gap: 14px; margin: 10px 0; }
+.road > div { flex: 1; background: var(--tint); border-top: 4px solid var(--accent); border-radius: 4px; padding: 10px 14px; }
+.road b { display: block; font-size: 18px; margin-bottom: 4px; }
+.flow { display: flex; align-items: stretch; gap: 8px; margin: 10px 0; }
+.flow > div { flex: 1; background: var(--tint); border-radius: 6px; padding: 8px 10px; font-size: 14px; }
+.flow > div b { display: block; font-size: 15px; color: var(--navy); margin-bottom: 2px; }
+.flow > span { align-self: center; color: var(--accent); font-weight: 700; font-size: 20px; }
