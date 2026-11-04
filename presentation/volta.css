@@ -141,3 +141,12 @@ section.hook .story b { color: var(--accent); }
 .flow > div { flex: 1; background: var(--tint); border-radius: 6px; padding: 8px 10px; font-size: 14px; }
 .flow > div b { display: block; font-size: 15px; color: var(--navy); margin-bottom: 2px; }
 .flow > span { align-self: center; color: var(--accent); font-weight: 700; font-size: 20px; }
+
+/* Level-set cover */
+section.levelset { justify-content: flex-start !important; padding-top: 40px; }
+section.levelset h1 { font-size: 38px; margin: 6px 0 8px 0; }
+section.levelset .ls { display: flex; gap: 16px; margin: 14px 0 10px 0; }
+section.levelset .ls > div { flex: 1; background: rgba(255,255,255,0.08); border-top: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 16px; line-height: 1.4; color: #e8eef0; }
+section.levelset .ls h3 { color: #fff; font-size: 19px; margin: 0 0 6px 0; }
+section.levelset .ls b { color: #fff; }
+section.levelset .user { color: #b8c7cc; font-size: 14px; }

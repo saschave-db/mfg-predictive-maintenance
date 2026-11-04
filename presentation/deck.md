@@ -5,18 +5,30 @@ title: Volta Industrial. Never stop the OEM line. Live predictive maintenance fo
 paginate: true
 ---
 
-<!-- _class: title -->
+<!-- _class: title levelset -->
 
 # Volta Industrial: never be the supplier that stops the OEM line
 
-**Live predictive maintenance for aluminum EV battery enclosures, on one Databricks platform**
+**Level set:** live predictive maintenance on one Databricks platform · 20 minutes
 
-For **Alex**, executive sponsor, and **Shreya**, who would own and run the solution
+<div class="ls">
+<div><h3>The domain</h3>
+Manufacturing, automotive supply. Volta Industrial is a Tier-1 supplier of aluminum <b>EV battery enclosures</b> to Nordvik Motors, Fjord Electric and Aurora Elbil. 12 lines, 3 plants, 96 stations, shipped <b>just-in-sequence</b> with 45 to 90 minutes of buffer.
+</div>
+<div><h3>The scenario</h3>
+Predict which station will fail <b>hours ahead</b>, from live sensor data. The crew fixes it in a planned break, so the OEM's line never stops. Today 4 out of 5 repairs are emergencies, and one OEM line stop costs about $595,000.
+</div>
+<div><h3>Who is in the room</h3>
+<b>Alex</b>, business stakeholder: the executive sponsor who funds the decision. Judged on margin, OEM charges and the scorecard.<br><br>
+<b>Shreya</b>, technical stakeholder: owns and runs the solution. Cares about how it is built, deployed, secured and supported.<br><br>
+<span class="user">The app's user, not in the room: <b>Bjørn</b>, maintenance supervisor, Plant East.</span>
+</div>
+</div>
 
-*20 minutes · all companies, people and data are fictional and synthetic*
+*All companies, people and data are fictional and synthetic.*
 
 <!--
-"Thanks, Alex. Thanks, Shreya. Let me start with something that happened on one of your lines."
+0:00 to 0:30. "Thanks, Alex. Thanks, Shreya. Quick level set: we're in automotive supply, Volta builds battery enclosures just-in-sequence for three EV makers, and today is about predicting station failures before they stop an OEM's line. Alex, you fund it. Shreya, your team would run it. Let me start with something that happened on one of your lines."
 -->
 
 ---
@@ -25,7 +37,7 @@ For **Alex**, executive sponsor, and **Shreya**, who would own and run the solut
 
 ## 6:12 on a Tuesday, Plant East
 
-<div class="meta"><b>0:00 to 1:00</b> · the hook</div>
+<div class="meta"><b>0:30 to 1:30</b> · the hook</div>
 
 <div class="story">
 The frame welder on the Aurora Elbil line has been running hot for hours. Nobody sees it. At 6:12 it trips.<br>
@@ -43,9 +55,36 @@ Tell it as a story, slowly. Pause after "it trips" and after "$575,000".
 
 ---
 
-## Why keep listening: the value, and today's roadmap
+## Agenda
 
-<div class="meta"><b>1:00 to 3:00</b> · value first, then the roadmap · illustrative, your finance team replaces the assumptions in the pilot</div>
+<div class="meta"><b>1:30 to 2:15</b> · today's roadmap</div>
+
+| Time | Topic | What you'll see | For |
+|---|---|---|---|
+| 1 min | **Why it matters** | The value for Volta, up front | Alex |
+| 5 min | **① See it coming, fix it in a planned break** | Bjørn's app, live: a welder heading for failure, flagged, fixed, back to normal | both |
+| 3 min | **② Know your exposure** | Which OEM contract is at risk right now, asked in plain language | Alex |
+| 5 min | **③ Run it safely in production** | How it is built, deployed from code, secured and supported | Shreya |
+| 3 min | **Proof and the pilot** | What we proved, the honest limits, and a 90-day pilot | both |
+
+<div class="road">
+<div><b>① See it coming, fix it in a break</b>hours of warning instead of an emergency stop</div>
+<div><b>② Know your exposure</b>walk into every OEM review knowing the risk</div>
+<div><b>③ Run it safely in production</b>a platform Shreya's team can own</div>
+</div>
+
+<div class="ask"><span class="label">Check in</span> "Alex, Shreya: does this match what you want to get out of today? Anything you'd add?"</div>
+
+<!--
+Listen to the answers. If Alex says "risk" or "chargebacks", lean on topic 2. If Shreya says "operations" or "security", lean on topic 3.
+In the background: inject the overheating fault on PLT-E-A03 in the app now, so it is HIGH when topic 1 starts.
+-->
+
+---
+
+## Why keep listening: what it is worth
+
+<div class="meta"><b>2:15 to 3:00</b> · for Alex · illustrative, your finance team replaces the assumptions in the pilot</div>
 
 <div class="two">
 <div class="card"><h3>Own P&amp;L</h3><div class="big">about $3.6M / yr</div>190 hours less line downtime, fewer expedited parts</div>
@@ -53,18 +92,11 @@ Tell it as a story, slowly. Pause after "it trips" and after "$575,000".
 <div class="card"><h3>Warning before a failure</h3><div class="big">about 4 hours</div>271 of 271 test failures caught, 95% of alerts real</div>
 </div>
 
-<div class="road">
-<div><b>① See it coming, fix it in a break</b>Bjørn's app, live on the Aurora Elbil line</div>
-<div><b>② Know your exposure</b>Which OEM contract is at risk right now, in plain language</div>
-<div><b>③ Run it safely in production</b>How it is built, deployed, secured and owned</div>
-</div>
-
-<div class="ask"><span class="label">Check in</span> "Alex, Shreya: does this match what you want to get out of today? Anything you'd add?"</div>
+<div class="sowhat"><span class="label">So what</span> Every failure caught early is a <b>28-minute planned job instead of a 112-minute emergency</b>, and an OEM line stop that never happens.</div>
 
 <!--
 Assumptions behind the value: 2 unplanned failures per station per year, 70% converted into planned repairs, $15,000 per hour of internal downtime.
-Listen to the answers. If Alex says "risk" or "chargebacks", lean on topic 2. If Shreya says "operations" or "security", lean on topic 3.
-In the background: inject the overheating fault on PLT-E-A03 in the app now, so it is HIGH when topic 1 starts.
+"Here's what I'll show you, and how it adds up to these numbers."
 -->
 
 ---
